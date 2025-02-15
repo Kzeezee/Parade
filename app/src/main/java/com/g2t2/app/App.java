@@ -6,20 +6,28 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class App extends Application {
+// Uncomment this if we are doing GUI
+// public class App extends Application {
 
-    @Override
-    public void start(Stage stage) {
-        String javaVersion = System.getProperty("java.version");
-        String javafxVersion = System.getProperty("javafx.version");
-        Label l = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
-        Scene scene = new Scene(new StackPane(l), 640, 480);
-        stage.setScene(scene);
-        stage.show();
-    }
+//     @Override
+//     public void start(Stage stage) {
+//         String javaVersion = System.getProperty("java.version");
+//         String javafxVersion = System.getProperty("javafx.version");
+//         Label l = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
+//         Scene scene = new Scene(new StackPane(l), 640, 480);
+//         stage.setScene(scene);
+//         stage.show();
+//     }
 
+//     public static void main(String[] args) {
+//         launch();
+//     }
+
+// }
+
+// Comment this if we are doing GUI
+public class App {
     public static void main(String[] args) {
-        launch();
+        System.out.println("Hello world! This is G2T2 Parade!");
     }
-
 }
