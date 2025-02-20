@@ -1,5 +1,7 @@
 package com.g2t2.app;
 
+import com.g2t2.game.StartMenu;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -29,5 +31,6 @@ import javafx.stage.Stage;
 public class App {
     public static void main(String[] args) {
         System.out.println("Hello world! This is G2T2 Parade!");
+        StartMenu.showStartMenu();
     }
 }
