@@ -1,25 +1,16 @@
 # Parade
 SMU CS102 Java group project, a game implemented in Java under the same board game's name
 
----
+# Building and Running
 
-## Building
-
-Ensure gradle runs on clean state
-- gradle clean
+Gradle to clean previous build files
+- ./gradlew clean or Gradle clean
 
 Gradle to build the project
-- gradle build
+- ./gradlew build or Gradle build
 
-Gradle to package the build files (classes etc.) into a single jar 
-- gradle jar
+Gradle to package the jar file (Optional)
+- ./gradlew jar or Gradle jar
 
-Intermediary step to verify what .class files are inside the .jar (Optional)
-- jar tf classes/Parade.jar
-
-## Running
-Running the jar file
-- java -jar classes/Parade.jar
-
-Using Gradle to run
-- gradle run
+Gradle to run the project
+- ./gradlew run or Gradle run
