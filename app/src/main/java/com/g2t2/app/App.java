@@ -27,7 +27,9 @@ import javafx.stage.Stage;
 
 // }
 
-// Comment this if we are doing GUI
+/**
+ * Main function in a console application
+ */
 public class App {
     public static void main(String[] args) {
         System.out.println("Hello world! This is G2T2 Parade!");

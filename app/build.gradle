@@ -33,6 +33,10 @@ application {
     mainClass = 'com.g2t2.app.App'
 }
 
+run {
+    standardInput = System.in
+}
+
 javafx {
     version = "23.0.2"
     modules = [ 'javafx.controls' ]

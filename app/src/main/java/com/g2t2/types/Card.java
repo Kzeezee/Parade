@@ -2,6 +2,10 @@ package com.g2t2.types;
 
 import com.g2t2.enums.CardColour;
 
+/**
+ * Card class, modelling a singular Parade card.
+ * @author Oliver
+ */
 public class Card {
     private int value;
     private CardColour colour;
