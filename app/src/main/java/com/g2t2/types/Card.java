@@ -10,6 +10,12 @@ public class Card {
     private int value;
     private CardColour colour;
 
+    // added to create new cards - ben
+    public Card(int value, CardColour colour) {
+        this.value = value;
+        this.colour = colour;
+    }
+
     public int getValue() {
         return value;
     }
