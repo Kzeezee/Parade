@@ -26,4 +26,12 @@ public class CardDeck {
         return deck;
     } 
 
+    public Card drawCard() {
+        // Math.random() generates a random double between 0.0 (inclusive) and 1.0 (exclusive)
+        int randomNumber = (int) (Math.random() * deck.size()); 
+        Card drawnCard = deck.get(randomNumber);
+        deck.remove(randomNumber);
+        return drawnCard;
+    }
+
 }
