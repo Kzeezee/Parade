@@ -34,4 +34,8 @@ public class CardDeck {
         return drawnCard;
     }
 
+    public boolean isEmpty() {
+        return deck.size() == 0;
+    }
+
 }

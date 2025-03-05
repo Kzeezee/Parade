@@ -1,5 +1,10 @@
 package com.g2t2.util;
 
+import java.util.*;
+
+import com.g2t2.enums.*;
+import com.g2t2.types.*;
+
 /**
  * Static only class to declare constants.
  * @author Oliver
@@ -11,4 +16,7 @@ public class Constants {
     public static final String DIVIDER = "==================================================";
 
     // Constants
+    public static final List<CardColour> cardColours = List.of(
+        CardColour.RED, CardColour.BLUE, CardColour.PURPLE, 
+        CardColour.GREEN, CardColour.GREY, CardColour.ORANGE);
 }

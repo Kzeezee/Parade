@@ -29,5 +29,8 @@ public class Card {
         this.colour = colour;
     }
     
+    public String toString() {
+        return String.format("Card[value=%d, colour=%s]", value, colour);
+    }
     
 }
