@@ -28,10 +28,12 @@ public class GamePlay {
         displayCollections();
         displayParade();
         System.out.println(Constants.DIVIDER);
+        System.out.println("Number of Cards Left in the Deck: " + ParadeBoard.getDECK().getCardsInDeck().size());
+        System.out.println(Constants.DIVIDER);
         
         System.out.println("Currently, it is player " + player.getName() + "(" + player.getPlayerId() + ") turn.");
         displayHandCards(player);
-        
+
         Card chosenCard = placeCardInToTheParade(player);
         ArrayList<Card> cardsCollected = adjustParadeBoard(chosenCard);
         addToCollection(cardsCollected, player);
@@ -115,7 +117,7 @@ public class GamePlay {
     }
 
     private static boolean isCollectable(Card input, Card inParade) {
-        if (input.getColour().equals(input.getColour())) {
+        if (input.getColour().equals(inParade.getColour())) {
             return true;
         }
 
