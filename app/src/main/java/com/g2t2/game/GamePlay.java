@@ -29,20 +29,21 @@ public class GamePlay {
         displayParade();
         System.out.println(Constants.DIVIDER);
         
-        System.out.println("Currently, it is player " + player.getName() + " (" + player.getPlayerId() + ") turn.");
+        System.out.println("Currently, it is player " + player.getName() + "(" + player.getPlayerId() + ") turn.");
         displayHandCards(player);
+        
         Card chosenCard = placeCardInToTheParade(player);
         ArrayList<Card> cardsCollected = adjustParadeBoard(chosenCard);
         addToCollection(cardsCollected, player);
         player.drawCard(ParadeBoard.getDECK());
 
     }
-    
+
     // show collections of all players
     private static void displayCollections() {
         for (Player p : ParadeBoard.getPlayers()) {
-            System.out.println("--CARDS IN " + p.getName() + " (" + p.getPlayerId() + ") COLLECTION--");
-            for (int i = 0; i < p.getCardsInCollection(); i++) {
+            System.out.println("--CARDS IN " + p.getName() + "(" + p.getPlayerId() + ") COLLECTION--");
+            for (int i = 0; i < p.getCardsInCollection().size(); i++) {
                 System.out.println((i+1) + ". " + p.getCardsInCollection().get(i));
             }
             System.out.println(Constants.DIVIDER);
