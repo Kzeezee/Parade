@@ -1,6 +1,7 @@
 package com.g2t2.game;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import com.g2t2.util.StateFlags;
@@ -62,13 +63,17 @@ public class GameInit {
             try {
                 System.out.println("How many players do you want to play with?");
                 System.out.print("Enter the number of players (2 to 6): ");
-                numOfPlayers = Integer.parseInt(sc.nextLine());
+                numOfPlayers = sc.nextInt();
                 if (numOfPlayers < 2 || numOfPlayers > 6) {
-                    throw new IllegalArgumentException();
+                    throw new IllegalArgumentException("A minimum of 2 players and a maximum of 6 players are allowed. Please enter a number between 2 to 6.");
                 }
                 break;
+            } catch (InputMismatchException e) {
+                System.out.println("Please enter a number");
+                System.out.println();
+                sc.nextLine();
             } catch (IllegalArgumentException e) {
-                System.out.println("A minimum of 2 players and a maximum of 6 players are allowed. Please enter a number between 2 to 6.");
+                System.out.println(e.getMessage());
                 System.out.println();
             }
         }
@@ -88,11 +93,11 @@ public class GameInit {
                     System.out.print("Enter the name of player " + i + ": ");
                     String name = sc.nextLine();
                     if (name.equals("")) {
-                        throw new IllegalArgumentException("Please enter an appropriate name.");
+                        throw new InputMismatchException("Please enter an appropriate name.");
                     }
                     players.add(new Player(name, ParadeBoard.getDECK()));
                     break;
-                } catch (IllegalArgumentException e) {
+                } catch (InputMismatchException e) {
                     System.out.println(e.getMessage());
                     System.out.println();
                 }

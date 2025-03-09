@@ -29,9 +29,9 @@ public class GamePlay {
         displayParade();
         System.out.println(Constants.DIVIDER);
         System.out.println("Number of Cards Left in the Deck: " + ParadeBoard.getDECK().getCardsInDeck().size());
+        System.out.println("Currently, it is player " + player.getName() + "(" + player.getPlayerId() + ") turn.");
         System.out.println(Constants.DIVIDER);
         
-        System.out.println("Currently, it is player " + player.getName() + "(" + player.getPlayerId() + ") turn.");
         displayHandCards(player);
 
         Card chosenCard = placeCardInToTheParade(player);
@@ -79,13 +79,20 @@ public class GamePlay {
                 System.out.println("Which card do you want to place in the Parade?");
                 System.out.print("Choose card number (1 to " + numOfCards + "): ");
                 int chosenCardIndex = sc.nextInt() - 1;
-
-                // TODO - add confirmation on card choice
-
                 chosenCard = player.getCardsOnHand().get(chosenCardIndex);
+
+                // Confirmation on card choice
+                System.out.println("Choosen Card Number - " + (chosenCardIndex + 1));
+                System.out.print("Enter '1' to confirm: ");
+                int confirmation = sc.nextInt();
+                if (confirmation != 1) {
+                    System.out.println();
+                    continue;
+                }
+
                 player.getCardsOnHand().remove(chosenCardIndex);
                 break;
-            } catch (IllegalArgumentException e) {
+            } catch (InputMismatchException e) {
                 System.out.println("Please input a number");
                 System.out.println();
                 sc.nextLine();
