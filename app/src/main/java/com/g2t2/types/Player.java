@@ -28,6 +28,8 @@ public class Player {
         for (int i = 0; i < 5; i++) {
             cardsOnHand.add(deck.drawCard());
         }
+
+        cardsInCollection = new ArrayList<>();
     }
 
     public void drawCard(CardDeck deck) {
