@@ -6,7 +6,7 @@ import com.g2t2.enums.CardColour;
  * Card class, modelling a singular Parade card.
  * @author Oliver
  */
-public class Card {
+public class Card implements Comparable<Card> {
     private int value;
     private CardColour colour;
 
@@ -14,6 +14,16 @@ public class Card {
     public Card(int value, CardColour colour) {
         this.value = value;
         this.colour = colour;
+    }
+
+    // order by colour then value
+    // Colour order: RED, BLUE, PURPLE, GREEN, GREY, ORANGE
+    @Override
+    public int compareTo(Card other) {
+        if (colour.equals(other.colour)) {
+            return value - other.value;
+        }
+        return colour.ordinal() - other.colour.ordinal();
     }
 
     public int getValue() {
