@@ -1,6 +1,5 @@
 package com.g2t2.game;
 
-import com.g2t2.enums.*;
 import com.g2t2.types.*;
 import com.g2t2.util.*;
 
@@ -84,13 +83,15 @@ public class GamePlay {
                 System.out.println("Which card do you want to place in the Parade?");
                 System.out.print("Choose card number (1 to " + numOfCards + "): ");
                 int chosenCardIndex = sc.nextInt() - 1;
+                sc.nextLine(); 
                 chosenCard = player.getCardsOnHand().get(chosenCardIndex);
 
                 // Confirmation on card choice
-                System.out.println("Choosen Card Number - " + (chosenCardIndex + 1));
-                System.out.print("Enter '1' to confirm: ");
-                int confirmation = sc.nextInt();
-                if (confirmation != 1) {
+                System.out.println("Choosen Card Number: " + (chosenCardIndex + 1));
+                System.out.print("Enter 'y' to confirm: ");
+                String confirmation = sc.nextLine();
+
+                if (confirmation.length() > 1 || !Character.isLetter(confirmation.charAt(0)) || Character.toLowerCase(confirmation.charAt(0)) != 'y') {
                     System.out.println();
                     continue;
                 }
@@ -103,6 +104,8 @@ public class GamePlay {
                 sc.nextLine();
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("Please input a card number between (1 to " + numOfCards + ")");
+                System.out.println();
+            } catch (IllegalArgumentException e) {
                 System.out.println();
             }
         }
