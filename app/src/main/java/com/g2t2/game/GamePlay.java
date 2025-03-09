@@ -15,7 +15,9 @@ public class GamePlay {
     public static void startGame() {
         // finding a random person to start the game
         int randomNumber = (int) (Math.random() * ParadeBoard.getPlayers().size());
-        while (!ScoreCalculation.meetsGameEndCondition(ParadeBoard.getPlayers().get(randomNumber), ParadeBoard.getDECK())) { // change endGame to check all players first, because the player might reach endGame condition after the round
+        while (!ScoreCalculation.meetsGameEndCondition(ParadeBoard.getPlayers().get(randomNumber), ParadeBoard.getDECK())) {
+            // TODO - change endGame to check all players first, because the player might reach endGame condition after the round
+            
             playTurn(ParadeBoard.getPlayers().get(randomNumber));
             randomNumber = (randomNumber + 1) % ParadeBoard.getPlayers().size();
         }
