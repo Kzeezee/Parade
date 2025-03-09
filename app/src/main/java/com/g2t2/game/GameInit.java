@@ -43,7 +43,6 @@ public class GameInit {
             // for (Card c : ParadeBoard.getParade()) {
             //     System.out.println("Colour = " + c.getColour() + "| Value = " + c.getValue());
             // }
-
         }
     }
 
@@ -54,12 +53,10 @@ public class GameInit {
     private static void displayConsoleGameOptions() {
         // Allow user to configure players, difficulty?
 
+        /* For local option */ 
         // - ben
         Scanner sc = new Scanner(System.in);
         numOfPlayers = 0;
-
-        // For local option
-
         // Number of Players
         while (true) {
             try {

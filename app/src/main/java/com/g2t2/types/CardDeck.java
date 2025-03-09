@@ -15,6 +15,7 @@ public class CardDeck {
 
     public CardDeck() {
         deck = new ArrayList<>();
+        // initalising all the cards in the deck
         for (int i = 0; i < 11; i++) {
             for (CardColour colour : CardColour.values()) {
                 deck.add(new Card(i, colour));
@@ -22,7 +23,7 @@ public class CardDeck {
         }   
     }
 
-    public ArrayList<Card> getDeck() {
+    public ArrayList<Card> getCardsInDeck() {
         return deck;
     } 
 
