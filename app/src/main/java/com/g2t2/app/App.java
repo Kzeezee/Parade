@@ -1,7 +1,6 @@
 package com.g2t2.app;
 
-import com.g2t2.game.GamePlay;
-import com.g2t2.game.StartMenu;
+import com.g2t2.game.*;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
