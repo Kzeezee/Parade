@@ -93,7 +93,7 @@ public class GamePlay {
                 System.out.print("Enter 'y' to confirm: ");
                 String confirmation = sc.nextLine();
 
-                if (confirmation.length() > 1 || !Character.isLetter(confirmation.charAt(0)) || Character.toLowerCase(confirmation.charAt(0)) != 'y') {
+                if (confirmation.length() != 1 || !Character.isLetter(confirmation.charAt(0)) || Character.toLowerCase(confirmation.charAt(0)) != 'y') {
                     System.out.println();
                     continue;
                 }
