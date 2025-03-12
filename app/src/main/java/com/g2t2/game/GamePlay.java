@@ -23,21 +23,67 @@ public class GamePlay {
             previousPlayer = randomNumber;
             randomNumber = (randomNumber + 1) % ParadeBoard.getPlayers().size();
         }
-        
+        //started implementing endgame logic - Easan
 
+        // ensure no cards are drawn in final round
         draw = false;
+
+        System.out.println(Constants.DIVIDER);
+        System.out.println("Endgame condition met. Entering final round.");
+        System.out.println(Constants.DIVIDER);
+
+        // ensures message is seen before console is cleared in the playTurn function
+        try {
+            Thread.sleep(5000); // Pause for 5 seconds before clearing
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         // Ensure all players get one last turn
         for (int i = 0; i < ParadeBoard.getPlayers().size(); i++) {
             int playerIndex = (randomNumber + i) % ParadeBoard.getPlayers().size();
             playTurn(ParadeBoard.getPlayers().get(playerIndex), draw);
         }
 
+        System.out.println(Constants.DIVIDER);
+        System.out.println("Choose 2 cards for your collection");
+        System.out.println(Constants.DIVIDER);
 
+        // ensures message is seen before console is cleared in the chooseTwo function
+        try {
+            Thread.sleep(5000); // Pause for 5 seconds before clearing
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Choose 2 cards for the collection
+        for (int i = 0; i < ParadeBoard.getPlayers().size(); i++) {
+            int playerIndex = (randomNumber + i) % ParadeBoard.getPlayers().size();
+            chooseTwo(ParadeBoard.getPlayers().get(playerIndex));
+        }
+    }
+
+   /**
+    * Method for choosing 2 cards to keep for scoring
+    * @author Easan
+    */
+    private static void chooseTwo(Player player){
+        // clear the console
+        Utility.clearConsoleScreen();
+        displayCollections();
+
+        System.out.println(Constants.DIVIDER);
+        System.out.println("Currently, it is player " + player.getName() + "(" + player.getPlayerId() + ") turn.");
+        System.out.println(Constants.DIVIDER);
+
+        displayHandCards(player);
+        ArrayList<Card> cardsCollected = placeCardInToCollection(player);
+        addToCollection(cardsCollected, player);
     }
 
     private static void playTurn(Player player, boolean draw) {
         // clear the console
-        //Utility.clearConsoleScreen();
+        Utility.clearConsoleScreen();
 
         displayCollections();
         displayParade();
@@ -101,7 +147,7 @@ public class GamePlay {
                 chosenCard = player.getCardsOnHand().get(chosenCardIndex);
 
                 // Confirmation on card choice
-                System.out.println("Choosen Card Number: " + (chosenCardIndex + 1));
+                System.out.println("Chosen Card Number: " + (chosenCardIndex + 1));
                 System.out.print("Enter 'y' to confirm: ");
                 String confirmation = sc.nextLine();
 
@@ -124,6 +170,55 @@ public class GamePlay {
             }
         }
         return chosenCard;
+    }
+
+  /**
+    * Method for updating collection after final round
+    * @author Easan
+    */
+    private static ArrayList<Card> placeCardInToCollection(Player player) {
+        Scanner sc = new Scanner(System.in);
+        int numOfCards = player.getCardsOnHand().size();
+        Card chosenCard = null;
+        ArrayList<Card> intoCollection = new ArrayList<>();
+        for (int i = 0; i < 2; i++){
+            while (true) {
+                try {
+                    if (i == 0){
+                        System.out.println("Which is the first card you want to place in your collection?");
+                    } else {
+                        System.out.println("Which is the second card you want to place in your collection?");
+                    }
+                    System.out.print("Choose card number (1 to " + numOfCards + "): ");
+                    int chosenCardIndex = sc.nextInt() - 1;
+                    sc.nextLine(); 
+                    chosenCard = player.getCardsOnHand().get(chosenCardIndex);
+
+                    // Confirmation on card choice
+                    System.out.println("Chosen Card Number: " + (chosenCardIndex + 1));
+                    System.out.print("Enter 'y' to confirm: ");
+                    String confirmation = sc.nextLine();
+
+                    if (confirmation.length() != 1 || !Character.isLetter(confirmation.charAt(0)) || Character.toLowerCase(confirmation.charAt(0)) != 'y') {
+                        System.out.println();
+                        continue;
+                    }
+                    intoCollection.add(chosenCard);
+                    player.getCardsOnHand().remove(chosenCardIndex);
+                    break;
+                } catch (InputMismatchException e) {
+                    System.out.println("Please input a number");
+                    System.out.println();
+                    sc.nextLine();
+                } catch (IndexOutOfBoundsException e) {
+                    System.out.println("Please input a card number between (1 to " + numOfCards + ")");
+                    System.out.println();
+                } catch (IllegalArgumentException e) {
+                    System.out.println();
+                }
+            }
+        }
+        return intoCollection;
     }
     
     // returns the cards to be added to the player's collection
