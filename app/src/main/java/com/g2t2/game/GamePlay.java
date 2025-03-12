@@ -15,19 +15,29 @@ public class GamePlay {
         // finding a random person to start the game
         int randomNumber = (int) (Math.random() * ParadeBoard.getPlayers().size());
         int previousPlayer = randomNumber;
+        boolean draw = true;
 
         // checks the previous player because they are the one that might have a complete collection (ALL COLOURS)
         while (!ScoreCalculation.meetsGameEndCondition(ParadeBoard.getPlayers().get(previousPlayer), ParadeBoard.getDECK())) {
-            
-            playTurn(ParadeBoard.getPlayers().get(randomNumber));
+            playTurn(ParadeBoard.getPlayers().get(randomNumber), draw);
             previousPlayer = randomNumber;
             randomNumber = (randomNumber + 1) % ParadeBoard.getPlayers().size();
         }
+        
+
+        draw = false;
+        // Ensure all players get one last turn
+        for (int i = 0; i < ParadeBoard.getPlayers().size(); i++) {
+            int playerIndex = (randomNumber + i) % ParadeBoard.getPlayers().size();
+            playTurn(ParadeBoard.getPlayers().get(playerIndex), draw);
+        }
+
+
     }
 
-    private static void playTurn(Player player) {
+    private static void playTurn(Player player, boolean draw) {
         // clear the console
-        Utility.clearConsoleScreen();
+        //Utility.clearConsoleScreen();
 
         displayCollections();
         displayParade();
@@ -41,7 +51,9 @@ public class GamePlay {
         Card chosenCard = placeCardInToTheParade(player);
         ArrayList<Card> cardsCollected = adjustParadeBoard(chosenCard);
         addToCollection(cardsCollected, player);
-        player.drawCard(ParadeBoard.getDECK());
+        if (draw){
+            player.drawCard(ParadeBoard.getDECK());
+        }
 
     }
 
