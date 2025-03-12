@@ -61,6 +61,15 @@ public class GamePlay {
             int playerIndex = (randomNumber + i) % ParadeBoard.getPlayers().size();
             chooseTwo(ParadeBoard.getPlayers().get(playerIndex));
         }
+        
+        //@author chue
+    //     Compute final scores and determine the winner
+    // Map<Player, Integer> finalScores = ScoreCalculation.computeScore(ParadeBoard.getPlayers());
+    // Player winner = WinnerCalculation.findWinner(finalScores);
+
+    // System.out.println(Constants.DIVIDER);
+    // System.out.println("The winner is " + winner.getName() + " with a score of " + finalScores.get(winner) + "!");
+    // System.out.println(Constants.DIVIDER);
     }
 
    /**
