@@ -15,18 +15,18 @@ public class GamePlay {
         // finding a random person to start the game
         int currentPlayer = (int) (Math.random() * ParadeBoard.getPlayers().size());
         int previousPlayer = currentPlayer;
-        boolean draw = true;
+        boolean needToDraw = true;
 
         // checks the previous player because they are the one that might have a complete collection (ALL COLOURS)
         while (!ScoreCalculation.meetsGameEndCondition(ParadeBoard.getPlayers().get(previousPlayer), ParadeBoard.getDECK())) {
-            playTurn(ParadeBoard.getPlayers().get(currentPlayer), draw);
+            playTurn(ParadeBoard.getPlayers().get(currentPlayer), needToDraw);
             previousPlayer = currentPlayer;
             currentPlayer = (currentPlayer + 1) % ParadeBoard.getPlayers().size();
         }
         //started implementing endgame logic - Easan
 
         // ensure no cards are drawn in final round
-        draw = false;
+        needToDraw = false;
 
         System.out.println(Constants.DIVIDER);
         System.out.println("Endgame condition met. Entering final round.");
@@ -42,7 +42,7 @@ public class GamePlay {
         // Ensure all players get one last turn
         for (int i = 0; i < ParadeBoard.getPlayers().size(); i++) {
             int playerIndex = (currentPlayer + i) % ParadeBoard.getPlayers().size();
-            playTurn(ParadeBoard.getPlayers().get(playerIndex), draw);
+            playTurn(ParadeBoard.getPlayers().get(playerIndex), needToDraw);
         }
 
         System.out.println(Constants.DIVIDER);
@@ -82,9 +82,7 @@ public class GamePlay {
         displayCollections();
 
         System.out.println(Constants.DIVIDER);
-        System.out.println("Currently, it is player " + player.getName() + "(" + player.getPlayerId() + ") turn.");
-        System.out.println(Constants.DIVIDER);
-
+        displayCurrentPlayer(player);
         displayHandCards(player);
 
         
@@ -98,26 +96,36 @@ public class GamePlay {
         addToCollection(collection, player);
     }
 
-    private static void playTurn(Player player, boolean draw) {
+    private static void playTurn(Player player, boolean needToDraw) {
         // clear the console
         Utility.clearConsoleScreen();
 
         displayCollections();
         displayParade();
-        System.out.println(Constants.DIVIDER);
-        System.out.println("Number of Cards Left in the Deck: " + ParadeBoard.getDECK().getCardsInDeck().size());
-        System.out.println("Currently, it is player " + player.getName() + "(" + player.getPlayerId() + ") turn.");
-        System.out.println(Constants.DIVIDER);
+
+        if (needToDraw) {
+            displayNumOfCards();
+        }
         
+        displayCurrentPlayer(player);
         displayHandCards(player);
 
         Card chosenCard = placeCard(player, "Which card do you want to place in the Parade?");
         ArrayList<Card> cardsCollected = adjustParadeBoard(chosenCard);
         addToCollection(cardsCollected, player);
-        if (draw){
+        if (needToDraw){
             player.drawCard(ParadeBoard.getDECK());
         }
+    }
 
+    private static void displayNumOfCards() {
+        System.out.println("Number of Cards Left in the Deck: " + ParadeBoard.getDECK().getCardsInDeck().size());
+        System.out.println(Constants.DIVIDER);
+    }
+
+    private static void displayCurrentPlayer(Player player) {
+        System.out.println("Currently, it is player " + player.getName() + "(" + player.getPlayerId() + ") turn.");
+        System.out.println(Constants.DIVIDER);
     }
 
     // show collections of all players
@@ -139,6 +147,7 @@ public class GamePlay {
         for (int i = 0; i < ParadeBoard.getParade().size(); i++) {
             System.out.println((i+1) + ". " + ParadeBoard.getParade().get(i));
         }
+        System.out.println(Constants.DIVIDER);
     }
 
     // show the player what card he has in his hand
