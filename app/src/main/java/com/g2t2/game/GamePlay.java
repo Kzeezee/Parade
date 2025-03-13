@@ -76,7 +76,7 @@ public class GamePlay {
     * Method for choosing 2 cards to keep for scoring
     * @author Easan
     */
-    private static void chooseTwo(Player player){
+    private static void chooseTwo(Player player) {
         // clear the console
         Utility.clearConsoleScreen();
         displayCollections();
@@ -86,8 +86,16 @@ public class GamePlay {
         System.out.println(Constants.DIVIDER);
 
         displayHandCards(player);
-        ArrayList<Card> cardsCollected = placeCardInToCollection(player);
-        addToCollection(cardsCollected, player);
+
+        
+        ArrayList<Card> collection = new ArrayList<>();
+        Card cardsCollected = placeCard(player, "Which is the first card you want to place in your collection?");
+        collection.add(cardsCollected);
+
+        Utility.clearConsoleScreen();
+        cardsCollected = placeCard(player, "Which is the second card you want to place in your collection?");
+        collection.add(cardsCollected);
+        addToCollection(collection, player);
     }
 
     private static void playTurn(Player player, boolean draw) {
@@ -103,7 +111,7 @@ public class GamePlay {
         
         displayHandCards(player);
 
-        Card chosenCard = placeCardInToTheParade(player);
+        Card chosenCard = placeCard(player, "Which card do you want to place in the Parade?");
         ArrayList<Card> cardsCollected = adjustParadeBoard(chosenCard);
         addToCollection(cardsCollected, player);
         if (draw){
@@ -143,13 +151,13 @@ public class GamePlay {
         System.out.println(Constants.DIVIDER);
     }
 
-    private static Card placeCardInToTheParade(Player player) {
+    private static Card placeCard(Player player, String msg) {
         Scanner sc = new Scanner(System.in);
         int numOfCards = player.getCardsOnHand().size();
         Card chosenCard = null;
         while (true) {
             try {
-                System.out.println("Which card do you want to place in the Parade?");
+                System.out.println(msg);
                 System.out.print("Choose card number (1 to " + numOfCards + "): ");
                 int chosenCardIndex = sc.nextInt() - 1;
                 sc.nextLine(); 
@@ -179,55 +187,6 @@ public class GamePlay {
             }
         }
         return chosenCard;
-    }
-
-  /**
-    * Method for updating collection after final round
-    * @author Easan
-    */
-    private static ArrayList<Card> placeCardInToCollection(Player player) {
-        Scanner sc = new Scanner(System.in);
-        int numOfCards = player.getCardsOnHand().size();
-        Card chosenCard = null;
-        ArrayList<Card> intoCollection = new ArrayList<>();
-        for (int i = 0; i < 2; i++){
-            while (true) {
-                try {
-                    if (i == 0){
-                        System.out.println("Which is the first card you want to place in your collection?");
-                    } else {
-                        System.out.println("Which is the second card you want to place in your collection?");
-                    }
-                    System.out.print("Choose card number (1 to " + numOfCards + "): ");
-                    int chosenCardIndex = sc.nextInt() - 1;
-                    sc.nextLine(); 
-                    chosenCard = player.getCardsOnHand().get(chosenCardIndex);
-
-                    // Confirmation on card choice
-                    System.out.println("Chosen Card Number: " + (chosenCardIndex + 1));
-                    System.out.print("Enter 'y' to confirm: ");
-                    String confirmation = sc.nextLine();
-
-                    if (confirmation.length() != 1 || !Character.isLetter(confirmation.charAt(0)) || Character.toLowerCase(confirmation.charAt(0)) != 'y') {
-                        System.out.println();
-                        continue;
-                    }
-                    intoCollection.add(chosenCard);
-                    player.getCardsOnHand().remove(chosenCardIndex);
-                    break;
-                } catch (InputMismatchException e) {
-                    System.out.println("Please input a number");
-                    System.out.println();
-                    sc.nextLine();
-                } catch (IndexOutOfBoundsException e) {
-                    System.out.println("Please input a card number between (1 to " + numOfCards + ")");
-                    System.out.println();
-                } catch (IllegalArgumentException e) {
-                    System.out.println();
-                }
-            }
-        }
-        return intoCollection;
     }
     
     // returns the cards to be added to the player's collection
