@@ -13,15 +13,15 @@ public class GamePlay {
  
     public static void startGame() {
         // finding a random person to start the game
-        int randomNumber = (int) (Math.random() * ParadeBoard.getPlayers().size());
-        int previousPlayer = randomNumber;
+        int currentPlayer = (int) (Math.random() * ParadeBoard.getPlayers().size());
+        int previousPlayer = currentPlayer;
         boolean draw = true;
 
         // checks the previous player because they are the one that might have a complete collection (ALL COLOURS)
         while (!ScoreCalculation.meetsGameEndCondition(ParadeBoard.getPlayers().get(previousPlayer), ParadeBoard.getDECK())) {
-            playTurn(ParadeBoard.getPlayers().get(randomNumber), draw);
-            previousPlayer = randomNumber;
-            randomNumber = (randomNumber + 1) % ParadeBoard.getPlayers().size();
+            playTurn(ParadeBoard.getPlayers().get(currentPlayer), draw);
+            previousPlayer = currentPlayer;
+            currentPlayer = (currentPlayer + 1) % ParadeBoard.getPlayers().size();
         }
         //started implementing endgame logic - Easan
 
@@ -41,7 +41,7 @@ public class GamePlay {
 
         // Ensure all players get one last turn
         for (int i = 0; i < ParadeBoard.getPlayers().size(); i++) {
-            int playerIndex = (randomNumber + i) % ParadeBoard.getPlayers().size();
+            int playerIndex = (currentPlayer + i) % ParadeBoard.getPlayers().size();
             playTurn(ParadeBoard.getPlayers().get(playerIndex), draw);
         }
 
@@ -58,7 +58,7 @@ public class GamePlay {
 
         // Choose 2 cards for the collection
         for (int i = 0; i < ParadeBoard.getPlayers().size(); i++) {
-            int playerIndex = (randomNumber + i) % ParadeBoard.getPlayers().size();
+            int playerIndex = (currentPlayer + i) % ParadeBoard.getPlayers().size();
             chooseTwo(ParadeBoard.getPlayers().get(playerIndex));
         }
         
