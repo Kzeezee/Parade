@@ -7,125 +7,50 @@ import java.util.*;
 
 /**
  * Class managing all the gamePlay
+ * 
  * @author ben
  */
 public class GamePlay {
- 
+
     public static void startGame() {
         // finding a random person to start the game
         int currentPlayer = (int) (Math.random() * ParadeBoard.getPlayers().size());
         int previousPlayer = currentPlayer;
-        boolean needToDraw = true;
 
         // checks the previous player because they are the one that might have a complete collection (ALL COLOURS)
         while (!ScoreCalculation.meetsGameEndCondition(ParadeBoard.getPlayers().get(previousPlayer), ParadeBoard.getDECK())) {
-            playTurn(ParadeBoard.getPlayers().get(currentPlayer), needToDraw);
+            
+            playTurn(ParadeBoard.getPlayers().get(currentPlayer), false);
             previousPlayer = currentPlayer;
             currentPlayer = (currentPlayer + 1) % ParadeBoard.getPlayers().size();
         }
-        //started implementing endgame logic - Easan
-
-        // ensure no cards are drawn in final round
-        needToDraw = false;
-
-        System.out.println(Constants.DIVIDER);
-        System.out.println("Endgame condition met. Entering final round.");
-        System.out.println(Constants.DIVIDER);
-
-        // ensures message is seen before console is cleared in the playTurn function
-        try {
-            Thread.sleep(5000); // Pause for 5 seconds before clearing
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // Ensure all players get one last turn
-        for (int i = 0; i < ParadeBoard.getPlayers().size(); i++) {
-            int playerIndex = (currentPlayer + i) % ParadeBoard.getPlayers().size();
-            playTurn(ParadeBoard.getPlayers().get(playerIndex), needToDraw);
-        }
-
-        System.out.println(Constants.DIVIDER);
-        System.out.println("Choose 2 cards for your collection");
-        System.out.println(Constants.DIVIDER);
-
-        // ensures message is seen before console is cleared in the chooseTwo function
-        try {
-            Thread.sleep(5000); // Pause for 5 seconds before clearing
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // Choose 2 cards for the collection
-        for (int i = 0; i < ParadeBoard.getPlayers().size(); i++) {
-            int playerIndex = (currentPlayer + i) % ParadeBoard.getPlayers().size();
-            chooseTwo(ParadeBoard.getPlayers().get(playerIndex));
-        }
-        
-        //@author chue
-    //     Compute final scores and determine the winner
-    // Map<Player, Integer> finalScores = ScoreCalculation.computeScore(ParadeBoard.getPlayers());
-    // Player winner = WinnerCalculation.findWinner(finalScores);
-
-    // System.out.println(Constants.DIVIDER);
-    // System.out.println("The winner is " + winner.getName() + " with a score of " + finalScores.get(winner) + "!");
-    // System.out.println(Constants.DIVIDER);
     }
 
-   /**
-    * Method for choosing 2 cards to keep for scoring
-    * @author Easan
-    */
-    private static void chooseTwo(Player player) {
-        // clear the console
-        Utility.clearConsoleScreen();
-        displayCollections();
-
-        System.out.println(Constants.DIVIDER);
-        displayCurrentPlayer(player);
-        displayHandCards(player);
-
-        
-        ArrayList<Card> collection = new ArrayList<>();
-        Card cardsCollected = placeCard(player, "Which is the first card you want to place in your collection?");
-        collection.add(cardsCollected);
-
-        Utility.clearConsoleScreen();
-        cardsCollected = placeCard(player, "Which is the second card you want to place in your collection?");
-        collection.add(cardsCollected);
-        addToCollection(collection, player);
-    }
-
-    private static void playTurn(Player player, boolean needToDraw) {
+    private static void playTurn(Player player, boolean isLastRound) {
         // clear the console
         Utility.clearConsoleScreen();
 
         displayCollections();
         displayParade();
-
-        if (needToDraw) {
-            displayNumOfCards();
+        System.out.println(Constants.DIVIDER);
+        System.out.println("Number of Cards Left in the Deck: " + ParadeBoard.getDECK().getCardsInDeck().size());
+        System.out.println("Currently, it is player " + player.getName() + "(" + player.getPlayerId() + ") turn.");
+        if (isLastRound) {
+            System.out.println("This is the last round of Parade");
         }
-        
-        displayCurrentPlayer(player);
+        System.out.println(Constants.DIVIDER);
+
         displayHandCards(player);
 
-        Card chosenCard = placeCard(player, "Which card do you want to place in the Parade?");
+        String prompt = String.format("Which card do you want to place in the Parade?%n");
+        Card chosenCard = promptForCard(prompt, player);
+        player.getCardsOnHand().remove(chosenCard);
+
         ArrayList<Card> cardsCollected = adjustParadeBoard(chosenCard);
         addToCollection(cardsCollected, player);
-        if (needToDraw){
+        if (!isLastRound) {
             player.drawCard(ParadeBoard.getDECK());
         }
-    }
-
-    private static void displayNumOfCards() {
-        System.out.println("Number of Cards Left in the Deck: " + ParadeBoard.getDECK().getCardsInDeck().size());
-        System.out.println(Constants.DIVIDER);
-    }
-
-    private static void displayCurrentPlayer(Player player) {
-        System.out.println("Currently, it is player " + player.getName() + "(" + player.getPlayerId() + ") turn.");
-        System.out.println(Constants.DIVIDER);
     }
 
     // show collections of all players
@@ -134,7 +59,7 @@ public class GamePlay {
             System.out.println("--CARDS IN " + p.getName() + "(" + p.getPlayerId() + ") COLLECTION--");
             Collections.sort(p.getCardsInCollection());
             for (int i = 0; i < p.getCardsInCollection().size(); i++) {
-                System.out.println((i+1) + ". " + p.getCardsInCollection().get(i));
+                System.out.println((i + 1) + ". " + p.getCardsInCollection().get(i));
             }
             System.out.println(Constants.DIVIDER);
         }
@@ -145,7 +70,7 @@ public class GamePlay {
         System.out.println("--PARADE COLLECTION--");
         System.out.println("-Cards at the top are the furthest from you-");
         for (int i = 0; i < ParadeBoard.getParade().size(); i++) {
-            System.out.println((i+1) + ". " + ParadeBoard.getParade().get(i));
+            System.out.println((i + 1) + ". " + ParadeBoard.getParade().get(i));
         }
         System.out.println(Constants.DIVIDER);
     }
@@ -155,34 +80,33 @@ public class GamePlay {
         System.out.println("--CARDS IN YOUR HAND--");
         Collections.sort(player.getCardsOnHand());
         for (int i = 0; i < player.getCardsOnHand().size(); i++) {
-            System.out.println((i+1) + ". " + player.getCardsOnHand().get(i));
+            System.out.println((i + 1) + ". " + player.getCardsOnHand().get(i));
         }
         System.out.println(Constants.DIVIDER);
     }
 
-    private static Card placeCard(Player player, String msg) {
+    // print out the prompt string and accordingly ask the player for valid entry
+    private static Card promptForCard(String prompt, Player player) {
+        Card chosenCard = null; 
         Scanner sc = new Scanner(System.in);
         int numOfCards = player.getCardsOnHand().size();
-        Card chosenCard = null;
         while (true) {
             try {
-                System.out.println(msg);
+                System.out.print(prompt);
                 System.out.print("Choose card number (1 to " + numOfCards + "): ");
                 int chosenCardIndex = sc.nextInt() - 1;
-                sc.nextLine(); 
+                sc.nextLine();
                 chosenCard = player.getCardsOnHand().get(chosenCardIndex);
 
                 // Confirmation on card choice
                 System.out.println("Chosen Card Number: " + (chosenCardIndex + 1));
                 System.out.print("Enter 'y' to confirm: ");
                 String confirmation = sc.nextLine();
-
-                if (confirmation.length() != 1 || !Character.isLetter(confirmation.charAt(0)) || Character.toLowerCase(confirmation.charAt(0)) != 'y') {
+                if (confirmation.length() > 1 || !Character.isLetter(confirmation.charAt(0))
+                        || Character.toLowerCase(confirmation.charAt(0)) != 'y') { 
                     System.out.println();
                     continue;
                 }
-
-                player.getCardsOnHand().remove(chosenCardIndex);
                 break;
             } catch (InputMismatchException e) {
                 System.out.println("Please input a number");
@@ -196,8 +120,23 @@ public class GamePlay {
             }
         }
         return chosenCard;
+
     }
-    
+
+    // function to prompt for selected cards and add to the Collections from hand
+    private static void addSelectedCardsToParade(Player player) {
+        ArrayList<Card> cardsSelected = new ArrayList<>();        
+        for (int i = 0; i < 2; i++) {
+            displayHandCards(player);
+            String prompt = String.format("Which card do you want to place in the Parade? You need to choose TWO cards %nCard %d: ", (i + 1));
+            Card selectedCard = promptForCard(prompt, player);
+            player.getCardsOnHand().remove(selectedCard);
+            player.getCardsInCollection().add(selectedCard);
+            cardsSelected.add(selectedCard);
+        }
+        System.out.println(Constants.DIVIDER);
+    }
+
     // returns the cards to be added to the player's collection
     private static ArrayList<Card> adjustParadeBoard(Card inputCard) {
         ArrayList<Card> toCollection = new ArrayList<>();
@@ -234,4 +173,17 @@ public class GamePlay {
             player.getCardsInCollection().add(c);
         }
     }
+
+    private static void displayScores(ArrayList<Player> players) {
+        
+        System.out.println(Constants.DIVIDER);
+        players.stream()
+           .sorted(new PlayerComparator()) // Sort using the comparator
+           .forEachOrdered(player -> {
+               int index = players.indexOf(player) + 1; // Calculate rank 
+               System.out.printf("%d. Player %d, %s, Score: [%d]%n", index, player.getPlayerId(), player.getName(), player.getScore());
+           });
+        System.out.println(Constants.DIVIDER);
+    }
+
 }

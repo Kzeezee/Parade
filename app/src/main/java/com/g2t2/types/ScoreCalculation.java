@@ -66,13 +66,48 @@ public class ScoreCalculation {
         return true;
     }
 
+    // /**
+    //  * Computer the score when the game ends
+    //  *
+    //  * @param players The list of players in the current game
+    //  * @return a HashMap of Player as key and Score (Integer) as value
+    //  */
+    // public static Map<Player, Integer> computeScore(List<Player> players) {
+    //     Map<Player, Integer> scoreMap = new HashMap<>();
+
+    //     List<CardColour> cardColourList = Constants.cardColours;
+
+    //     for (CardColour colour : cardColourList) {
+    //         discardMajorityPiles(players, scoreMap, colour);
+    //     }
+
+    //     for (Player player : players) {
+    //         int score = 0;
+    //         List<Card> cardList = player.getCardsInCollection();
+    //         for (Card card : cardList) {
+    //             System.out.println(card);
+    //             score += card.getValue();
+    //         }
+    //         if (scoreMap.containsKey(player)) {
+    //             scoreMap.put(player, scoreMap.get(player) + score);
+    //         } else {
+    //             scoreMap.put(player, score);
+    //         }
+
+    //         for (Player p : players) {
+    //             System.out.println(p.getName() + " has " + scoreMap.get(p));
+    //         }
+    //     }
+
+    //     return scoreMap;
+    // }
+
     /**
-     * Computer the score when the game ends
+     * Computer the score when the game ends and set the score of each player
      *
      * @param players The list of players in the current game
-     * @return a HashMap of Player as key and Score (Integer) as value
      */
-    public Map<Player, Integer> computeScore(List<Player> players) {
+    public static void computeScore(List<Player> players) {
         Map<Player, Integer> scoreMap = new HashMap<>();
 
         List<CardColour> cardColourList = Constants.cardColours;
@@ -93,13 +128,11 @@ public class ScoreCalculation {
             } else {
                 scoreMap.put(player, score);
             }
-
-            for (Player p : players) {
-                System.out.println(p.getName() + " has " + scoreMap.get(p));
-            }
         }
 
-        return scoreMap;
+        for (Player player: players) {
+            player.setScore(scoreMap.get(player));
+        }
     }
 
     /**
@@ -111,7 +144,7 @@ public class ScoreCalculation {
      * @param cardColour The colour of the cards we want to deal with
      * 
      */
-    public void discardMajorityPiles(List<Player> players, Map<Player, Integer> scoreMap, CardColour cardColour) {
+    public static void discardMajorityPiles(List<Player> players, Map<Player, Integer> scoreMap, CardColour cardColour) {
         List<Integer> colourCountList = new ArrayList<>();
         for (Player player : players) {
             int count = countCardColour(player.getCardsInCollection(), cardColour);
@@ -120,6 +153,12 @@ public class ScoreCalculation {
         int max = Collections.max(colourCountList);
         if (max == 0) {
             return;
+        }
+        if (players.size() == 2) {
+            int diff = colourCountList.get(0) - colourCountList.get(1);
+            if (Math.abs(diff) < 2) {
+                return;
+            }
         }
         // remove the cards from the player(s) if they have max card number for the colour
         int idx = colourCountList.indexOf(max);
@@ -145,7 +184,7 @@ public class ScoreCalculation {
      * @return the number of cards
      * 
      */
-    public int countCardColour(List<Card> cards, CardColour cardColour) {
+    public static int countCardColour(List<Card> cards, CardColour cardColour) {
         int count = 0;
         for (Card card : cards) {
             if (card.getColour() == cardColour) {
