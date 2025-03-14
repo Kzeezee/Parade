@@ -24,6 +24,34 @@ public class GamePlay {
             previousPlayer = currentPlayer;
             currentPlayer = (currentPlayer + 1) % ParadeBoard.getPlayers().size();
         }
+        // last round of play
+        for (int i = 0; i < ParadeBoard.getPlayers().size(); i++) {
+            playTurn(ParadeBoard.getPlayers().get(currentPlayer), true);
+            currentPlayer = (currentPlayer + 1) % ParadeBoard.getPlayers().size();
+        }
+
+        // choose 2 cards in hand to add to collection
+        for (int i = 0; i < ParadeBoard.getPlayers().size(); i++) {
+            putTwoToCollections(ParadeBoard.getPlayers().get(currentPlayer));
+            currentPlayer = (currentPlayer + 1) % ParadeBoard.getPlayers().size();
+        }
+        ScoreCalculation.computeScore(ParadeBoard.getPlayers());
+        displayScores(ParadeBoard.getPlayers());
+    }
+
+    // player select two cards from hand to collection
+    private static void putTwoToCollections(Player player) {
+        // clear the console
+        Utility.clearConsoleScreen();
+
+        displayCollections();
+        displayParade();
+        System.out.println(Constants.DIVIDER);
+        System.out.println("Currently, it is player " + player.getName() + "(" + player.getPlayerId() + ") turn.");
+        System.out.println("You need to select TWO cards from your hand to add to the collection.");
+        System.out.println(Constants.DIVIDER);
+
+        addSelectedCardsToParade(player);
     }
 
     private static void playTurn(Player player, boolean isLastRound) {
