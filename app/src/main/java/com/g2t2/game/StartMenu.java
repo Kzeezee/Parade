@@ -30,13 +30,15 @@ public class StartMenu {
      * @author Oliver
      */
     private static void consoleStartMenu() {
+        Utility.clearConsoleScreen();
         Scanner sc = new Scanner(System.in);
         int optionChosen = 0;
 
         boolean validOptionSelected = false;
         while (!validOptionSelected) {
             // TODO: Add library to format color codes to console
-            System.out.println("\033[0m" + Constants.DIVIDER);
+            System.out.println(Constants.ANSI_RESET);
+            System.out.println(Constants.BANNER);
             System.out.println(Constants.WELCOMEMESSAGE_STRING);
             System.out.println("Play local (1)");
             System.out.println("Play online (2)");

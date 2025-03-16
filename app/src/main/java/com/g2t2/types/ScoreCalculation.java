@@ -110,7 +110,7 @@ public class ScoreCalculation {
     public static void computeScore(List<Player> players) {
         Map<Player, Integer> scoreMap = new HashMap<>();
 
-        List<CardColour> cardColourList = Constants.cardColours;
+        List<CardColour> cardColourList = Constants.CARD_COLOURS;
 
         for (CardColour colour : cardColourList) {
             discardMajorityPiles(players, scoreMap, colour);
@@ -246,3 +246,4 @@ public class ScoreCalculation {
 
 // javac -d output -cp "main/java" main/java/com/g2t2/types/ScoreCalculation.java
 // java -cp "output:main/java" com.g2t2.types.ScoreCalculation
+// /Users/hswt/Desktop/SMU Documents/Y1T2/CS102 Programming Fundamentals II/ParadeFolder/Parade/app/src/main/java/com/g2t2/types/test.java

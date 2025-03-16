@@ -86,10 +86,11 @@ public class GamePlay {
         for (Player p : ParadeBoard.getPlayers()) {
             System.out.println("--CARDS IN " + p.getName() + "(" + p.getPlayerId() + ") COLLECTION--");
             Collections.sort(p.getCardsInCollection());
-            for (int i = 0; i < p.getCardsInCollection().size(); i++) {
-                System.out.println((i + 1) + ". " + p.getCardsInCollection().get(i));
-            }
-            System.out.println(Constants.DIVIDER);
+            // for (int i = 0; i < p.getCardsInCollection().size(); i++) {
+            //     System.out.println((i + 1) + ". " + p.getCardsInCollection().get(i));
+            // }
+            // System.out.println(Constants.DIVIDER);
+            CardDisplay.displayAllStacks(p.getCardsInCollection());
         }
     }
 
@@ -100,6 +101,7 @@ public class GamePlay {
         for (int i = 0; i < ParadeBoard.getParade().size(); i++) {
             System.out.println((i + 1) + ". " + ParadeBoard.getParade().get(i));
         }
+        CardDisplay.displayCardsSideBySide(ParadeBoard.getParade());
         System.out.println(Constants.DIVIDER);
     }
 
@@ -107,9 +109,10 @@ public class GamePlay {
     private static void displayHandCards(Player player) {
         System.out.println("--CARDS IN YOUR HAND--");
         Collections.sort(player.getCardsOnHand());
-        for (int i = 0; i < player.getCardsOnHand().size(); i++) {
-            System.out.println((i + 1) + ". " + player.getCardsOnHand().get(i));
-        }
+        // for (int i = 0; i < player.getCardsOnHand().size(); i++) {
+        //     System.out.println((i + 1) + ". " + player.getCardsOnHand().get(i));
+        // }
+        CardDisplay.displayCardsSideBySide(player.getCardsOnHand());
         System.out.println(Constants.DIVIDER);
     }
 

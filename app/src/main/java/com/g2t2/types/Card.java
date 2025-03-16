@@ -1,9 +1,11 @@
 package com.g2t2.types;
 
 import com.g2t2.enums.CardColour;
+import com.g2t2.util.Constants;
 
 /**
  * Card class, modelling a singular Parade card.
+ * 
  * @author Oliver
  */
 public class Card implements Comparable<Card> {
@@ -17,7 +19,7 @@ public class Card implements Comparable<Card> {
     }
 
     // order by colour then value
-    // Colour order: RED, BLUE, PURPLE, GREEN, GREY, ORANGE
+    // Colour order: RED, BLUE, PURPLE, GREEN, SEAFOAM, ORANGE
     @Override
     public int compareTo(Card other) {
         if (colour.equals(other.colour)) {
@@ -29,18 +31,23 @@ public class Card implements Comparable<Card> {
     public int getValue() {
         return value;
     }
+
     public void setValue(int value) {
         this.value = value;
     }
+
     public CardColour getColour() {
         return colour;
     }
+
     public void setColour(CardColour colour) {
         this.colour = colour;
     }
-    
+
     public String toString() {
-        return String.format("Card[value=%d, colour=%s]", value, colour);
+        String ansiString = colour.getAnsiCode();
+        return String.format(ansiString + "Card[value=%d, colour=%s]" +
+        Constants.ANSI_RESET, value, colour);
     }
-    
+
 }
