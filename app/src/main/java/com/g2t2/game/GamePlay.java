@@ -85,7 +85,7 @@ public class GamePlay {
     private static void displayCollections() {
         for (Player p : ParadeBoard.getPlayers()) {
             System.out.println("--CARDS IN " + p.getName() + "(" + p.getPlayerId() + ") COLLECTION--");
-            Collections.sort(p.getCardsInCollection());
+            // Collections.sort(p.getCardsInCollection());
             // for (int i = 0; i < p.getCardsInCollection().size(); i++) {
             //     System.out.println((i + 1) + ". " + p.getCardsInCollection().get(i));
             // }
@@ -98,9 +98,9 @@ public class GamePlay {
     private static void displayParade() {
         System.out.println("--PARADE COLLECTION--");
         System.out.println("-Cards at the top are the furthest from you-");
-        for (int i = 0; i < ParadeBoard.getParade().size(); i++) {
-            System.out.println((i + 1) + ". " + ParadeBoard.getParade().get(i));
-        }
+        // for (int i = 0; i < ParadeBoard.getParade().size(); i++) {
+        //     System.out.println((i + 1) + ". " + ParadeBoard.getParade().get(i));
+        // }
         CardDisplay.displayCardsSideBySide(ParadeBoard.getParade());
         System.out.println(Constants.DIVIDER);
     }
@@ -108,7 +108,7 @@ public class GamePlay {
     // show the player what card he has in his hand
     private static void displayHandCards(Player player) {
         System.out.println("--CARDS IN YOUR HAND--");
-        Collections.sort(player.getCardsOnHand());
+        // Collections.sort(player.getCardsOnHand());
         // for (int i = 0; i < player.getCardsOnHand().size(); i++) {
         //     System.out.println((i + 1) + ". " + player.getCardsOnHand().get(i));
         // }

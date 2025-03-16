@@ -27,11 +27,11 @@ public class Constants {
                 "          ░░░░░        ░░░░░   ░░░░░ ░░░░░   ░░░░░ ░░░░░   ░░░░░ ░░░░░░░░░░   ░░░░░░░░░░     " + ANSI_RESET);
     
     public static final List<String> EMOJIS = List.of(
-        "🌹", "💧", "🪷 ", "🪻 ", "🍀", "🍂"
+        "🌹", "💧", "☀️ ", "🪻 ", "🍀", "🕷️ "
     );
 
     // Constants
     public static final List<CardColour> CARD_COLOURS = List.of(
-        CardColour.RED, CardColour.BLUE, CardColour.SEAFOAM, CardColour.PURPLE, 
-        CardColour.GREEN, CardColour.ORANGE);
+        CardColour.RED, CardColour.BLUE, CardColour.YELLOW, CardColour.PURPLE, 
+        CardColour.GREEN, CardColour.BLACK);
 }
