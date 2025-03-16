@@ -60,9 +60,9 @@ public class GameInit {
         Scanner sc = new Scanner(System.in);
         numOfPlayers = 0;
         // Number of Players
+        System.out.println(Constants.BANNER);
         while (true) {
             try {
-                System.out.println(Constants.BANNER);
                 System.out.println("How many players do you want to play with?");
                 System.out.print("Enter the number of players (2 to 6): ");
                 numOfPlayers = sc.nextInt();
