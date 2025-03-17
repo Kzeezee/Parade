@@ -46,7 +46,6 @@ public class GamePlay {
 
         displayCollections();
         displayParade();
-        System.out.println(Constants.DIVIDER);
         System.out.println("Currently, it is player " + player.getName() + "(" + player.getPlayerId() + ") turn.");
         System.out.println("You need to select TWO cards from your hand to add to the collection.");
         System.out.println(Constants.DIVIDER);
@@ -60,7 +59,6 @@ public class GamePlay {
 
         displayCollections();
         displayParade();
-        System.out.println(Constants.DIVIDER);
         System.out.println("Number of Cards Left in the Deck: " + ParadeBoard.getDECK().getCardsInDeck().size());
         System.out.println("Currently, it is player " + player.getName() + "(" + player.getPlayerId() + ") turn.");
         if (isLastRound) {
@@ -97,7 +95,7 @@ public class GamePlay {
     // show the parade collection
     private static void displayParade() {
         System.out.println("--PARADE COLLECTION--");
-        System.out.println("-Cards at the top are the furthest from you-");
+        System.out.println("The front of the Parade starts from the left");
         // for (int i = 0; i < ParadeBoard.getParade().size(); i++) {
         //     System.out.println((i + 1) + ". " + ParadeBoard.getParade().get(i));
         // }
@@ -108,6 +106,7 @@ public class GamePlay {
     // show the player what card he has in his hand
     private static void displayHandCards(Player player) {
         System.out.println("--CARDS IN YOUR HAND--");
+        System.out.println("Each card is numbered, starting from the left, 1");
         // Collections.sort(player.getCardsOnHand());
         // for (int i = 0; i < player.getCardsOnHand().size(); i++) {
         //     System.out.println((i + 1) + ". " + player.getCardsOnHand().get(i));

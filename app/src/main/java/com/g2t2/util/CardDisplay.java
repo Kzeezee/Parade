@@ -19,8 +19,6 @@ public class CardDisplay {
         Map<CardColour, List<Card>> groupedCards = cards.stream()
                 .collect(Collectors.groupingBy(Card::getColour));
 
-        System.out.println(Constants.DIVIDER);
-
         // Convert each stack into a string representation
         List<String> stackLines = groupedCards.entrySet().stream()
                 .map(entry -> getStackAsString(entry.getValue(), entry.getKey()))

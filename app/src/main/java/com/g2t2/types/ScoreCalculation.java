@@ -53,7 +53,7 @@ public class ScoreCalculation {
      * @return {@code true} if the hashMap has at least a card each for all six
      *         colours, else {@code false}
      */
-    public static boolean hasSixColours(Map<CardColour, Integer> cardColourMap) {
+    private static boolean hasSixColours(Map<CardColour, Integer> cardColourMap) {
         Set<CardColour> keys = cardColourMap.keySet();
         if (keys.size() != 6) {
             return false;
@@ -123,11 +123,8 @@ public class ScoreCalculation {
                 System.out.println(card);
                 score += card.getValue();
             }
-            if (scoreMap.containsKey(player)) {
-                scoreMap.put(player, scoreMap.get(player) + score);
-            } else {
-                scoreMap.put(player, score);
-            }
+
+            updateScore(scoreMap, player, score);
         }
 
         for (Player player: players) {
@@ -144,7 +141,7 @@ public class ScoreCalculation {
      * @param cardColour The colour of the cards we want to deal with
      * 
      */
-    public static void discardMajorityPiles(List<Player> players, Map<Player, Integer> scoreMap, CardColour cardColour) {
+    private static void discardMajorityPiles(List<Player> players, Map<Player, Integer> scoreMap, CardColour cardColour) {
         List<Integer> colourCountList = new ArrayList<>();
         for (Player player : players) {
             int count = countCardColour(player.getCardsInCollection(), cardColour);
@@ -160,19 +157,17 @@ public class ScoreCalculation {
                 return;
             }
         }
-        // remove the cards from the player(s) if they have max card number for the colour
+
+        // remove the cards from the player(s) & update score if they have max card number for the colour
         int idx = colourCountList.indexOf(max);
         while (idx >= 0) {
             Player player = players.get(idx);
-            if (scoreMap.containsKey(player)) {
-                scoreMap.put(player, scoreMap.get(player) + 1);
-            } else {
-                scoreMap.put(player, 1);
-            }
+            updateScore(scoreMap, player, colourCountList.get(idx)); // update score based on the number of that cardColour they have
+            player.getCardsInCollection().removeIf(card -> card.getColour() == cardColour);
+
+            // check if there are still anyone else that share the same max score
             colourCountList.set(idx, 0);
-            List<Card> cardsList = player.getCardsInCollection();
-            cardsList.removeIf(card -> card.getColour() == cardColour);
-            idx = colourCountList.indexOf(max);
+            idx = colourCountList.indexOf(max); 
         }
     }
 
@@ -184,7 +179,7 @@ public class ScoreCalculation {
      * @return the number of cards
      * 
      */
-    public static int countCardColour(List<Card> cards, CardColour cardColour) {
+    private static int countCardColour(List<Card> cards, CardColour cardColour) {
         int count = 0;
         for (Card card : cards) {
             if (card.getColour() == cardColour) {
@@ -192,6 +187,14 @@ public class ScoreCalculation {
             }
         }
         return count;
+    }
+
+    private static void updateScore(Map<Player, Integer> scoreMap, Player player, int score) {
+        if (scoreMap.containsKey(player)) {
+            scoreMap.put(player, scoreMap.get(player) + score);
+        } else {
+            scoreMap.put(player, score);
+        }
     }
 
     // Testing compute Score

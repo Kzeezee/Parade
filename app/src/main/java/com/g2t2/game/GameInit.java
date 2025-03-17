@@ -27,24 +27,8 @@ public class GameInit {
             // GUI display options
         } else {
             // Console configuration
-            Utility.clearConsoleScreen();
             displayConsoleGameOptions();
             giveOutTheCards();
-
-            // // Test
-            // System.out.println("--TEST--");
-            // for (Player p : ParadeBoard.getPlayers()) {
-            //     System.out.println(p.getName());
-            //     for (Card c : p.getCardsOnHand()) {
-            //         System.out.println("Colour = " + c.getColour() + "| Value = " + c.getValue());
-            //     }
-            //     System.out.println();
-            // }
-
-            // System.out.println("--PARADE BOARD--");
-            // for (Card c : ParadeBoard.getParade()) {
-            //     System.out.println("Colour = " + c.getColour() + "| Value = " + c.getValue());
-            // }
         }
     }
 
@@ -60,6 +44,7 @@ public class GameInit {
         Scanner sc = new Scanner(System.in);
         numOfPlayers = 0;
         // Number of Players
+        Utility.clearConsoleScreen();
         System.out.println(Constants.BANNER);
         while (true) {
             try {
@@ -86,6 +71,8 @@ public class GameInit {
      * @author ben
      */
     private static void giveOutTheCards() {
+        Utility.clearConsoleScreen();
+        System.out.println(Constants.BANNER);
         Scanner sc = new Scanner(System.in);
         ArrayList<Player> players = new ArrayList<>();
 
