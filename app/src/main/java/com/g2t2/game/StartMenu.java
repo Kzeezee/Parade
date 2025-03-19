@@ -2,9 +2,8 @@ package com.g2t2.game;
 
 import java.util.Scanner;
 
-import com.g2t2.util.Constants;
-import com.g2t2.util.StateFlags;
-import com.g2t2.util.Utility;
+import com.g2t2.enums.CardColour;
+import com.g2t2.util.*;
 
 /**
  * Class handling the main menu of the application
@@ -39,12 +38,14 @@ public class StartMenu {
             // TODO: Add library to format color codes to console
             System.out.println(Constants.ANSI_RESET);
             System.out.println(Constants.BANNER);
+            System.out.println(Constants.DIVIDER);
             System.out.println(Constants.WELCOMEMESSAGE_STRING);
-            System.out.println("Play local (1)");
-            System.out.println("Play online (2)");
-            System.out.println("Exit application (3)");
-            System.out.print("Enter option: ");
+            System.out.println(" 📌 Play local (1)");
+            System.out.println(" 📌 Play online (2)");
+            System.out.println(" 📌 Exit application (3)");
+            System.out.print(Display.colorString(" ⚜ Enter option ➢ "));
             String s = sc.nextLine();
+            System.out.print(Constants.ANSI_RESET);
             try {
                 optionChosen = Integer.parseInt(s);
                 switch (optionChosen) {
@@ -53,15 +54,18 @@ public class StartMenu {
                         validOptionSelected = true;
                         GameInit.displayGameOptions();
                         break;
+                    case 3:
+                        System.out.println(Constants.GOODBYE);
+                        System.exit(0);
                     default:
-                        throw new Exception("Invalid input");
+                        throw new Exception(Display.errorColour(" ❌ Invalid input"));
                 }
             } catch (NumberFormatException e) {
                 Utility.clearConsoleScreen();
-                System.out.println("\033[0;31m" + Constants.GAME_SELECTION_OPTION_ERROR_MSG);
+                System.out.println(Display.errorColour(Constants.GAME_SELECTION_OPTION_ERROR_MSG));
             } catch (Exception e) {
                 Utility.clearConsoleScreen();
-                System.out.println("\033[0;31m" + Constants.GAME_SELECTION_OPTION_ERROR_MSG);
+                System.out.println(Display.errorColour(Constants.GAME_SELECTION_OPTION_ERROR_MSG));
             }
         }
     }

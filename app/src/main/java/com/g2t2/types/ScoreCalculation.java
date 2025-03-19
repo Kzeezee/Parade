@@ -120,7 +120,7 @@ public class ScoreCalculation {
             int score = 0;
             List<Card> cardList = player.getCardsInCollection();
             for (Card card : cardList) {
-                System.out.println(card);
+                // System.out.println(card);
                 score += card.getValue();
             }
 
@@ -196,57 +196,4 @@ public class ScoreCalculation {
             scoreMap.put(player, score);
         }
     }
-
-    // Testing compute Score
-    // public static void main(String[] args) {
-    //     CardDeck testDeck = new CardDeck();
-    //     Player p1 = new Player("p1", testDeck);
-    //     Player p2 = new Player("p2", testDeck);
-
-    //     ArrayList<Card> p1Cards = new ArrayList<>();
-    //     for (int i = 0; i < 5; i++) {
-    //         p1Cards.add(new Card(i, CardColour.RED));
-    //     }
-    //     for (int i = 0; i < 5; i++) {
-    //         p1Cards.add(new Card(i, CardColour.GREEN));
-    //     }
-    //     for (int i = 0; i < 2; i++) {
-    //         p1Cards.add(new Card(i, CardColour.ORANGE));
-    //     }
-    //     for (int i = 1; i < 3; i++) {
-    //         p1Cards.add(new Card(i, CardColour.PURPLE));
-    //     }
-
-    //     ArrayList<Card> p2Cards = new ArrayList<>();
-    //     for (int i = 0; i < 2; i++) {
-    //         p2Cards.add(new Card(i + 5, CardColour.RED));
-    //     }
-    //     for (int i = 1; i < 3; i++) {
-    //         p2Cards.add(new Card(i + 5, CardColour.GREEN));
-    //     }
-    //     for (int i = 0; i < 5; i++) {
-    //         p2Cards.add(new Card(i + 5, CardColour.ORANGE));
-    //     }
-    //     for (int i = 0; i < 5; i++) {
-    //         p2Cards.add(new Card(i + 5, CardColour.PURPLE));
-    //     }
-
-    //     p1.setCardsInCollection(p1Cards);
-    //     p2.setCardsInCollection(p2Cards);
-
-    //     ArrayList<Player> players = new ArrayList<>();
-    //     players.add(p1);
-    //     players.add(p2);
-    //     ScoreCalculation scoreCal = new ScoreCalculation();
-    //     Map<Player, Integer> scoreMap = scoreCal.computeScore(players);
-
-    //     for (Player p : players) {
-    //         System.out.println(p.getName() + " has " + scoreMap.get(p) + "points");
-    //     }
-
-    // }
 }
-
-// javac -d output -cp "main/java" main/java/com/g2t2/types/ScoreCalculation.java
-// java -cp "output:main/java" com.g2t2.types.ScoreCalculation
-// /Users/hswt/Desktop/SMU Documents/Y1T2/CS102 Programming Fundamentals II/ParadeFolder/Parade/app/src/main/java/com/g2t2/types/test.java

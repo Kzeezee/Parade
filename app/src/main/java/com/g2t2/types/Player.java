@@ -65,29 +65,3 @@ public class Player {
     }
 
 }
-
-
-// // testing players in GameInit.java under displayGameOption()
-// CardDeck cd = new CardDeck();
-// Player p1 = new Player("Abby", cd);
-// Player p2 = new Player("Barry", cd);
-// Player p3 = new Player("Casey", cd);
-// Player p4 = new Player("David", cd);
-// ArrayList<Player> players = new ArrayList<>();
-// players.add(p1);
-// players.add(p2);
-// players.add(p3);
-// players.add(p4);
-
-// p3.drawCard(cd);
-
-// System.out.println("-- PRINTING PLAYERS --");
-// System.out.println();
-// for (Player p : players) {
-//     System.out.println("Player: " + p.getName() + ", " + p.getPlayerId());
-//     for (Card c : p.getCardsOnHand()) {
-//         System.out.println("Colour = " + c.getColour() + " || Value = " + c.getValue());
-//     }
-// }
-
-// System.out.println("Number of cards left " + cd.getDeck().size());

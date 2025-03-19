@@ -5,6 +5,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import com.g2t2.util.Constants;
+import com.g2t2.util.Display;
 import com.g2t2.util.StateFlags;
 import com.g2t2.util.Utility;
 import com.g2t2.types.*;
@@ -46,17 +47,18 @@ public class GameInit {
         // Number of Players
         Utility.clearConsoleScreen();
         System.out.println(Constants.BANNER);
+        System.out.println(Constants.DIVIDER);
         while (true) {
             try {
-                System.out.println("How many players do you want to play with?");
-                System.out.print("Enter the number of players (2 to 6): ");
+                System.out.println(" 📌 How many players do you want to play with?");
+                System.out.print(Display.colorString(" ➢ Enter the number of players (2 to 6): "));
                 numOfPlayers = sc.nextInt();
                 if (numOfPlayers < 2 || numOfPlayers > 6) {
-                    throw new IllegalArgumentException("A minimum of 2 players and a maximum of 6 players are allowed. Please enter a number between 2 to 6.");
+                    throw new IllegalArgumentException(Display.errorColour(" ❌ A minimum of 2 players and a maximum of 6 players are allowed. Please enter a number between 2 to 6."));
                 }
                 break;
             } catch (InputMismatchException e) {
-                System.out.println("Please enter a number");
+                System.out.println(Display.errorColour(" ❌ Please enter a number"));
                 System.out.println();
                 sc.nextLine();
             } catch (IllegalArgumentException e) {
@@ -79,10 +81,10 @@ public class GameInit {
         for (int i = 1; i <= numOfPlayers; i++) {
             while (true) {
                 try {
-                    System.out.print("Enter the name of player " + i + ": ");
+                    System.out.print(Display.colorString(" ➢ Enter the name of player " + i + ": "));
                     String name = sc.nextLine();
                     if (name.equals("")) {
-                        throw new InputMismatchException("Please enter an appropriate name.");
+                        throw new InputMismatchException(" 📌 Please enter an appropriate name.");
                     }
                     players.add(new Player(name, ParadeBoard.getDECK()));
                     break;
