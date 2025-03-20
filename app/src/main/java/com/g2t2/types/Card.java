@@ -3,6 +3,8 @@ package com.g2t2.types;
 import com.g2t2.enums.CardColour;
 import com.g2t2.util.Constants;
 
+import java.util.Objects;
+
 /**
  * Card class, modelling a singular Parade card.
  * 
@@ -50,4 +52,8 @@ public class Card implements Comparable<Card> {
         Constants.ANSI_RESET, value, colour);
     }
 
+    // hashCode() since we are using hashMap for score calculation of cards
+    public int hashCode() {
+        return Objects.hash(colour.ordinal(), value);
+    }
 }

@@ -1,12 +1,15 @@
 package com.g2t2.util;
 
 import java.util.*;
-
 import java.util.stream.*;
 
 import com.g2t2.enums.CardColour;
 import com.g2t2.types.*;
 
+/**
+ * A class for displaying the cards and colored texts
+ * @author Shwe
+ */
 public class Display {
 
     // Display all stacks grouped by CardColour with two stacks per row
@@ -150,7 +153,7 @@ public class Display {
             for (String[] card : cardLines) {
                 System.out.print(card[i] + "   "); // Add spacing between cards
             }
-            System.out.println(Constants.ANSI_RESET); // Move to the next line after printing all cards in the row
+            System.out.println(Constants.ANSI_RESET); // reset the colour
         }
         System.out.println();
         for (int i = 0; i < cards.size(); i++) {
@@ -168,29 +171,32 @@ public class Display {
 
         cardLines[0] = ansi + " ________ ";
         cardLines[1] = ansi + "|" + value + "       |";
+
         if (value == 10) {
             cardLines[1] = ansi + "|" + value + "      |";
         }
+
         cardLines[2] = ansi + "|        |";
         cardLines[3] = ansi + "|   " + emoji + "   |";
         cardLines[4] = ansi + "|        |";
         cardLines[5] = ansi + "|_______" + value + "|";
+
         if (value == 10) {
             cardLines[5] = ansi + "|______" + value + "|";
         }
+
         return cardLines;
     }
 
     public static String colorString(String s) {
-        return CardColour.BLUE.getAnsiCode() + s;
+        return Constants.BLUE_ANSI + s;
     }
 
     public static String errorColour(String s) {
-        return CardColour.RED.getAnsiCode() + s + Constants.ANSI_RESET;
+        return Constants.RED_ANSI + s + Constants.ANSI_RESET;
     }
 
     public static void sayGoodBye() {
         System.out.println(Constants.GOODBYE);
-
     }
 }
