@@ -131,10 +131,10 @@ public class GamePlay {
                     System.exit(0);
                 }
                 int chosenCardIndex = Integer.parseInt(chosenCardString);
-                chosenCard = player.getCardsOnHand().get(chosenCardIndex);
+                chosenCard = player.getCardsOnHand().get(chosenCardIndex - 1);
 
                 // Confirmation on card choice
-                System.out.println(Constants.ANSI_RESET + " 📌 Chosen Card Number: " + (chosenCardIndex + 1));
+                System.out.println(Constants.ANSI_RESET + " 📌 Chosen Card Number: " + (chosenCardIndex));
                 System.out.print(Display.colorString(" ⚜ Enter 'y' to confirm or 'q' to quit ➢ "));
 
                 String confirmation = sc.nextLine();
