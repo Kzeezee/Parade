@@ -21,7 +21,7 @@ public class Utility {
     public static void clearConsoleScreen() {
         try {
             if (System.getProperty("os.name").contains("Windows")) {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+                new ProcessBuilder("cls").inheritIO().start().waitFor();
             } else {
                 // For macOS and Linux
                 new ProcessBuilder("bash", "-c", "clear").inheritIO().start().waitFor();

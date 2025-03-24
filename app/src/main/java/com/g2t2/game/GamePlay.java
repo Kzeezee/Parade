@@ -97,7 +97,7 @@ public class GamePlay {
             System.out.println(" 📌 Player " + Display.colorString(player.getName() 
             + Constants.ANSI_RESET + " is choosing his cards."));
             try {
-                Thread.sleep(5000);  
+                Thread.sleep(2000);  
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -151,7 +151,7 @@ public class GamePlay {
             System.out.println(" 📌 Player " + Display.colorString(player.getName() 
             + Constants.ANSI_RESET + " is choosing his card."));
             try {
-                Thread.sleep(5000);  
+                Thread.sleep(2000);  
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
