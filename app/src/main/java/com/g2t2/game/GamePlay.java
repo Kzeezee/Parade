@@ -131,7 +131,7 @@ public class GamePlay {
 
             displayHandCards(player);
 
-            String prompt = String.format(" 📌 Which card do you want to place in the Parade?%n");
+            String prompt = String.format(Constants.ANSI_RESET + " 📌 Which card do you want to place in the Parade?%n");
             Card chosenCard = promptForCard(prompt, player);
             System.out.println(Constants.ANSI_RESET);
             player.getCardsOnHand().remove(chosenCard);
