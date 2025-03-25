@@ -30,6 +30,12 @@ public class Constants {
             "                              │    P A R A D E   │\n" + //
             "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
 
+
+    public static final String ONLINE_LOBBY_BANNER = String.format(CardColour.BLUE.getAnsiCode() +
+        "                              ┌──────── ⚜ ───────┐\n" + //
+        "                              │   ONLINE  LOBBY  │\n" + //
+        "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
+
     // public static final String BANNER =
     // String.format(CardColour.BLUE.getAnsiCode() +
     // " ▐▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▌\n" + //
@@ -48,5 +54,6 @@ public class Constants {
     public static final List<CardColour> CARD_COLOURS = List.of(
             CardColour.RED, CardColour.BLUE, CardColour.YELLOW, CardColour.PURPLE,
             CardColour.GREEN, CardColour.BLACK);
-
+    
+    public static final String DB_CONNECTION = "jdbc:sqlite:../parade.db";
 }

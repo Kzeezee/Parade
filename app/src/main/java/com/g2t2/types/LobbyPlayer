@@ -1,0 +1,21 @@
+public class Player {
+    private String playerName;
+    private String ip;
+
+    public Player() {
+        this.playerName = "Unnamed";
+        this.ip = null;
+    }
+
+    public Player(String playerName) {
+        this.playerName = playerName;
+    }
+
+    public String getPlayerName() {
+        return this.playerName;
+    }
+
+    public String getPlayerIP() {
+        return this.ip;
+    }
+}

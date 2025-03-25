@@ -29,7 +29,7 @@ public class StartMenu {
      * @author Oliver
      */
     private static void consoleStartMenu() {
-        Utility.clearConsoleScreen();
+        // Utility.clearConsoleScreen();
         Scanner sc = new Scanner(System.in);
         int optionChosen = 0;
 
@@ -53,6 +53,11 @@ public class StartMenu {
                         // Start options of game
                         validOptionSelected = true;
                         GameInit.displayGameOptions();
+                        break;
+                    case 2:
+                        // Start lobby
+                        validOptionSelected = true;
+                        OnlineLobby.displayLobby();
                         break;
                     case 3:
                         System.out.println(Constants.GOODBYE);
