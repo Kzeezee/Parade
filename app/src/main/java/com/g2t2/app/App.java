@@ -34,8 +34,7 @@ import com.g2t2.util.db.DBInit;
 public class App {
     public static void main(String[] args) {
         System.out.println("Hello world! This is G2T2 Parade!");
-        StartMenu.showStartMenu();
         DBInit.init();
-        GamePlay.startGame();
+        StartMenu.showStartMenu();
     }
 }

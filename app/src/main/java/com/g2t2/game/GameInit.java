@@ -100,6 +100,7 @@ public class GameInit {
                 displayConsoleGameOptions();
                 giveOutTheCards();
                 setCPUgameplay();
+                GamePlay.startGame();
         }
     }
 
