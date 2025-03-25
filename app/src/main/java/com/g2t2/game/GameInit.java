@@ -171,20 +171,8 @@ public class GameInit {
                 }
             }
         } else {
-            while (true) {
-                try {
-                    System.out.print(Display.colorString(" ➢ Enter your name: "));
-                    String name = sc.nextLine();
-                    if (name.equals("")) {
-                        throw new InputMismatchException(" 📌 Please enter an appropriate name.");
-                    }
-                    players.add(new Player(name, ParadeBoard.getDECK()));
-                    break;
-                } catch (InputMismatchException e) {
-                    System.out.println(e.getMessage());
-                    System.out.println();
-                }
-            }
+            // Modified to get player name from player profile
+            players.add(new Player(StateManager.getPlayerProfile().getName(), ParadeBoard.getDECK()));
             for (int i = 1; i < numOfPlayers; i++){
                 String name = "CPU " + i;
                 players.add(new Player(name, ParadeBoard.getDECK()));
