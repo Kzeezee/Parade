@@ -71,8 +71,41 @@ public class GamePlay {
     // choose which card based on CPU difficulty
     private static Card chooseCPUCard(Player player, int numOfCards){
         int difficultyLevel = GameInit.setDifficulty();
-        // level 1 difficulty: random
-        return player.getCardsOnHand().get((int)(Math.random() * numOfCards));
+
+        switch (difficultyLevel) {
+            // level 1 difficulty: random
+            case 1:
+                return player.getCardsOnHand().get((int)(Math.random() * numOfCards));
+            // level 2 difficulty: picks the card that gives back the lowest number of cards from the parade
+            case 2:
+                return chooseMediumDifficultyCard(player);
+            default:
+                return player.getCardsOnHand().get((int)(Math.random() * numOfCards));
+        }
+    }
+
+    private static Card chooseMediumDifficultyCard(Player player) {
+        int lowestNumMoves = Integer.MAX_VALUE;
+        Card bestCard = player.getCardsOnHand().get(0);
+
+        for (Card card : player.getCardsOnHand()) {
+            int numCollectableCards = countCollectableCards(card);
+            if (numCollectableCards < lowestNumMoves) {
+                lowestNumMoves = numCollectableCards;
+                bestCard = card;
+            }
+        }
+        return bestCard;
+    }
+
+    private static int countCollectableCards(Card inputCard) {
+        int count = 0;
+        for (Card paradeCard : ParadeBoard.getParade()) {
+            if (isCollectable(inputCard, paradeCard)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     // player select two cards from hand to collection
@@ -95,7 +128,7 @@ public class GamePlay {
             System.out.println(" 📌 Currently, it is " + Display.colorString(player.getName()) + "'s turn.");
             System.out.println(Constants.DIVIDER);
             System.out.println(" 📌 Player " + Display.colorString(player.getName() 
-            + Constants.ANSI_RESET + " is choosing his cards."));
+            + Constants.ANSI_RESET + " is choosing their cards."));
             try {
                 Thread.sleep(2000);  
             } catch (InterruptedException e) {
@@ -149,7 +182,7 @@ public class GamePlay {
             }
             System.out.println(Constants.DIVIDER);
             System.out.println(" 📌 Player " + Display.colorString(player.getName() 
-            + Constants.ANSI_RESET + " is choosing his card."));
+            + Constants.ANSI_RESET + " is choosing their card."));
             try {
                 Thread.sleep(2000);  
             } catch (InterruptedException e) {
@@ -282,7 +315,7 @@ public class GamePlay {
         System.out.println(Constants.DIVIDER);
     }
 
-    // show the player what card he has in his hand
+    // show the player what card he has in their hand
     private static void displayHandCards(Player player) {
         System.out.println(Display.colorString("「 ✦ CARDS IN YOUR HAND ✦ 」") + Constants.ANSI_RESET);
         System.out.println("Each card is numbered, starting from the left, 1");

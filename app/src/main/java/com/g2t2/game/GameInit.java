@@ -45,11 +45,8 @@ public class GameInit {
                 try {
                     optionChosen = Integer.parseInt(s);
                     switch (optionChosen) {
-                        case 1:
+                        case 1: case 2:
                             // Start options of game
-                            validOptionSelected = true;
-                            break;
-                        case 2:
                             validOptionSelected = true;
                             break;
                         default:
@@ -70,7 +67,7 @@ public class GameInit {
                 validOptionSelected = false;
                 while (!validOptionSelected) {
                     System.out.println(Constants.DIVIDER);
-                    System.out.println(" 📌 Please select a difficulty level (only 1 for now).");
+                    System.out.println(" 📌 Please select a difficulty level (only 1, 2 for now).");
                     System.out.println(" 📌 Easy (1)");
                     System.out.println(" 📌 Medium (2)");
                     System.out.println(" 📌 Difficult (3)");
@@ -80,7 +77,7 @@ public class GameInit {
                     try {
                         choose = Integer.parseInt(s);
                         switch (choose) {
-                            case 1:
+                            case 1: case 2:
                                 // Start options of game
                                 validOptionSelected = true;
                                 break;
