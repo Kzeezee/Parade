@@ -30,74 +30,9 @@ public class GameInit {
             // GUI display options
         } else {
             // Console configuration
-            Scanner sc = new Scanner(System.in);
-            int optionChosen = 0;
-
-            boolean validOptionSelected = false;
-            while (!validOptionSelected) {
-                System.out.println(Constants.DIVIDER);
-                System.out.println(" 📌 Please select an option.");
-                System.out.println(" 📌 Play with friends (1)");
-                System.out.println(" 📌 Play with CPU (2)");
-                System.out.print(Display.colorString(" ⚜ Enter option ➢ "));
-                String s = sc.nextLine();
-                System.out.print(Constants.ANSI_RESET);
-                try {
-                    optionChosen = Integer.parseInt(s);
-                    switch (optionChosen) {
-                        case 1: case 2:
-                            // Start options of game
-                            validOptionSelected = true;
-                            break;
-                        default:
-                            throw new Exception(Display.errorColour(" ❌ Invalid input"));
-                    }
-                } catch (NumberFormatException e) {
-                    Utility.clearConsoleScreen();
-                    System.out.println(Display.errorColour(Constants.GAME_SELECTION_OPTION_ERROR_MSG));
-                } catch (Exception e) {
-                    Utility.clearConsoleScreen();
-                    System.out.println(Display.errorColour(Constants.GAME_SELECTION_OPTION_ERROR_MSG));
-                }
-            }
-            option = optionChosen;
-            if (option == 2){
-                int choose = 0;
-
-                validOptionSelected = false;
-                while (!validOptionSelected) {
-                    System.out.println(Constants.DIVIDER);
-                    System.out.println(" 📌 Please select a difficulty level (only 1, 2 for now).");
-                    System.out.println(" 📌 Easy (1)");
-                    System.out.println(" 📌 Medium (2)");
-                    System.out.println(" 📌 Difficult (3)");
-                    System.out.print(Display.colorString(" ⚜ Enter option ➢ "));
-                    String s = sc.nextLine();
-                    System.out.print(Constants.ANSI_RESET);
-                    try {
-                        choose = Integer.parseInt(s);
-                        switch (choose) {
-                            case 1: case 2:
-                                // Start options of game
-                                validOptionSelected = true;
-                                break;
-                            default:
-                                throw new Exception(Display.errorColour(" ❌ Invalid input"));
-                        }
-                    } catch (NumberFormatException e) {
-                        Utility.clearConsoleScreen();
-                        System.out.println(Display.errorColour(Constants.GAME_SELECTION_OPTION_ERROR_MSG));
-                    } catch (Exception e) {
-                        Utility.clearConsoleScreen();
-                        System.out.println(Display.errorColour(Constants.GAME_SELECTION_OPTION_ERROR_MSG));
-                    }
-                }
-                difficulty = choose;
-            }
-                displayConsoleGameOptions();
-                giveOutTheCards();
-                setCPUgameplay();
-                GamePlay.startGame();
+            displayConsoleGameOptions();
+            giveOutTheCards();
+            GamePlay.startGame();
         }
     }
 
@@ -161,7 +96,7 @@ public class GameInit {
             while (!validOptionSelected) {
                 System.out.print(Constants.ANSI_RESET);
                 System.out.println(Constants.DIVIDER);
-                System.out.println("Choose the difficulty level for your CPU players (1 or 2 for now)");
+                System.out.println("Choose the difficulty level for your CPU players");
                 System.out.println(" Easy (1)");
                 System.out.println(" Medium (2)");
                 System.out.println(" Hard (3)");
@@ -171,7 +106,7 @@ public class GameInit {
                 try {
                     optionChosen = Integer.parseInt(s);
                     switch (optionChosen) {
-                        case 1: case 2:
+                        case 1: case 2: case 3:
                             validOptionSelected = true;
                             difficulty = optionChosen;
                             break;
