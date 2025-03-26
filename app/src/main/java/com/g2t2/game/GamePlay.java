@@ -125,6 +125,7 @@ public class GamePlay {
             addSelectedCardsToParade(player);
     }
 
+    // CPU version of the putTwoToCollections() method
     private static void putTwoToCPUCollections(Player player){
         System.out.println(" 📌 Currently, it is " + Display.colorString(player.getName()) + "'s turn.");
             System.out.println(Constants.DIVIDER);
@@ -175,6 +176,7 @@ public class GamePlay {
             }        
     }
 
+    // CPU version of playTurn() method
     private static void CPUturn(Player player, boolean isLastRound){
         Utility.clearConsoleScreen();
         System.out.println(Constants.BANNER);

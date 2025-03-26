@@ -52,6 +52,7 @@ public class GameInit {
         System.out.println(Constants.BANNER);
         System.out.println(Constants.DIVIDER);
         while (true) {
+            // prompts for total players incl cpu
             try {        
                 System.out.println(" 📌 How many players are playing this game? (including any CPU-controlled players you want to be added)"); 
                 System.out.print(Display.colorString(" ➢ Enter the total number of players (2 to 6): "));
@@ -70,6 +71,7 @@ public class GameInit {
             }
         }
         while (true) {
+            // prompts for no. of cpu players, ensuring min 1 human player
             try {        
                 System.out.println(" 📌 How many of these players do you want to be controlled by the CPU? "); 
                 System.out.print(Display.colorString(" ➢ Enter the total number of CPU players: "));
@@ -87,7 +89,7 @@ public class GameInit {
                 System.out.println();
             }
         }
-
+        // choosing difficulty level 
         if (numOfCPU > 0){
             boolean validOptionSelected = false;
             int optionChosen = 0;
