@@ -31,7 +31,8 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'com.g2t2.app.App'
+    // mainClass = 'com.g2t2.app.App'
+    mainClass = findProperty("mainClass") ?: "com.g2t2.app.App"
 }
 
 run {
