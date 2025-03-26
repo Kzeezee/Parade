@@ -1,6 +1,7 @@
 package com.g2t2.app;
 
 import com.g2t2.game.*;
+import com.g2t2.util.Utility;
 import com.g2t2.util.db.DBInit;
 
 // import javafx.application.Application;
@@ -33,6 +34,7 @@ import com.g2t2.util.db.DBInit;
  */
 public class App {
     public static void main(String[] args) {
+        Utility.clearConsoleScreen();
         System.out.println("Hello world! This is G2T2 Parade!");
         DBInit.init();
         StartMenu.showStartMenu();

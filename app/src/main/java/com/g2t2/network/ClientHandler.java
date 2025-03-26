@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ClientHandler implements Runnable { // allows instances to be executed by a separate thread
     
@@ -26,7 +27,6 @@ public class ClientHandler implements Runnable { // allows instances to be execu
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
             this.clientName = bufferedReader.readLine(); // when user input 
             clientHandlers.add(this); // adding to the ArrayList
-            broadcastMessage("SERVER " + clientName + " has entered the chat");
         } catch (IOException e) {
             closeEverything(socket, bufferedReader, bufferedWriter);
         }
@@ -48,7 +48,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         }
     }
 
-    public void broadcastMessage(String messageToSend) {
+    private void broadcastMessage(String messageToSend) {
         for (ClientHandler clientHandler : clientHandlers) {
             try {
                 if (!clientHandler.clientName.equals(clientName)) {
@@ -62,12 +62,12 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         }
     }
 
-    public void removeClientHandler() {
+    private void removeClientHandler() {
         clientHandlers.remove(this);
-        broadcastMessage("SERVER: " + clientName + " has left the chat");
+        broadcastMessage("SERVER: " + clientName + " has left the game");
     }
 
-    public void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
+    private void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
         removeClientHandler();
         try {
             if (bufferedReader != null) {

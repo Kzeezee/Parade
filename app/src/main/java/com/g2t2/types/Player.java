@@ -11,12 +11,37 @@ import java.util.*;
 public class Player {
 
     private static int numOfPlayers; // automatically increases whenever a player is created
-
     private int playerId; // autoassigned based on the number of players
     private String name;
     private ArrayList<Card> cardsOnHand;
     private ArrayList<Card> cardsInCollection;
     private int score;
+
+    // for network
+    private boolean isGameMaster = false;
+
+    public Player(String name, CardDeck deck, boolean isGameMaster) {
+        numOfPlayers++;
+        playerId = numOfPlayers;
+        this.name = name;
+
+        // // set as gameMaster if he creates the game
+        // if (playerId == 1) {
+        //     isGameMaster = true;
+        // }
+        this.isGameMaster = isGameMaster;
+
+        // draw 5 cards from the deck
+        cardsOnHand = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            cardsOnHand.add(deck.drawCard());
+        }
+
+        cardsInCollection = new ArrayList<>();
+    }
+
+
+    // -----------------------------------------------
 
     public Player(String name, CardDeck deck) {
         numOfPlayers++;

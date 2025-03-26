@@ -47,8 +47,12 @@ public class Constants {
             "                    │         Thank you for playing PARADE.        │\n" + //
             "                    │    Have a nice day and see you again soon!   │\n" + //
             "                    └──────────────────── ⚜ ───────────────────────┘\n" + ANSI_RESET;
-    public static final List<String> EMOJIS = List.of(
-            "🌹", "💧", "☀️ ", "🪻 ", "🍀", "🕷️ ");
+
+    public static final List<String> EMOJIS = List.of("🌹", "💧", "☀️ ", "🪻 ", "🍀", "🕷️ ");
+
+    // Commands
+    public static final String CREATE_GAME = "CREATE_GAME";
+    public static final String JOIN_GAME = "JOIN_GAME";
 
     // Constants
     public static final List<CardColour> CARD_COLOURS = List.of(
