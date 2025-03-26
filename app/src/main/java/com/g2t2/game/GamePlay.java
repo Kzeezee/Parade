@@ -21,20 +21,31 @@ public class GamePlay {
         // complete collection (ALL COLOURS)
         while (!ScoreCalculation.meetsGameEndCondition(ParadeBoard.getPlayers().get(previousPlayer),
                 ParadeBoard.getDECK())) {
-
-            playTurn(ParadeBoard.getPlayers().get(currentPlayer), false, currentPlayer);
+            if (!ParadeBoard.getPlayers().get(currentPlayer).getCPU()){
+                playTurn(ParadeBoard.getPlayers().get(currentPlayer), false);
+            } else {
+                CPUturn(ParadeBoard.getPlayers().get(currentPlayer), false);
+            }
             previousPlayer = currentPlayer;
             currentPlayer = (currentPlayer + 1) % ParadeBoard.getPlayers().size();
         }
         // last round of play
         for (int i = 0; i < ParadeBoard.getPlayers().size(); i++) {
-            playTurn(ParadeBoard.getPlayers().get(currentPlayer), true, currentPlayer);
+            if (!ParadeBoard.getPlayers().get(currentPlayer).getCPU()){
+                playTurn(ParadeBoard.getPlayers().get(currentPlayer), true);
+            } else {
+                CPUturn(ParadeBoard.getPlayers().get(currentPlayer), true);
+            }
             currentPlayer = (currentPlayer + 1) % ParadeBoard.getPlayers().size();
         }
 
         // choose 2 cards in hand to add to collection
         for (int i = 0; i < ParadeBoard.getPlayers().size(); i++) {
-            putTwoToCollections(ParadeBoard.getPlayers().get(currentPlayer), currentPlayer);
+            if (!ParadeBoard.getPlayers().get(currentPlayer).getCPU()){
+                putTwoToCollections(ParadeBoard.getPlayers().get(currentPlayer));
+            } else {
+                putTwoToCPUCollections(ParadeBoard.getPlayers().get(currentPlayer));
+            }
             currentPlayer = (currentPlayer + 1) % ParadeBoard.getPlayers().size();
         }
         ScoreCalculation.computeScore(ParadeBoard.getPlayers());
@@ -70,9 +81,7 @@ public class GamePlay {
 
     // choose which card based on CPU difficulty
     private static Card chooseCPUCard(Player player, int numOfCards){
-        int difficultyLevel = GameInit.setDifficulty();
-
-        switch (difficultyLevel) {
+        switch (GameInit.getDifficulty()) {
             // level 1 difficulty: random
             case 1:
                 return player.getCardsOnHand().get((int)(Math.random() * numOfCards));
@@ -99,14 +108,14 @@ public class GamePlay {
     }
 
     // player select two cards from hand to collection
-    private static void putTwoToCollections(Player player, int playernumber) {
+    private static void putTwoToCollections(Player player) {
         // clear the console
         Utility.clearConsoleScreen();
         System.out.println(Constants.BANNER);
         System.out.println(Constants.DIVIDER);
         displayCollections();
         displayParade();
-        if (GameInit.setCPUgameplay() == 1 || (GameInit.setCPUgameplay() == 2 && playernumber == 0)){
+       
             System.out.println(" 📌 Currently, it is player " + Display.colorString(player.getName()) + "(" +
                     Display.colorString("" + player.getPlayerId()) + ") turn.");
             System.out.println(" ⚜ You need to select " + Display.colorString("TWO")
@@ -114,8 +123,10 @@ public class GamePlay {
             System.out.println(Constants.DIVIDER);
 
             addSelectedCardsToParade(player);
-        } else {
-            System.out.println(" 📌 Currently, it is " + Display.colorString(player.getName()) + "'s turn.");
+    }
+
+    private static void putTwoToCPUCollections(Player player){
+        System.out.println(" 📌 Currently, it is " + Display.colorString(player.getName()) + "'s turn.");
             System.out.println(Constants.DIVIDER);
             System.out.println(" 📌 Player " + Display.colorString(player.getName() 
             + Constants.ANSI_RESET + " is choosing their cards."));
@@ -132,10 +143,9 @@ public class GamePlay {
                 cardsSelected.add(selectedCard);
                 System.out.println(Constants.DIVIDER);
             }
-        }
     }
 
-    private static void playTurn(Player player, boolean isLastRound, int playernumber) {
+    private static void playTurn(Player player, boolean isLastRound) {
         // clear the console
         
         Utility.clearConsoleScreen();
@@ -144,7 +154,6 @@ public class GamePlay {
         displayCollections();
         displayParade();
         System.out.println(" 📌 Number of Cards Left in the Deck: " + ParadeBoard.getDECK().getCardsInDeck().size());
-        if (GameInit.setCPUgameplay() == 1 || (GameInit.setCPUgameplay() == 2 && playernumber == 0)){
             System.out.println(" 📌 Currently, it is player " + Display
                     .colorString(player.getName() + "(" + player.getPlayerId() + ")" + Constants.ANSI_RESET + " turn."));
             if (isLastRound) {
@@ -163,9 +172,17 @@ public class GamePlay {
             addToCollection(cardsCollected, player);
             if (!isLastRound) {
                 player.drawCard(ParadeBoard.getDECK());
-            }
-        } else {         
-            System.out.println(" 📌 Currently, it is player " + Display.colorString(player.getName() 
+            }        
+    }
+
+    private static void CPUturn(Player player, boolean isLastRound){
+        Utility.clearConsoleScreen();
+        System.out.println(Constants.BANNER);
+        System.out.println(Constants.DIVIDER);
+        displayCollections();
+        displayParade();
+
+        System.out.println(" 📌 Currently, it is player " + Display.colorString(player.getName() 
             + Constants.ANSI_RESET + " turn."));
             if (isLastRound) {
                 System.out.println(" ⚜ " + Display.colorString(" 📌 LAST ROUND 📌 ") + Constants.ANSI_RESET);
@@ -188,7 +205,6 @@ public class GamePlay {
             if (!isLastRound) {
                 player.drawCard(ParadeBoard.getDECK());
             }
-        }
     }
 
     // print out the prompt string and accordingly ask the player for valid entry

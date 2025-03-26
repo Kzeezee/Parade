@@ -17,7 +17,7 @@ import com.g2t2.types.*;
 public class GameInit {
 
     private static int numOfPlayers;
-    private static int option;
+    private static int numOfCPU;
     private static int difficulty;
 
     /**
@@ -30,74 +30,9 @@ public class GameInit {
             // GUI display options
         } else {
             // Console configuration
-            Scanner sc = new Scanner(System.in);
-            int optionChosen = 0;
-
-            boolean validOptionSelected = false;
-            while (!validOptionSelected) {
-                System.out.println(Constants.DIVIDER);
-                System.out.println(" 📌 Please select an option.");
-                System.out.println(" 📌 Play with friends (1)");
-                System.out.println(" 📌 Play with CPU (2)");
-                System.out.print(Display.colorString(" ⚜ Enter option ➢ "));
-                String s = sc.nextLine();
-                System.out.print(Constants.ANSI_RESET);
-                try {
-                    optionChosen = Integer.parseInt(s);
-                    switch (optionChosen) {
-                        case 1: case 2:
-                            // Start options of game
-                            validOptionSelected = true;
-                            break;
-                        default:
-                            throw new Exception(Display.errorColour(" ❌ Invalid input"));
-                    }
-                } catch (NumberFormatException e) {
-                    Utility.clearConsoleScreen();
-                    System.out.println(Display.errorColour(Constants.GAME_SELECTION_OPTION_ERROR_MSG));
-                } catch (Exception e) {
-                    Utility.clearConsoleScreen();
-                    System.out.println(Display.errorColour(Constants.GAME_SELECTION_OPTION_ERROR_MSG));
-                }
-            }
-            option = optionChosen;
-            if (option == 2){
-                int choose = 0;
-
-                validOptionSelected = false;
-                while (!validOptionSelected) {
-                    System.out.println(Constants.DIVIDER);
-                    System.out.println(" 📌 Please select a difficulty level (only 1, 2 for now).");
-                    System.out.println(" 📌 Easy (1)");
-                    System.out.println(" 📌 Medium (2)");
-                    System.out.println(" 📌 Difficult (3)");
-                    System.out.print(Display.colorString(" ⚜ Enter option ➢ "));
-                    String s = sc.nextLine();
-                    System.out.print(Constants.ANSI_RESET);
-                    try {
-                        choose = Integer.parseInt(s);
-                        switch (choose) {
-                            case 1: case 2:
-                                // Start options of game
-                                validOptionSelected = true;
-                                break;
-                            default:
-                                throw new Exception(Display.errorColour(" ❌ Invalid input"));
-                        }
-                    } catch (NumberFormatException e) {
-                        Utility.clearConsoleScreen();
-                        System.out.println(Display.errorColour(Constants.GAME_SELECTION_OPTION_ERROR_MSG));
-                    } catch (Exception e) {
-                        Utility.clearConsoleScreen();
-                        System.out.println(Display.errorColour(Constants.GAME_SELECTION_OPTION_ERROR_MSG));
-                    }
-                }
-                difficulty = choose;
-            }
-                displayConsoleGameOptions();
-                giveOutTheCards();
-                setCPUgameplay();
-                GamePlay.startGame();
+            displayConsoleGameOptions();
+            giveOutTheCards();
+            GamePlay.startGame();
         }
     }
 
@@ -117,12 +52,8 @@ public class GameInit {
         System.out.println(Constants.BANNER);
         System.out.println(Constants.DIVIDER);
         while (true) {
-            try {
-                if (option == 1){
-                    System.out.println(" 📌 How many players do you want to play with?");
-                } else {
-                    System.out.println(" 📌 How many CPU players do you want to play with?");
-                }
+            try {        
+                System.out.println(" 📌 How many players are playing this game? (including any CPU-controlled players you want to be added)"); 
                 System.out.print(Display.colorString(" ➢ Enter the total number of players (2 to 6): "));
                 numOfPlayers = sc.nextInt();
                 if (numOfPlayers < 2 || numOfPlayers > 6) {
@@ -138,6 +69,57 @@ public class GameInit {
                 System.out.println();
             }
         }
+        while (true) {
+            try {        
+                System.out.println(" 📌 How many of these players do you want to be controlled by the CPU? "); 
+                System.out.print(Display.colorString(" ➢ Enter the total number of CPU players: "));
+                numOfCPU = sc.nextInt();
+                if (numOfCPU < 0 || numOfPlayers - numOfCPU < 1) {
+                    throw new IllegalArgumentException(Display.errorColour(" ❌ You must have a minimum of one human player. Please enter a number between 0 and " + (numOfPlayers - 1)));
+                }
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println(Display.errorColour(" ❌ Please enter a number"));
+                System.out.println();
+                sc.nextLine();
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                System.out.println();
+            }
+        }
+
+        if (numOfCPU > 0){
+            boolean validOptionSelected = false;
+            int optionChosen = 0;
+            while (!validOptionSelected) {
+                System.out.print(Constants.ANSI_RESET);
+                System.out.println(Constants.DIVIDER);
+                System.out.println("Choose the difficulty level for your CPU players (1 or 2 for now)");
+                System.out.println(" Easy (1)");
+                System.out.println(" Medium (2)");
+                System.out.println(" Hard (3)");
+                System.out.print(Display.colorString(" ⚜ Enter option ➢ "));
+                String s = sc.nextLine();
+                System.out.print(Constants.ANSI_RESET);
+                try {
+                    optionChosen = Integer.parseInt(s);
+                    switch (optionChosen) {
+                        case 1: case 2:
+                            validOptionSelected = true;
+                            difficulty = optionChosen;
+                            break;
+                        default:
+                            throw new Exception(Display.errorColour(" ❌ Invalid input"));
+                    }
+                } catch (NumberFormatException e) {
+                    Utility.clearConsoleScreen();
+                    System.out.println(Display.errorColour(Constants.GAME_SELECTION_OPTION_ERROR_MSG));
+                } catch (Exception e) {
+                    Utility.clearConsoleScreen();
+                    System.out.println(Display.errorColour(Constants.GAME_SELECTION_OPTION_ERROR_MSG));
+                }
+            }
+        }
     }
 
 
@@ -150,31 +132,32 @@ public class GameInit {
         System.out.println(Constants.BANNER);
         Scanner sc = new Scanner(System.in);
         ArrayList<Player> players = new ArrayList<>();
-        if (option == 1){
-            for (int i = 1; i <= numOfPlayers; i++) {
-                while (true) {
-                    try {
-                        System.out.print(Display.colorString(" ➢ Enter the name of player " + i + ": "));
-                        String name = sc.nextLine();
-                        if (name.equals("")) {
-                            throw new InputMismatchException(" 📌 Please enter an appropriate name.");
-                        }
-                        players.add(new Player(name, ParadeBoard.getDECK()));
-                        break;
-                    } catch (InputMismatchException e) {
-                        System.out.println(e.getMessage());
-                        System.out.println();
+      
+        for (int i = 1; i <= numOfPlayers - numOfCPU; i++) {
+            while (true) {
+                try {
+                    System.out.print(Display.colorString(" ➢ Enter the name of player " + i + ": "));
+                    String name = sc.nextLine();
+                    if (name.equals("")) {
+                        throw new InputMismatchException(" 📌 Please enter an appropriate name.");
                     }
+                    players.add(new Player(name, ParadeBoard.getDECK(), false));
+                    break;
+                } catch (InputMismatchException e) {
+                    System.out.println(e.getMessage());
+                    System.out.println();
                 }
             }
-        } else {
-            // Modified to get player name from player profile
-            players.add(new Player(StateManager.getPlayerProfile().getName(), ParadeBoard.getDECK()));
-            for (int i = 1; i < numOfPlayers; i++){
-                String name = "CPU " + i;
-                players.add(new Player(name, ParadeBoard.getDECK()));
-            }
         }
+      
+        // Modified to get player name from player profile
+        //players.add(new Player(StateManager.getPlayerProfile().getName(), ParadeBoard.getDECK()));
+
+        for (int i = 1; i <= numOfCPU; i++){
+            String name = "CPU " + i;
+            players.add(new Player(name, ParadeBoard.getDECK(), true));
+        }
+        
         ParadeBoard.setPlayers(players);
 
         // Setting up the board
@@ -185,11 +168,7 @@ public class GameInit {
         ParadeBoard.setParade(board);
     }
 
-    public static int setCPUgameplay(){
-        return option;
-    }
-
-    public static int setDifficulty(){
+    public static int getDifficulty(){
         return difficulty;
     }
 }

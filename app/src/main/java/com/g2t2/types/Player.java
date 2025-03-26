@@ -17,8 +17,9 @@ public class Player {
     private ArrayList<Card> cardsOnHand;
     private ArrayList<Card> cardsInCollection;
     private int score;
+    private boolean isCPU;
 
-    public Player(String name, CardDeck deck) {
+    public Player(String name, CardDeck deck, boolean isCPU) {
         numOfPlayers++;
         playerId = numOfPlayers;
         this.name = name;
@@ -30,6 +31,7 @@ public class Player {
         }
 
         cardsInCollection = new ArrayList<>();
+        this.isCPU = isCPU;
     }
 
     public void drawCard(CardDeck deck) {
@@ -62,6 +64,10 @@ public class Player {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public boolean getCPU(){
+        return isCPU;
     }
 
 }
