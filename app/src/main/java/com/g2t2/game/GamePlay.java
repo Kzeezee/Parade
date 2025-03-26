@@ -85,27 +85,17 @@ public class GamePlay {
     }
 
     private static Card chooseMediumDifficultyCard(Player player) {
-        int lowestNumMoves = Integer.MAX_VALUE;
+        int lowestNumCollect = Integer.MAX_VALUE;
         Card bestCard = player.getCardsOnHand().get(0);
 
         for (Card card : player.getCardsOnHand()) {
-            int numCollectableCards = countCollectableCards(card);
-            if (numCollectableCards < lowestNumMoves) {
-                lowestNumMoves = numCollectableCards;
+            ArrayList<Card> collectableCards = getCollectableCards(card);
+            if (collectableCards.size() < lowestNumCollect) {
+                lowestNumCollect = collectableCards.size();
                 bestCard = card;
             }
         }
         return bestCard;
-    }
-
-    private static int countCollectableCards(Card inputCard) {
-        int count = 0;
-        for (Card paradeCard : ParadeBoard.getParade()) {
-            if (isCollectable(inputCard, paradeCard)) {
-                count++;
-            }
-        }
-        return count;
     }
 
     // player select two cards from hand to collection
@@ -280,6 +270,21 @@ public class GamePlay {
         return toCollection;
     }
 
+    //Returns the collectable cards of a card to be placed. 
+    private static ArrayList<Card> getCollectableCards(Card inputCard) {
+        int cardValue = inputCard.getValue();
+        ArrayList<Card> collectableCards = new ArrayList<>();
+        ArrayList<Card> parade = ParadeBoard.getParade();
+
+        for (int i = 0; i < parade.size() - cardValue; i++) {
+            if (isCollectable(inputCard, parade.get(i))) {
+                collectableCards.add(parade.get(i));
+            }
+        }
+
+        return collectableCards;
+    }
+
     private static boolean isCollectable(Card input, Card inParade) {
         if (input.getColour().equals(inParade.getColour())) {
             return true;
@@ -342,5 +347,4 @@ public class GamePlay {
 
         System.out.println(Constants.DIVIDER);
     }
-
 }
