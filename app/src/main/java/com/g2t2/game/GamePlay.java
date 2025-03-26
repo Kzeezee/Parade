@@ -79,16 +79,19 @@ public class GamePlay {
             // level 2 difficulty: picks the card that gives back the lowest number of cards from the parade
             case 2:
                 return chooseMediumDifficultyCard(player);
+            case 3:
+                return chooseHardDifficultyCard(player);
             default:
                 return player.getCardsOnHand().get((int)(Math.random() * numOfCards));
         }
     }
 
     private static Card chooseMediumDifficultyCard(Player player) {
+        ArrayList<Card> hand = player.getCardsOnHand();
         int lowestNumCollect = Integer.MAX_VALUE;
         Card bestCard = player.getCardsOnHand().get(0);
 
-        for (Card card : player.getCardsOnHand()) {
+        for (Card card : hand) {
             ArrayList<Card> collectableCards = getCollectableCards(card);
             if (collectableCards.size() < lowestNumCollect) {
                 lowestNumCollect = collectableCards.size();
@@ -96,6 +99,33 @@ public class GamePlay {
             }
         }
         return bestCard;
+    }
+
+    private static Card chooseHardDifficultyCard(Player player) {
+        ArrayList<Card> hand = player.getCardsOnHand();
+        int lowestPoints = Integer.MAX_VALUE;
+        Card bestCard = null;
+        
+        for (Card card : hand) {
+            ArrayList<Card> collectableCards = getCollectableCards(card);
+            int totalPoints = calculateTotalPoints(collectableCards);
+            
+            if (totalPoints < lowestPoints) {
+                lowestPoints = totalPoints;
+                bestCard = card;
+            }
+        }
+        
+        return bestCard;
+    }
+
+    private static int calculateTotalPoints(ArrayList<Card> collectableCards) {
+        int totalPoints = 0;
+        for (Card card : collectableCards) {
+            totalPoints += card.getValue();
+        }
+
+        return totalPoints;
     }
 
     // player select two cards from hand to collection

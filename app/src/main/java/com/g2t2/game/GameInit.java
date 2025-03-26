@@ -67,17 +67,17 @@ public class GameInit {
                 validOptionSelected = false;
                 while (!validOptionSelected) {
                     System.out.println(Constants.DIVIDER);
-                    System.out.println(" 📌 Please select a difficulty level (only 1, 2 for now).");
+                    System.out.println(" 📌 Please select a difficulty level.");
                     System.out.println(" 📌 Easy (1)");
                     System.out.println(" 📌 Medium (2)");
-                    System.out.println(" 📌 Difficult (3)");
+                    System.out.println(" 📌 Hard (3)");
                     System.out.print(Display.colorString(" ⚜ Enter option ➢ "));
                     String s = sc.nextLine();
                     System.out.print(Constants.ANSI_RESET);
                     try {
                         choose = Integer.parseInt(s);
                         switch (choose) {
-                            case 1: case 2:
+                            case 1: case 2: case 3:
                                 // Start options of game
                                 validOptionSelected = true;
                                 break;
