@@ -29,17 +29,16 @@ public class Constants {
                                         + "                              │    P A R A D E   │\n"
                                         + "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
 
-    public static final String ONLINE_LOBBY_BANNER = String.format(CardColour.BLUE.getAnsiCode() 
-                                                     + "                              ┌──────── ⚜ ───────┐\n" 
-                                                     + "                              │   ONLINE  LOBBY  │\n"
-                                                     + "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
+    public static final String ONLINE_LOBBY_BANNER = String.format(CardColour.BLUE.getAnsiCode() +
+        "                              ┌──────── ⚜ ───────┐\n" + //
+        "                              │   ONLINE  LOBBY  │\n" + //
+        "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
 
-    
-    public static final String GOODBYE = BLUE_ANSI + "\n" 
-                                        + "                    ┌──────────────────── ⚜ ───────────────────────┐\n" 
-                                        + "                    │         Thank you for playing PARADE.        │\n" 
-                                        + "                    │    Have a nice day and see you again soon!   │\n" 
-                                        + "                    └──────────────────── ⚜ ───────────────────────┘\n" + ANSI_RESET;
+    // public static final String BANNER =
+    // String.format(CardColour.BLUE.getAnsiCode() +
+    // " ▐▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▌\n" + //
+    // " ▐  P A R A D E  ▌\n" + //
+    // " ▐▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▌\n" + ANSI_RESET);
 
     public static final String WAITING_LOBBY_BANNER = String.format(CardColour.BLUE.getAnsiCode() +
         "                              ┌──────── ⚜ ───────┐\n" + //
@@ -67,6 +66,7 @@ public class Constants {
     public static final String START_GAME = "w"; //"START_GAME";
     public static final String LEAVE_GAME = "y"; //"LEAVE_GAME";
 
+    
     // ERRORS
     public static final String INVALID_GAME_ID = "INVALID GAME ID";
     public static final String INVALID_COMMAND = "INVALID COMMAND";

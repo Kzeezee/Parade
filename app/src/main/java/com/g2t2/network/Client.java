@@ -7,15 +7,12 @@ import java.net.Socket;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import org.checkerframework.checker.units.qual.C;
-
 import com.g2t2.game.GameState;
 import com.g2t2.game.StartMenu;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 import com.g2t2.util.Utility;
-
 
 public class Client implements Runnable {
     private Socket socket;
