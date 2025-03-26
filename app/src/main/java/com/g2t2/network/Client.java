@@ -97,7 +97,7 @@ public class Client implements Runnable{
     private void createGame() {
         // NOT COMPLETED
         String gameId = generateGameId();
-        new Player(username, ParadeBoard.getDECK(), true); // create gameMaster
+        new Player(username, ParadeBoard.getDECK(), true, false); // create gameMaster
         System.out.println(gameId);
     }
 
