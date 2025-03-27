@@ -4,9 +4,11 @@ import com.g2t2.enums.CardColour;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.ArrayList;
 
 /**
  * CardDeck class, modelling the deck of Parade cards.
+ * 
  * @author Ben
  */
 
@@ -21,16 +23,17 @@ public class CardDeck implements Serializable {
             for (CardColour colour : CardColour.values()) {
                 deck.add(new Card(i, colour));
             }
-        }   
+        }
     }
 
     public ArrayList<Card> getCardsInDeck() {
         return deck;
-    } 
+    }
 
     public Card drawCard() {
-        // Math.random() generates a random double between 0.0 (inclusive) and 1.0 (exclusive)
-        int randomNumber = (int) (Math.random() * deck.size()); 
+        // Math.random() generates a random double between 0.0 (inclusive) and 1.0
+        // (exclusive)
+        int randomNumber = (int) (Math.random() * deck.size());
         Card drawnCard = deck.get(randomNumber);
         deck.remove(randomNumber);
         return drawnCard;

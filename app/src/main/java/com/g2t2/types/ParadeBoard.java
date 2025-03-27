@@ -4,13 +4,14 @@ import java.util.ArrayList;
 
 /**
  * ParadeBoard class, modelling how the board layout will be like.
+ * 
  * @author Ben
  */
 public class ParadeBoard {
 
     private static ArrayList<Player> players = new ArrayList<>();
     private static ArrayList<Card> parade = new ArrayList<>();
-    private static final CardDeck DECK = new CardDeck(); // everyone use this single card deck?
+    private static final CardDeck DECK = new CardDeck();
 
     public static CardDeck getDECK() {
         return DECK;

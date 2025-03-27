@@ -1,5 +1,8 @@
 package com.g2t2.types;
 
+/*
+ * A class to store the player profiles 
+ */
 public class PlayerProfile {
     private long ID;
     private String name;

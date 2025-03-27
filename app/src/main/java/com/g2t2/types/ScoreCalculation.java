@@ -1,13 +1,19 @@
 package com.g2t2.types;
 
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collections;
 
-import com.g2t2.enums.*;
-import com.g2t2.util.*;
+import com.g2t2.enums.CardColour;
+
+import com.g2t2.util.Constants;
 
 /**
- * Score Calculation class to check for end game condition after every move
- * played
+ * Score Calculation class to check for end game condition after every
+ * moveplayed
  * as well as to compute score for the players after the game ends
  * 
  * @author Shwe
@@ -28,7 +34,7 @@ public class ScoreCalculation {
         }
         ArrayList<Card> cards = player.getCardsInCollection();
 
-        // RED, BLUE, PURPLE, GREEN, GREY, ORANGE
+        // RED, BLUE, YELLOW, PURPLE, GREEN, BLACK
         // map the colour card numbers to a hashmap
         Map<CardColour, Integer> cardColourMap = new HashMap<>();
         for (Card card : cards) {
@@ -55,9 +61,10 @@ public class ScoreCalculation {
      */
     private static boolean hasSixColours(Map<CardColour, Integer> cardColourMap) {
         Set<CardColour> keys = cardColourMap.keySet();
-        if (keys.size() != 6) {
+        if (keys.size() < Constants.CARD_COLOURS.size()) {
             return false;
         }
+
         for (CardColour key : keys) {
             if (cardColourMap.get(key) == 0) {
                 return false;
@@ -65,42 +72,6 @@ public class ScoreCalculation {
         }
         return true;
     }
-
-    // /**
-    //  * Computer the score when the game ends
-    //  *
-    //  * @param players The list of players in the current game
-    //  * @return a HashMap of Player as key and Score (Integer) as value
-    //  */
-    // public static Map<Player, Integer> computeScore(List<Player> players) {
-    //     Map<Player, Integer> scoreMap = new HashMap<>();
-
-    //     List<CardColour> cardColourList = Constants.cardColours;
-
-    //     for (CardColour colour : cardColourList) {
-    //         discardMajorityPiles(players, scoreMap, colour);
-    //     }
-
-    //     for (Player player : players) {
-    //         int score = 0;
-    //         List<Card> cardList = player.getCardsInCollection();
-    //         for (Card card : cardList) {
-    //             System.out.println(card);
-    //             score += card.getValue();
-    //         }
-    //         if (scoreMap.containsKey(player)) {
-    //             scoreMap.put(player, scoreMap.get(player) + score);
-    //         } else {
-    //             scoreMap.put(player, score);
-    //         }
-
-    //         for (Player p : players) {
-    //             System.out.println(p.getName() + " has " + scoreMap.get(p));
-    //         }
-    //     }
-
-    //     return scoreMap;
-    // }
 
     /**
      * Computer the score when the game ends and set the score of each player
@@ -116,18 +87,18 @@ public class ScoreCalculation {
             discardMajorityPiles(players, scoreMap, colour);
         }
 
+        // compute and update the score
         for (Player player : players) {
             int score = 0;
             List<Card> cardList = player.getCardsInCollection();
             for (Card card : cardList) {
-                // System.out.println(card);
                 score += card.getValue();
             }
 
             updateScore(scoreMap, player, score);
         }
 
-        for (Player player: players) {
+        for (Player player : players) { // set the score after computation
             player.setScore(scoreMap.get(player));
         }
     }
@@ -141,33 +112,39 @@ public class ScoreCalculation {
      * @param cardColour The colour of the cards we want to deal with
      * 
      */
-    private static void discardMajorityPiles(List<Player> players, Map<Player, Integer> scoreMap, CardColour cardColour) {
+    private static void discardMajorityPiles(List<Player> players, Map<Player, Integer> scoreMap,
+            CardColour cardColour) {
+        // count the number of same colour cards for each player and add to an ArrayList
         List<Integer> colourCountList = new ArrayList<>();
         for (Player player : players) {
             int count = countCardColour(player.getCardsInCollection(), cardColour);
             colourCountList.add(count);
         }
+
         int max = Collections.max(colourCountList);
-        if (max == 0) {
+        if (max == 0) { // no need to discard cards
             return;
         }
-        if (players.size() == 2) {
+
+        if (players.size() == 2) { // a different implementation for 2 player game
             int diff = colourCountList.get(0) - colourCountList.get(1);
             if (Math.abs(diff) < 2) {
                 return;
             }
         }
 
-        // remove the cards from the player(s) & update score if they have max card number for the colour
+        // remove the cards from the player(s) & update score if they have max card
+        // number for the colour
         int idx = colourCountList.indexOf(max);
         while (idx >= 0) {
             Player player = players.get(idx);
-            updateScore(scoreMap, player, colourCountList.get(idx)); // update score based on the number of that cardColour they have
+            updateScore(scoreMap, player, colourCountList.get(idx)); // update score based on the number of that
+                                                                     // cardColour they have
             player.getCardsInCollection().removeIf(card -> card.getColour() == cardColour);
 
             // check if there are still anyone else that share the same max score
             colourCountList.set(idx, 0);
-            idx = colourCountList.indexOf(max); 
+            idx = colourCountList.indexOf(max);
         }
     }
 
@@ -189,6 +166,16 @@ public class ScoreCalculation {
         return count;
     }
 
+    /**
+     * Update the score in the scoreMap based on whether the key exists or not
+     * if the key exists, simply add the new score to the original value
+     * if the key does not exists, create a new entry into the score Map
+     *
+     * @param ScoreMap The HashMap of Player as key and Score (Integer) as value
+     * @param player   The player whose scores we are trying to update
+     * @param score    The score to be updated
+     * 
+     */
     private static void updateScore(Map<Player, Integer> scoreMap, Player player, int score) {
         if (scoreMap.containsKey(player)) {
             scoreMap.put(player, scoreMap.get(player) + score);

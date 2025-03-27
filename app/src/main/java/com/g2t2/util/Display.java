@@ -1,23 +1,26 @@
 package com.g2t2.util;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.Map;
+import java.util.Collections;
+import java.util.List;
+import java.util.Arrays;
+
+import java.util.stream.Collectors;
 
 import com.g2t2.enums.CardColour;
-import com.g2t2.types.*;
+import com.g2t2.types.Card;
 
 /**
  * A class for displaying the cards and colored texts
+ * 
  * @author Shwe
  */
 public class Display {
 
     // Display all stacks grouped by CardColour with two stacks per row
     public static void displayAllStacks(List<Card> cards) {
-        // Sort cards by colour
+        // Group cards by colour
         Collections.sort(cards);
-
-        // Group cards by colour using streams
         Map<CardColour, List<Card>> groupedCards = cards.stream()
                 .collect(Collectors.groupingBy(Card::getColour));
 
@@ -25,9 +28,6 @@ public class Display {
         List<String> stackLines = groupedCards.entrySet().stream()
                 .map(entry -> getStackAsString(entry.getValue(), entry.getKey()))
                 .collect(Collectors.toList());
-
-        // // Print stacks two at a time
-        // printStacksInPairs(stackLines);
 
         // Print stacks three at a time
         printStacksInGroups(stackLines);
@@ -55,22 +55,6 @@ public class Display {
         return stackBuilder.toString();
     }
 
-    // // Print stacks in pairs (two per row)
-    // private static void printStacksInPairs(List<String> stackLines) {
-    // String[] emptyLines = new String[6]; // Each stack has 6 lines
-    // Arrays.fill(emptyLines, ""); // Initialize empty lines for padding
-
-    // for (int i = 0; i < stackLines.size(); i += 2) {
-    // String[] firstStack = stackLines.get(i).split("\n");
-    // String[] secondStack = (i + 1 < stackLines.size()) ? stackLines.get(i +
-    // 1).split("\n") : emptyLines;
-
-    // for (int j = 0; j < Math.min(firstStack.length, secondStack.length); j++) {
-    // System.out.println(firstStack[j] + " " + secondStack[j]);
-    // }
-    // }
-    // }
-
     // Print stacks in groups (three per row)
     private static void printStacksInGroups(List<String> stackLines) {
         String[] emptyLines = new String[6]; // Each stack has 6 lines
@@ -87,6 +71,7 @@ public class Display {
         }
     }
 
+    // get the first line of card stack
     private static String getCardStackLine1(int size) {
         StringBuilder line = new StringBuilder(" ");
         for (int i = 0; i < size; i++) {
@@ -96,6 +81,7 @@ public class Display {
         return line.toString();
     }
 
+    // get the second line of card stack
     private static String getCardStackLine2(List<Card> cards) {
         StringBuilder line = new StringBuilder();
         for (Card card : cards) {
@@ -108,6 +94,7 @@ public class Display {
         return line.toString();
     }
 
+    // get the default line of card stack
     private static String getCardStackDefault(int size) {
         StringBuilder line = new StringBuilder();
         for (int i = 0; i < size; i++) {
@@ -117,6 +104,7 @@ public class Display {
         return line.toString();
     }
 
+    // get line 4 of card stack
     private static String getCardStackLine4(int size, CardColour currentCardColour) {
         StringBuilder line = new StringBuilder();
         for (int i = 0; i < size; i++) {
@@ -126,6 +114,7 @@ public class Display {
         return line.toString();
     }
 
+    // get line 5 of card stack
     private static String getCardStackLine5(int size, int lastCardValue) {
         StringBuilder line = new StringBuilder();
         for (int i = 0; i < size; i++) {
@@ -140,7 +129,6 @@ public class Display {
         return line.toString();
     }
 
-    // ----------------------------------------------------------------
     // Display all cards side by side in a compact format
     public static void displayCardsSideBySide(List<Card> cards) {
         // Generate each card as a string representation
@@ -149,7 +137,7 @@ public class Display {
                 .toList();
 
         // Print the cards row by row (compact format)
-        for (int i = 0; i < 6; i++) { // Each card has 5 lines
+        for (int i = 0; i < 6; i++) { // Each card has 6 lines
             for (String[] card : cardLines) {
                 System.out.print(card[i] + "   "); // Add spacing between cards
             }
@@ -158,7 +146,7 @@ public class Display {
         System.out.println();
         for (int i = 0; i < cards.size(); i++) {
             System.out.printf("  「 %d 」    ", (i + 1));
-        } // 「 ✦ 𝐍𝐚𝐦𝐞 ✦ 」
+        } // 「 ✦ Number ✦ 」
         System.out.println();
     }
 
@@ -188,15 +176,40 @@ public class Display {
         return cardLines;
     }
 
+    // returns colored string
     public static String colorString(String s) {
         return Constants.BLUE_ANSI + s + Constants.ANSI_RESET;
     }
 
+    // returns red colour error string
     public static String errorColour(String s) {
         return Constants.RED_ANSI + s + Constants.ANSI_RESET;
     }
 
+    // print goodbye banner
     public static void sayGoodBye() {
         System.out.println(Constants.GOODBYE);
+    }
+
+    // prints the string character by character to mimic animation
+    public static void delayPrint(String text, long delayMillis) {
+        boolean wasInterrupted = false;
+    
+        for (char c : text.toCharArray()) {
+            System.out.print(c);
+            System.out.flush();
+            
+            if (!wasInterrupted) {
+                try {
+                    Thread.sleep(delayMillis);
+                } catch (InterruptedException e) {
+                    // Set flag to skip future delays
+                    wasInterrupted = true;
+                    // Restore interrupt status for proper thread management
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+        System.out.println();
     }
 }

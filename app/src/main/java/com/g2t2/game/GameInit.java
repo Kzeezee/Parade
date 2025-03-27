@@ -15,6 +15,19 @@ import com.g2t2.types.*;
  * @author Oliver
  */
 public class GameInit {
+    private static final String GAME_DIFFICULTY_OPTIONS = " 📌 Choose the difficulty level for your CPU players\n" + //
+                                                                " 📌 Easy (1)\n" + //
+                                                                " 📌 Medium (2)\n" + //
+                                                                " 📌 Difficult (3)\n" + //
+                                                                Display.colorString(" ⚜ Enter option ➢ ");
+
+    private static final String LOCAL_MODE_OPTIONS = " 📌 Please select an option.\n" 
+                                                    + " 📌 Play with friends (1)\n"
+                                                    + " 📌 Play with CPU (2)\n" 
+                                                    + Display.colorString(" ⚜ Enter option ➢ ");
+
+    private static final String PLAYER_NO_ERROR_MESSAGE = Display.errorColour(" ❌ A minimum of 2 players and a maximum of 6 players are allowed." 
+                                                                    + "Please enter a number between 2 to 6.");
 
     private static int numOfPlayers;
     private static int numOfCPU;
@@ -55,10 +68,11 @@ public class GameInit {
             // prompts for total players incl cpu
             try {        
                 System.out.println(" 📌 How many players are playing this game? (including any CPU-controlled players you want to be added)"); 
-                System.out.print(Display.colorString(" ➢ Enter the total number of players (2 to 6): "));
+                System.out.print(Display.colorString(" ⚜ Enter the total number of players (2 to 6): "));
                 numOfPlayers = sc.nextInt();
+                System.out.print(Constants.ANSI_RESET);
                 if (numOfPlayers < 2 || numOfPlayers > 6) {
-                    throw new IllegalArgumentException(Display.errorColour(" ❌ A minimum of 2 players and a maximum of 6 players are allowed. Please enter a number between 2 to 6."));
+                    throw new IllegalArgumentException(PLAYER_NO_ERROR_MESSAGE);
                 }
                 break;
             } catch (InputMismatchException e) {
@@ -74,8 +88,9 @@ public class GameInit {
             // prompts for no. of cpu players, ensuring min 1 human player
             try {        
                 System.out.println(" 📌 How many of these players do you want to be controlled by the CPU? "); 
-                System.out.print(Display.colorString(" ➢ Enter the total number of CPU players: "));
+                System.out.print(Display.colorString(" ⚜ Enter the total number of CPU players: "));
                 numOfCPU = sc.nextInt();
+                System.out.print(Constants.ANSI_RESET);
                 if (numOfCPU < 0 || numOfPlayers - numOfCPU < 1) {
                     throw new IllegalArgumentException(Display.errorColour(" ❌ You must have a minimum of one human player. Please enter a number between 0 and " + (numOfPlayers - 1)));
                 }
@@ -96,11 +111,7 @@ public class GameInit {
             while (!validOptionSelected) {
                 System.out.print(Constants.ANSI_RESET);
                 System.out.println(Constants.DIVIDER);
-                System.out.println("Choose the difficulty level for your CPU players");
-                System.out.println(" Easy (1)");
-                System.out.println(" Medium (2)");
-                System.out.println(" Hard (3)");
-                System.out.print(Display.colorString(" ⚜ Enter option ➢ "));
+                System.out.print(GAME_DIFFICULTY_OPTIONS);
                 String s = sc.nextLine();
                 System.out.print(Constants.ANSI_RESET);
                 try {
@@ -115,10 +126,10 @@ public class GameInit {
                     }
                 } catch (NumberFormatException e) {
                     Utility.clearConsoleScreen();
-                    System.out.println(Display.errorColour(Constants.GAME_SELECTION_OPTION_ERROR_MSG));
+                    System.out.println(Display.errorColour(Constants.INVALID_OPTION_ERROR_MSG));
                 } catch (Exception e) {
                     Utility.clearConsoleScreen();
-                    System.out.println(Display.errorColour(Constants.GAME_SELECTION_OPTION_ERROR_MSG));
+                    System.out.println(Display.errorColour(Constants.INVALID_OPTION_ERROR_MSG));
                 }
             }
         }

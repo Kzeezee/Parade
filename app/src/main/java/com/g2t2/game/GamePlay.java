@@ -1,9 +1,19 @@
 package com.g2t2.game;
 
-import com.g2t2.types.*;
-import com.g2t2.util.*;
+import com.g2t2.types.Player;
+import com.g2t2.types.Card;
+import com.g2t2.types.ScoreCalculation;
+import com.g2t2.types.ParadeBoard;
 
-import java.util.*;
+import com.g2t2.util.Constants;
+import com.g2t2.util.Display;
+import com.g2t2.util.Utility;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Comparator;
+import java.util.InputMismatchException;
+import java.util.Scanner; 
 
 /**
  * Class managing all the gamePlay
@@ -21,31 +31,31 @@ public class GamePlay {
         // complete collection (ALL COLOURS)
         while (!ScoreCalculation.meetsGameEndCondition(ParadeBoard.getPlayers().get(previousPlayer),
                 ParadeBoard.getDECK())) {
-            if (!ParadeBoard.getPlayers().get(currentPlayer).getCPU()){
+            if (!ParadeBoard.getPlayers().get(currentPlayer).getCPU()) {
                 playTurn(ParadeBoard.getPlayers().get(currentPlayer), false);
             } else {
                 CPUturn(ParadeBoard.getPlayers().get(currentPlayer), false);
-            }
+            } 
             previousPlayer = currentPlayer;
             currentPlayer = (currentPlayer + 1) % ParadeBoard.getPlayers().size();
         }
         // last round of play
         for (int i = 0; i < ParadeBoard.getPlayers().size(); i++) {
-            if (!ParadeBoard.getPlayers().get(currentPlayer).getCPU()){
+            if (!ParadeBoard.getPlayers().get(currentPlayer).getCPU()) {
                 playTurn(ParadeBoard.getPlayers().get(currentPlayer), true);
             } else {
                 CPUturn(ParadeBoard.getPlayers().get(currentPlayer), true);
-            }
+            } 
             currentPlayer = (currentPlayer + 1) % ParadeBoard.getPlayers().size();
         }
 
         // choose 2 cards in hand to add to collection
         for (int i = 0; i < ParadeBoard.getPlayers().size(); i++) {
-            if (!ParadeBoard.getPlayers().get(currentPlayer).getCPU()){
+            if (!ParadeBoard.getPlayers().get(currentPlayer).getCPU()) {
                 putTwoToCollections(ParadeBoard.getPlayers().get(currentPlayer));
             } else {
                 putTwoToCPUCollections(ParadeBoard.getPlayers().get(currentPlayer));
-            }
+            } 
             currentPlayer = (currentPlayer + 1) % ParadeBoard.getPlayers().size();
         }
         ScoreCalculation.computeScore(ParadeBoard.getPlayers());
@@ -75,23 +85,22 @@ public class GamePlay {
                 System.out.println();
             }
         }
-
-        // StartMenu.showStartMenu();
     }
 
     // choose which card based on CPU difficulty
-    private static Card chooseCPUCard(Player player, int numOfCards){
-        switch (GameInit.getDifficulty()) {
+    private static Card chooseCPUCard(Player player, int numOfCards) {
+        switch (GameInit.getDifficulty()) { 
             // level 1 difficulty: random
             case 1:
-                return player.getCardsOnHand().get((int)(Math.random() * numOfCards));
-            // level 2 difficulty: picks the card that gives back the lowest number of cards from the parade
+                return player.getCardsOnHand().get((int) (Math.random() * numOfCards));
+            // level 2 difficulty: picks the card that gives back the lowest number of cards
+            // from the parade
             case 2:
                 return chooseMediumDifficultyCard(player);
             case 3:
                 return chooseHardDifficultyCard(player);
             default:
-                return player.getCardsOnHand().get((int)(Math.random() * numOfCards));
+                return player.getCardsOnHand().get((int) (Math.random() * numOfCards));
         }
     }
 
@@ -113,18 +122,18 @@ public class GamePlay {
     private static Card chooseHardDifficultyCard(Player player) {
         ArrayList<Card> hand = player.getCardsOnHand();
         int lowestPoints = Integer.MAX_VALUE;
-        Card bestCard = null;
-        
+        Card bestCard = null; 
+
         for (Card card : hand) {
             ArrayList<Card> collectableCards = getCollectableCards(card);
             int totalPoints = calculateTotalPoints(collectableCards);
-            
+
             if (totalPoints < lowestPoints) {
                 lowestPoints = totalPoints;
                 bestCard = card;
             }
         }
-        
+
         return bestCard;
     }
 
@@ -178,7 +187,6 @@ public class GamePlay {
 
     private static void playTurn(Player player, boolean isLastRound) {
         // clear the console
-        
         Utility.clearConsoleScreen();
         System.out.println(Constants.BANNER);
         System.out.println(Constants.DIVIDER);
@@ -192,18 +200,23 @@ public class GamePlay {
             }
             System.out.println(Constants.DIVIDER);
 
-            displayHandCards(player);
+        displayHandCards(player); 
 
-            String prompt = String.format(Constants.ANSI_RESET + " 📌 Which card do you want to place in the Parade?%n");
-            Card chosenCard = promptForCard(prompt, player);
-            System.out.println(Constants.ANSI_RESET);
-            player.getCardsOnHand().remove(chosenCard);
+        String prompt = String.format(Constants.ANSI_RESET + " 📌 Which card do you want to place in the Parade?%n");
+        Card chosenCard = promptForCard(prompt, player);
+        System.out.println(Constants.ANSI_RESET); 
+        player.getCardsOnHand().remove(chosenCard);
 
             ArrayList<Card> cardsCollected = adjustParadeBoard(chosenCard);
             addToCollection(cardsCollected, player);
             if (!isLastRound) {
                 player.drawCard(ParadeBoard.getDECK());
-            }        
+            }     
+    }
+
+    private static void printPlayerTurn(String name, int playerId) {
+        System.out.println(" 📌 Currently, it is player " + Display
+                    .colorString(name + "(" + playerId + ")" + Constants.ANSI_RESET + " turn."));
     }
 
     // CPU version of playTurn() method
@@ -214,19 +227,13 @@ public class GamePlay {
         displayCollections();
         displayParade();
 
-        System.out.println(" 📌 Currently, it is player " + Display.colorString(player.getName() 
-            + Constants.ANSI_RESET + " turn."));
+        printPlayerTurn(player.getName(), player.getPlayerId());
             if (isLastRound) {
                 System.out.println(" ⚜ " + Display.colorString(" 📌 LAST ROUND 📌 ") + Constants.ANSI_RESET);
             }
             System.out.println(Constants.DIVIDER);
-            System.out.println(" 📌 Player " + Display.colorString(player.getName() 
-            + Constants.ANSI_RESET + " is choosing their card."));
-            try {
-                Thread.sleep(2000);  
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Display.delayPrint(" 📌 Player " + Display.colorString(player.getName() 
+            + Constants.ANSI_RESET + " is choosing their card."),30);
 
             Card chosenCard = chooseCPUCard(player, 5);
             System.out.println(Constants.ANSI_RESET);
@@ -247,7 +254,8 @@ public class GamePlay {
         while (true) {
             try {
                 System.out.print(prompt);
-                System.out.print(Display.colorString(" ⚜ Choose card number (1 to " + numOfCards + ") or 'q' to quit ➢ "));
+                System.out.print(
+                        Display.colorString(" ⚜ Choose card number (1 to " + numOfCards + ") or 'q' to quit ➢ "));
                 // int chosenCardIndex = sc.nextInt() - 1;
                 String chosenCardString = sc.nextLine();
                 if (chosenCardString.equalsIgnoreCase("q")) {
@@ -280,21 +288,23 @@ public class GamePlay {
             }
         }
         return chosenCard;
-
     }
 
     // function to prompt for selected cards and add to the Collections from hand
     private static void addSelectedCardsToParade(Player player) {
         ArrayList<Card> cardsSelected = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) { // prompt for 2 cards and add to collection
             displayHandCards(player);
-            String prompt = Display.colorString(" 📌 Which card do you want to place in the Parade?\n" +
+
+            String prompt = Display.colorString(" 📌 Which card do you want to place in the Collection?\n" +
                     " 📌 You need to choose TWO cards \n" +
                     " ⚜ Card " + (i + 1) + " :");
             Card selectedCard = promptForCard(prompt, player);
+
             player.getCardsOnHand().remove(selectedCard);
             player.getCardsInCollection().add(selectedCard);
             cardsSelected.add(selectedCard);
+
             System.out.println(Constants.DIVIDER);
         }
     }
@@ -317,8 +327,8 @@ public class GamePlay {
         ParadeBoard.getParade().add(inputCard);
         return toCollection;
     }
-
-    //Returns the collectable cards of a card to be placed. 
+ 
+    // Returns the collectable cards of a card to be placed.
     private static ArrayList<Card> getCollectableCards(Card inputCard) {
         int cardValue = inputCard.getValue();
         ArrayList<Card> collectableCards = new ArrayList<>();
@@ -333,6 +343,8 @@ public class GamePlay {
         return collectableCards;
     }
 
+
+    // return whether the card in parade is collectible based on the input card
     private static boolean isCollectable(Card input, Card inParade) {
         if (input.getColour().equals(inParade.getColour())) {
             return true;
@@ -345,6 +357,7 @@ public class GamePlay {
         return false;
     }
 
+    // add the card to the player's collection
     private static void addToCollection(ArrayList<Card> cardsToAdd, Player player) {
         for (Card c : cardsToAdd) {
             player.getCardsInCollection().add(c);
@@ -355,7 +368,8 @@ public class GamePlay {
     private static void displayCollections() {
         for (Player p : ParadeBoard.getPlayers()) {
             System.out.println(
-                    Display.colorString("「 ✦ CARDS IN " + p.getName() + "(" + p.getPlayerId() + ") COLLECTION ✦ ") + Constants.ANSI_RESET);
+                    Display.colorString("「 ✦ CARDS IN " + p.getName() + "(" + p.getPlayerId() + ") COLLECTION ✦ ")
+                            + Constants.ANSI_RESET);
             Display.displayAllStacks(p.getCardsInCollection());
         }
     }
@@ -376,13 +390,14 @@ public class GamePlay {
         System.out.println(Constants.DIVIDER);
     }
 
+    // display the scores of the players and rank them in ascending order
     private static void displayScores(ArrayList<Player> players) {
-
         System.out.println(Constants.DIVIDER);
         System.out.println(Display.colorString("「 ✦ RANKING ✦ 」") + Constants.ANSI_RESET);
-        // Sort players by score in ascending order (lowest score first)
+
+        // Sort players by score
         List<Player> sortedPlayers = players.stream()
-                .sorted(Comparator.comparingInt(Player::getScore)) // Sort by score in ascending order
+                .sorted(Comparator.comparingInt(Player::getScore))
                 .toList();
 
         // Assign ranks based on sorted order
