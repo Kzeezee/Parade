@@ -29,7 +29,6 @@ public class Client implements Runnable, Serializable {
     private transient ObjectInputStream objectInputStream;
 
     private String username;
-    private String gameId;
 
     public Client(Socket socket, String username) {
         try {
@@ -75,19 +74,17 @@ public class Client implements Runnable, Serializable {
     }
 
     private String generateGameId() {
+        long timestamp = Instant.now().getEpochSecond();
         Random random = new Random();
         String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        long timestamp = Instant.now().getEpochSecond();
         StringBuilder randomPart = new StringBuilder();
-
         for (int i = 0; i < 4; i++) { // Generate 4 random characters
             randomPart.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
         }
-
         return "G" + timestamp + "-" + randomPart; // Format: G<timestamp>-<random>
     }
 
-    public void sendClient() {
+    private void sendClient() {
         try {
             objectOutputStream.writeObject(this);
             objectOutputStream.flush();
@@ -100,32 +97,44 @@ public class Client implements Runnable, Serializable {
         return username;
     }
 
-    public String getGameId() {
-        return gameId;
+    private void sendGameState(GameState gameState) {
+        try {
+            objectOutputStream.writeObject(gameState);
+            objectOutputStream.flush();
+        } catch (IOException e) {
+            closeEverything(socket, objectInputStream, objectOutputStream);
+        } 
     }
 
     private void createGame() {
-        // NOT COMPLETED
         String generatedGameId = generateGameId();
         GameState game = new GameState(generatedGameId);
         new Player(username, ParadeBoard.getDECK(), false);
-        this.gameId = generatedGameId;
         sendClient(); // to update ClientHandler information
-
+        sendGameState(game);
     }
 
     private void joinGame() {
         // NOT COMPLETED
         System.out.println("Success");
-        // Scanner sc = new Scanner(System.in);
-        // String input = null;
+        Scanner sc = new Scanner(System.in);
+        String input = null;
         // while () {
         //     System.out.println(" 📌 To join a game, enter the gameId");
         //     System.out.print(Display.colorString(" ➢ Enter gameId: "));
         //     input = sc.nextLine();
-        // }
+            
+        //     // send to ClientHandler 
+        //     objectOutputStream.writeObject(new Message(input));
+        //     objectOutputStream.flush();
+            
+        //}
+    }
+
+    private static void waitingArea() {
 
     }
+
 
     private void listenForMessage() {
         

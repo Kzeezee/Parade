@@ -1,13 +1,8 @@
 package com.g2t2.network;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Serializable;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +15,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     
      // keep track of all the clients - to send msg to all of them (broadcast to all)
     public static Map<String, List<ClientHandler>> clientHandlers = new HashMap<>();
+    public static List<GameState> availableGames = new ArrayList<>();
     private Socket socket;
 
     // private BufferedReader bufferedReader; // used to read data 
@@ -61,11 +57,16 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                 if (incomingObject instanceof Client client) {
                     // complete the initialisation after Client has joined a game
                     clientName = client.getUsername();
-                    gameId = client.getGameId();
-                    System.out.println(clientName + " | " + gameId); // testing
+                    System.out.println(clientName); // testing
 
                 } else if (incomingObject instanceof GameState gameState) {
-                    broadcastGameStatus(gameState);
+                    if (!availableGames.contains(gameState)) { // first time. Creating the game.
+                        availableGames.add(gameState);
+                        gameId = gameState.getGameId();
+                    } else {
+                        broadcastGameStatus(gameState);
+                    }
+                    
                 }
             } catch (IOException e) {
                 closeEverything(socket, objectInputStream, objectOutputStream);
