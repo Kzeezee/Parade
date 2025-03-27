@@ -55,7 +55,10 @@ public class Client implements Runnable {
                 System.out.println(Display.errorColour(" ❌ Please input either " +
                 Constants.CREATE_GAME + " or " + Constants.JOIN_GAME));
                 System.out.println();
+                continue; // reprompt the user
             }
+
+            //shift to waiting area
         }
     }
 
