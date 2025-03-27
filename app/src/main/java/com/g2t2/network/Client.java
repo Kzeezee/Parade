@@ -58,7 +58,7 @@ public class Client implements Runnable {
                 continue; // reprompt the user
             }
 
-            //shift to waiting area
+            waitingArea();
         }
     }
 
@@ -229,6 +229,16 @@ public class Client implements Runnable {
         }
     }
 
+    private void printPlayerList(GameState game) {
+        for (Player player : game.getPlayers()) {
+            System.out.println(player.getName());
+        }
+    }
+
+    private void renderGame() {
+
+    }
+
     @Override
     public void run() {
         listenForMessage();
@@ -258,6 +268,8 @@ public class Client implements Runnable {
         String username = sc.nextLine();
         Socket socket = new Socket("localhost", 1234);
         Client client = new Client(socket, username);
+        // send name to clientHandler
+        client.sendMessage(username);
         StartMenu.showStartMenu();
 
         // Starting the Thread

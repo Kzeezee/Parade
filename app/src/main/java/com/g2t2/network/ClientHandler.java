@@ -21,6 +21,8 @@ public class ClientHandler implements Runnable { // allows instances to be execu
             objectInputStream = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
             closeEverything(socket, objectInputStream, objectOutputStream);
+        } catch (ClassNotFoundException e) {
+            closeEverything(socket, objectInputStream, objectOutputStream);
         }
     }
 
