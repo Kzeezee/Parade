@@ -3,7 +3,6 @@ package com.g2t2.network;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.net.Socket;
 import java.time.Instant;
 import java.util.Random;
@@ -23,7 +22,7 @@ public class Client implements Runnable {
     private ObjectInputStream objectInputStream;
 
     private String username;
-    private boolean isInGame = false;
+    private boolean isPlayingGame = false;
 
     public Client(Socket socket, String username) {
         try {
@@ -95,7 +94,7 @@ public class Client implements Runnable {
 
     private void addPlayerToGame(GameState game) {
         game.addPlayer(new Player(username, game.getDeck(), false));
-        isInGame = true;
+        isPlayingGame = true;
     }
 
     private void createGame() {
@@ -108,7 +107,7 @@ public class Client implements Runnable {
     private void joinGame() {
         Scanner sc = new Scanner(System.in);
         String input = null;
-        while (!isInGame) {
+        while (!isPlayingGame) {
             System.out.println();
             System.out.println(" 📌 To join a game, enter the gameId");
             System.out.print(Display.colorString(" ➢ Enter gameId: "));
@@ -129,7 +128,7 @@ public class Client implements Runnable {
             try {
                 Object incomingObject = objectInputStream.readObject();
                 if (incomingObject instanceof GameState game) {
-                    if (!isInGame) {
+                    if (!isPlayingGame) {
                         // add to game
                         addPlayerToGame(game);
                         sendGameState(game);

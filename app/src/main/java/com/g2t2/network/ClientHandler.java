@@ -20,22 +20,14 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
     private String clientName;
-    private String gameId;
+    private String gameId; // used to check what game the player is playing
 
     public ClientHandler(Socket socket) {
         try {
             this.socket = socket;
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
-
-            Object incomingObject = objectInputStream.readObject();
-            if (incomingObject instanceof Message msg) {
-                clientName = msg.getMessage();
-            }
-
         } catch (IOException e) {
-            closeEverything(socket, objectInputStream, objectOutputStream);
-        } catch (ClassNotFoundException e) {
             closeEverything(socket, objectInputStream, objectOutputStream);
         }
     }
@@ -49,7 +41,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                 if (incomingObject instanceof GameState gameState) {
                     if (!availableGames.contains(gameState)) { // first time. Creating the game.
                         availableGames.add(gameState);
-                        gameId = gameState.getGameId();
+                        gameId = gameState.getGameId(); // PUT FOR JOIN
                         System.out.println(gameId); // testing
 
                     } else { // game started
@@ -57,10 +49,16 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                     }
     
                 } else if (incomingObject instanceof Message messageToProcess) {
-                    // finding the correct game
-                    for (GameState game : availableGames) {
-                        if (checkGameId(game, messageToProcess.getMessage())) {
-                            sendGameState(game);
+                    if (clientName == null) { // setting name on first message
+                        clientName = messageToProcess.getMessage();
+                        System.out.println(clientName);
+                        
+                    } else {
+                        // finding the correct game
+                        for (GameState game : availableGames) {
+                            if (checkGameId(game, messageToProcess.getMessage())) {
+                                sendGameState(game);
+                            }
                         }
                     }
                 }
