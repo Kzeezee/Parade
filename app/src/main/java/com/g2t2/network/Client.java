@@ -1,7 +1,5 @@
 package com.g2t2.network;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,36 +11,25 @@ import java.util.Scanner;
 
 import com.g2t2.game.GameState;
 import com.g2t2.game.StartMenu;
-import com.g2t2.types.ParadeBoard;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
+import com.g2t2.util.Utility;
 
 
-public class Client implements Runnable, Serializable {
-    private transient Socket socket;
-
-    // private BufferedReader bufferedReader;
-    // private BufferedWriter bufferedWriter;
-
-    private transient ObjectOutputStream objectOutputStream;
-    private transient ObjectInputStream objectInputStream;
+public class Client implements Runnable {
+    private Socket socket;
+    private ObjectOutputStream objectOutputStream;
+    private ObjectInputStream objectInputStream;
 
     private String username;
+    private boolean isInGame = false;
 
     public Client(Socket socket, String username) {
         try {
             this.socket = socket;
-
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            objectInputStream = new ObjectInputStream(socket.getInputStream());
-
-            // MySerializableClass obj = new MySerializableClass();
-            // objectOutputStream.writeObject(obj);
-            // objectOutputStream.flush();
-
-            // bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())); 
-            // bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
+            objectInputStream = new ObjectInputStream(socket.getInputStream()); 
 
             this.username = username;
         } catch (IOException e) {
@@ -69,7 +56,7 @@ public class Client implements Runnable, Serializable {
                 continue; // reprompt the user
             }
 
-            //shift to waiting area
+            waitingArea();
         }
     }
 
@@ -82,15 +69,6 @@ public class Client implements Runnable, Serializable {
             randomPart.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
         }
         return "G" + timestamp + "-" + randomPart; // Format: G<timestamp>-<random>
-    }
-
-    private void sendClient() {
-        try {
-            objectOutputStream.writeObject(this);
-            objectOutputStream.flush();
-        } catch (IOException e) {
-            closeEverything(socket, objectInputStream, objectOutputStream);
-        } 
     }
 
     public String getUsername() {
@@ -106,47 +84,80 @@ public class Client implements Runnable, Serializable {
         } 
     }
 
+    private void sendMessage(String msg) {
+        try {
+            objectOutputStream.writeObject(new Message(msg));
+            objectOutputStream.flush();
+        } catch (IOException e) {
+            closeEverything(socket, objectInputStream, objectOutputStream);
+        } 
+    }
+
+    private void addPlayerToGame(GameState game) {
+        game.addPlayer(new Player(username, game.getDeck(), false));
+        isInGame = true;
+    }
+
     private void createGame() {
         String generatedGameId = generateGameId();
         GameState game = new GameState(generatedGameId);
-        new Player(username, ParadeBoard.getDECK(), false);
-        sendClient(); // to update ClientHandler information
+        addPlayerToGame(game);
         sendGameState(game);
     }
 
     private void joinGame() {
-        // NOT COMPLETED
-        System.out.println("Success");
         Scanner sc = new Scanner(System.in);
         String input = null;
-        // while () {
-        //     System.out.println(" 📌 To join a game, enter the gameId");
-        //     System.out.print(Display.colorString(" ➢ Enter gameId: "));
-        //     input = sc.nextLine();
+        while (!isInGame) {
+            System.out.println();
+            System.out.println(" 📌 To join a game, enter the gameId");
+            System.out.print(Display.colorString(" ➢ Enter gameId: "));
+            input = sc.nextLine();
             
-        //     // send to ClientHandler 
-        //     objectOutputStream.writeObject(new Message(input));
-        //     objectOutputStream.flush();
-            
-        //}
+            // send to ClientHandler to request to join
+            sendMessage(input);
+        }
     }
 
     private static void waitingArea() {
-
+        Utility.clearConsoleScreen();
+        System.out.println(Constants.WAITING_LOBBY_BANNER);
     }
 
-
     private void listenForMessage() {
-        
         while (socket.isConnected()) {
             try {
                 Object incomingObject = objectInputStream.readObject();
+                if (incomingObject instanceof GameState game) {
+                    if (!isInGame) {
+                        // add to game
+                        addPlayerToGame(game);
+                        sendGameState(game);
+                    } else if (!game.hasStarted()){
+                        // means still in waiting room
+                        System.out.println(" 📌 GAME ID: " + game.getGameId());
+                        printPlayerList(game);
+
+                    } else {
+                        // render game  
+                    }
+                }
             } catch (IOException e) {
                 closeEverything(socket, objectInputStream, objectOutputStream);
             } catch (ClassNotFoundException e) {
                 closeEverything(socket, objectInputStream, objectOutputStream);
             }
         }
+    }
+
+    private void printPlayerList(GameState game) {
+        for (Player player : game.getPlayers()) {
+            System.out.println(player.getName());
+        }
+    }
+
+    private void renderGame() {
+
     }
 
     @Override
@@ -178,6 +189,8 @@ public class Client implements Runnable, Serializable {
         String username = sc.nextLine();
         Socket socket = new Socket("localhost", 1234);
         Client client = new Client(socket, username);
+        // send name to clientHandler
+        client.sendMessage(username);
         StartMenu.showStartMenu();
 
         // Starting the Thread

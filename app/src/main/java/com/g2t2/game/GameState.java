@@ -1,7 +1,7 @@
 package com.g2t2.game;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.*;
 
 import com.g2t2.types.*;
 
@@ -10,14 +10,14 @@ import com.g2t2.types.*;
  * ie. num of player, GameId, who is the gameMaster, the paradeboard, and deck
  */
 public class GameState implements Serializable { // to allow it to be sent over
-    private static final long serialVersionUID = 1L; // Define serialVersionUID
     private int numOfPlayers;
     private String gameId;
     private Player gameMaster;
 
-    private ArrayList<Player> players = new ArrayList<>();
-    private ArrayList<Card> parade = new ArrayList<>();
+    private List<Player> players = new ArrayList<>();
+    private List<Card> parade = new ArrayList<>();
     private CardDeck deck = new CardDeck();
+    private boolean hasStarted = false;
 
     public GameState(String gameId) {
         this.gameId = gameId;
@@ -32,39 +32,47 @@ public class GameState implements Serializable { // to allow it to be sent over
         }
     }
 
-    public int getNumOfPlayers() {
-        return numOfPlayers;
-    }
+    // public int getNumOfPlayers() {
+    //     return numOfPlayers;
+    // }
 
-    public ArrayList<Player> getPlayers() {
+    public List<Player> getPlayers() {
         return players;
     }
 
-    public void setPlayers(ArrayList<Player> players) {
-        this.players = players;
-    }
+    // public void setPlayers(List<Player> players) {
+    //     this.players = players;
+    // }
 
     public String getGameId() {
         return gameId;
     }
 
-    public Player getGameMaster() {
-        return gameMaster;
+    // public Player getGameMaster() {
+    //     return gameMaster;
+    // }
+
+    // public void setGameMaster(Player gameMaster) {
+    //     this.gameMaster = gameMaster;
+    // }
+
+    public boolean hasStarted() {
+        return hasStarted;
     }
 
-    public void setGameMaster(Player gameMaster) {
-        this.gameMaster = gameMaster;
+    public void setHasStarted(boolean hasStarted) {
+        this.hasStarted = hasStarted;
     }
 
     public CardDeck getDeck() {
         return deck;
     }
 
-    public ArrayList<Card> getParade() {
+    public List<Card> getParade() {
         return parade;
     }
 
-    public void setParade(ArrayList<Card> parade) {
+    public void setParade(List<Card> parade) {
         this.parade = parade;
     }
 }

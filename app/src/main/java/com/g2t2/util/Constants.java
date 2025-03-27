@@ -23,7 +23,7 @@ public class Constants {
     public static final String WELCOMEMESSAGE_STRING = " ⚜ Welcome to G2T2 Parade! Please select an option. (1 or 3 for now)";
     public static final String GAME_SELECTION_OPTION_ERROR_MSG = " ❌ Please choose a valid option!";
     public static final String DIVIDER = "\033[90m" +
-            "─────────────────────────────────────── ⚜ ──────────────────────────────────────────" + ANSI_RESET;
+        "─────────────────────────────────────── ⚜ ──────────────────────────────────────────" + ANSI_RESET;
 
     public static final String BANNER = String.format(CardColour.BLUE.getAnsiCode() +
             "                              ┌──────── ⚜ ───────┐\n" + //
@@ -34,6 +34,11 @@ public class Constants {
     public static final String ONLINE_LOBBY_BANNER = String.format(CardColour.BLUE.getAnsiCode() +
         "                              ┌──────── ⚜ ───────┐\n" + //
         "                              │   ONLINE  LOBBY  │\n" + //
+        "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
+
+    public static final String WAITING_LOBBY_BANNER = String.format(CardColour.BLUE.getAnsiCode() +
+        "                              ┌──────── ⚜ ───────┐\n" + //
+        "                              │  WAITING  LOBBY  │\n" + //
         "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
 
     // public static final String BANNER =
