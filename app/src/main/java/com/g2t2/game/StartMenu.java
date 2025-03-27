@@ -1,13 +1,16 @@
 package com.g2t2.game;
 
-import java.util.*;
+import java.util.Scanner;
+import java.util.List;
+import java.util.InputMismatchException;
 
-import com.g2t2.enums.CardColour;
-import com.g2t2.types.ParadeBoard;
-import com.g2t2.types.Player;
 import com.g2t2.types.PlayerProfile;
-import com.g2t2.util.*;
+import com.g2t2.util.Constants;
+import com.g2t2.util.Display;
+import com.g2t2.util.StateFlags;
+import com.g2t2.util.Utility;
 import com.g2t2.util.db.DBController;
+
 
 /**
  * Class handling the main menu of the application
@@ -16,7 +19,10 @@ import com.g2t2.util.db.DBController;
  * @author Oliver
  */
 public class StartMenu {
-
+    private static final String WELCOMEMESSAGE_STRING = " ⚜ Welcome to G2T2 Parade! Please select an option. (1 or 3 for now)";
+    private static final String GAMEPLAY_OPTIONS = " 📌 Play local (1)\n" + " 📌 Play online (2)\n"
+                                                   + " 📌 Exit application (3)\n" 
+                                                   + Display.colorString(" ⚜ Enter option ➢ ");
     /**
      * Main method to display the start menu of the application
      * 
@@ -41,8 +47,8 @@ public class StartMenu {
      * @author Oliver
      */
     public static void selectPlayerProfile(List<PlayerProfile> players) {
-        System.out.println(Constants.ANSI_RESET);
-        System.out.println(Constants.BANNER);
+        // System.out.println(Constants.ANSI_RESET);
+        // System.out.println(Constants.BANNER);
         System.out.println(Constants.DIVIDER);
         Scanner sc = new Scanner(System.in);
 
@@ -52,7 +58,7 @@ public class StartMenu {
                     i + 1);
         }
         System.out.println("\n\n\n");
-
+        System.out.println(Constants.DIVIDER);
         System.out.println(" 📌 Select your Parade profile (" + 1 + "-" + players.size() + ")");
         boolean validOptionSelected = false;
         while (!validOptionSelected) {
@@ -62,7 +68,7 @@ public class StartMenu {
                 System.out.print(Constants.ANSI_RESET);
                 int option = Integer.parseInt(s);
                 if (option > players.size() || option <= 0) {
-                    throw new NumberFormatException("No such player profile");
+                    throw new NumberFormatException(Display.errorColour("No such player profile"));
                 }
 
                 validOptionSelected = true;
@@ -87,14 +93,12 @@ public class StartMenu {
 
         boolean validOptionSelected = false;
         while (!validOptionSelected) {
+            Utility.clearConsoleScreen();
             System.out.println(Constants.ANSI_RESET);
             System.out.println(Constants.BANNER);
             System.out.println(Constants.DIVIDER);
-            System.out.println(Constants.WELCOMEMESSAGE_STRING);
-            System.out.println(" 📌 Play local (1)");
-            System.out.println(" 📌 Play online (2)");
-            System.out.println(" 📌 Exit application (3)");
-            System.out.print(Display.colorString(" ⚜ Enter option ➢ "));
+            System.out.println(WELCOMEMESSAGE_STRING);
+            System.out.print(GAMEPLAY_OPTIONS);
             String s = sc.nextLine();
             System.out.print(Constants.ANSI_RESET);
             try {
@@ -118,19 +122,20 @@ public class StartMenu {
                 }
             } catch (NumberFormatException e) {
                 Utility.clearConsoleScreen();
-                System.out.println(Display.errorColour(Constants.GAME_SELECTION_OPTION_ERROR_MSG));
+                System.out.println(Display.errorColour(Constants.INVALID_OPTION_ERROR_MSG));
             } catch (Exception e) {
                 Utility.clearConsoleScreen();
-                System.out.println(Display.errorColour(Constants.GAME_SELECTION_OPTION_ERROR_MSG));
+                System.out.println(Display.errorColour(Constants.INVALID_OPTION_ERROR_MSG));
             }
         }
     }
 
     private static void checkForPlayerProfiles() {
+        Utility.clearConsoleScreen();
         System.out.println(Constants.ANSI_RESET);
         System.out.println(Constants.BANNER);
         System.out.println(Constants.DIVIDER);
-        System.out.println("Loading in progress...");
+        Display.delayPrint("Loading in progress...", 30);
         System.out.println(Constants.ANSI_RESET);
 
         // DB search what profiles exist
@@ -145,6 +150,7 @@ public class StartMenu {
     }
 
     private static void showPlayerProfileCreation() {
+        Utility.clearConsoleScreen();
         System.out.println(Constants.ANSI_RESET);
         System.out.println(Constants.BANNER);
         System.out.println(Constants.DIVIDER);
@@ -156,7 +162,7 @@ public class StartMenu {
         String name = "";
         while (true) {
             try {
-                System.out.print(Display.colorString(" ➢ Enter your name: "));
+                System.out.print(Display.colorString(" ⚜ Enter your name: "));
                 name = sc.nextLine();
                 if (name.isEmpty()) {
                     throw new InputMismatchException(" 📌 Please enter an appropriate name.");

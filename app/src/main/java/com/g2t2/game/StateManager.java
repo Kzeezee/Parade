@@ -1,7 +1,5 @@
 package com.g2t2.game;
 
-import java.util.Scanner;
-
 import com.g2t2.types.PlayerProfile;
 
 public class StateManager {
