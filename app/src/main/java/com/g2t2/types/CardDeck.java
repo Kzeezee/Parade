@@ -2,6 +2,7 @@ package com.g2t2.types;
 
 import com.g2t2.enums.CardColour;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -9,7 +10,7 @@ import java.util.*;
  * @author Ben
  */
 
-public class CardDeck {
+public class CardDeck implements Serializable {
 
     private ArrayList<Card> deck;
 

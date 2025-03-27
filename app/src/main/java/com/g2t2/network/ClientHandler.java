@@ -65,6 +65,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                     }
                 } else if (incomingObject instanceof Player player) {
                     currentPlayer = player;
+                    System.out.println(currentPlayer.getName() + " | " + currentPlayer.getPlayerId());
                 }
             } catch (IOException e) {
                 System.out.println("Something happened----");

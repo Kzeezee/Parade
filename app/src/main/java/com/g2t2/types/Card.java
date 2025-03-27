@@ -3,6 +3,7 @@ package com.g2t2.types;
 import com.g2t2.enums.CardColour;
 import com.g2t2.util.Constants;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Objects;
  * 
  * @author Oliver
  */
-public class Card implements Comparable<Card> {
+public class Card implements Comparable<Card>, Serializable {
     private int value;
     private CardColour colour;
 

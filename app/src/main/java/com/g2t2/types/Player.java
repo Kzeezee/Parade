@@ -14,8 +14,8 @@ public class Player implements Serializable {
     private static int numOfPlayers; // automatically increases whenever a player is created
     private int playerId; // autoassigned based on the number of players
     private String name;
-    private transient ArrayList<Card> cardsOnHand;
-    private transient ArrayList<Card> cardsInCollection;
+    private ArrayList<Card> cardsOnHand;
+    private ArrayList<Card> cardsInCollection;
     private int score;
     private boolean isCPU;
 
