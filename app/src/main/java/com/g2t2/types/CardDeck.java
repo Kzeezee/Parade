@@ -4,7 +4,6 @@ import com.g2t2.enums.CardColour;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.ArrayList;
 
 /**
  * CardDeck class, modelling the deck of Parade cards.
