@@ -34,13 +34,9 @@ public class Server {
         }
     }
 
-    public void stopServer() {
-        isRunning = false;
-        closeServerSocket();
-    }
-
     // shutting down the serverSocket
     private void closeServerSocket() { 
+        isRunning = false;
         try {
             if (serverSocket != null) {
                 serverSocket.close();

@@ -36,7 +36,7 @@ public class Client implements Runnable {
 
     private void joinOrCreateGame() {
         Scanner sc = new Scanner(System.in);
-        while (true) {
+        while (!isPlayingGame) {
             System.out.println(" 📌 To create a game, enter: '" + Constants.CREATE_GAME + "'");
             System.out.println(" 📌 To join a game, enter: '" + Constants.JOIN_GAME + "'");
             System.out.print(Display.colorString(" ➢ Enter your choice: "));
@@ -50,11 +50,9 @@ public class Client implements Runnable {
                 System.out.println(Display.errorColour(" ❌ Please input either " +
                 Constants.CREATE_GAME + " or " + Constants.JOIN_GAME));
                 System.out.println();
-                continue; // reprompt the user
             }
-
-            waitingArea();
         }
+        goTowaitingArea();
     }
 
     private String generateGameId() {
@@ -85,7 +83,7 @@ public class Client implements Runnable {
     private void joinGame() {
         Scanner sc = new Scanner(System.in);
         String input = null;
-        while (!isPlayingGame) {
+        while (!isPlayingGame) {  // TO ADJUST CONDITIONAL
             System.out.println();
             System.out.println(" 📌 To join a game, enter the gameId");
             System.out.print(Display.colorString(" ➢ Enter gameId: "));
@@ -96,7 +94,7 @@ public class Client implements Runnable {
         }
     }
 
-    private static void waitingArea() {
+    private static void goTowaitingArea() {
         Utility.clearConsoleScreen();
         System.out.println(Constants.WAITING_LOBBY_BANNER);
     }
@@ -138,20 +136,25 @@ public class Client implements Runnable {
         } 
     }
 
+    private void printWaitingRoomDetails(GameState game) {
+        Utility.clearConsoleScreen();
+        System.out.println(Constants.WAITING_LOBBY_BANNER);
+        System.out.println(" 📌 GAME ID: " + game.getGameId());
+        printPlayerList(game);
+    }
+
     private void listenForMessage() {
         while (socket.isConnected()) {
             try {
                 Object incomingObject = objectInputStream.readObject();
                 if (incomingObject instanceof GameState game) {
                     if (!isPlayingGame) {
-                        // add to game
+                        // add to game -> join by gameId
                         addPlayerToGame(game);
                         sendGameState(game);
                     } else if (!game.hasStarted()){
                         // means still in waiting room
-                        System.out.println(" 📌 GAME ID: " + game.getGameId());
-                        printPlayerList(game);
-
+                        printWaitingRoomDetails(game);
                     } else {
                         // render game  
                     }
@@ -200,7 +203,6 @@ public class Client implements Runnable {
         // Starting the Thread
         Thread thread = new Thread(client);
         thread.start();
-
         client.joinOrCreateGame();
     }
 }

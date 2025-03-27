@@ -40,16 +40,18 @@ public class ClientHandler implements Runnable { // allows instances to be execu
             try {
                 Object incomingObject = objectInputStream.readObject();
                 if (incomingObject instanceof GameState gameState) {
-                    if (!availableGames.contains(gameState)) { // first time. Creating the game.
-                        availableGames.add(gameState);
-                        clientHandlers.put(gameState, new ArrayList<>());
-                        System.out.println("MAP AND LIST CREATED");
-
-                    } else if (!gameState.hasStarted()) {
-                         // waiting lobby
+                    if (!gameState.hasStarted()) { 
+                        // waiting lobby
+                        if (!availableGames.contains(gameState)) {// first time. Adding game to Map
+                            availableGames.add(gameState);
+                            clientHandlers.put(gameState, new ArrayList<>());
+                            // System.out.println("MAP AND LIST CREATED");
+                            
+                        }
                         currentGameState = gameState;
                         clientHandlers.get(gameState).add(this);
                         System.out.println("MADE IT TO WAITING ROOM: " + gameState.getGameId()); // testing
+                        broadcastGameStatus(gameState);
 
                     } else {
                         // game started
@@ -65,7 +67,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                     }
                 } else if (incomingObject instanceof Player player) {
                     currentPlayer = player;
-                    System.out.println(currentPlayer.getName() + " | " + currentPlayer.getPlayerId());
+                    // System.out.println(currentPlayer.getName() + " | " + currentPlayer.getPlayerId());
                 }
             } catch (IOException e) {
                 System.out.println("Something happened----");
@@ -96,9 +98,8 @@ public class ClientHandler implements Runnable { // allows instances to be execu
 
     // send gameStatus to all players in the game
     private void broadcastGameStatus(GameState gameState) {
-        String currentGameId = gameState.getGameId();
-        for (ClientHandler clientHandler : clientHandlers.get(currentGameId)) {
-            sendGameState(gameState);
+        for (ClientHandler clientHandler : clientHandlers.get(gameState)) {
+            clientHandler.sendGameState(gameState);
         }
     }
 
