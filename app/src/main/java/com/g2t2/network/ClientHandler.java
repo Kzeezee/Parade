@@ -10,17 +10,18 @@ import java.util.List;
 import java.util.Map;
 
 import com.g2t2.game.GameState;
+import com.g2t2.types.Player;
 
 public class ClientHandler implements Runnable { // allows instances to be executed by a separate thread
     
     // keep track of all the clients - to send msg to all of them (broadcast to all)
-    public static Map<String, List<ClientHandler>> clientHandlers = new HashMap<>();
+    public static Map<GameState, List<ClientHandler>> clientHandlers = new HashMap<>();
     public static List<GameState> availableGames = new ArrayList<>();
     private Socket socket;
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
-    private String clientName;
-    private String gameId; // used to check what game the player is playing
+    private Player currentPlayer; // to know the message is from who
+    private GameState currentGameState; // used to check what game the player is playing
 
     public ClientHandler(Socket socket) {
         try {
@@ -41,28 +42,32 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                 if (incomingObject instanceof GameState gameState) {
                     if (!availableGames.contains(gameState)) { // first time. Creating the game.
                         availableGames.add(gameState);
-                        gameId = gameState.getGameId(); // PUT FOR JOIN
-                        System.out.println(gameId); // testing
+                        clientHandlers.put(gameState, new ArrayList<>());
+                        System.out.println("MAP AND LIST CREATED");
 
-                    } else { // game started
+                    } else if (!gameState.hasStarted()) {
+                         // waiting lobby
+                        currentGameState = gameState;
+                        clientHandlers.get(gameState).add(this);
+                        System.out.println("MADE IT TO WAITING ROOM: " + gameState.getGameId()); // testing
+
+                    } else {
+                        // game started
                         broadcastGameStatus(gameState);
                     }
     
                 } else if (incomingObject instanceof Message messageToProcess) {
-                    if (clientName == null) { // setting name on first message
-                        clientName = messageToProcess.getMessage();
-                        System.out.println(clientName);
-                        
-                    } else {
-                        // finding the correct game
-                        for (GameState game : availableGames) {
-                            if (checkGameId(game, messageToProcess.getMessage())) {
-                                sendGameState(game);
-                            }
+                    // finding the correct game
+                    for (GameState game : availableGames) {
+                        if (checkGameId(game, messageToProcess.getMessage())) {
+                            sendGameState(game);
                         }
                     }
+                } else if (incomingObject instanceof Player player) {
+                    currentPlayer = player;
                 }
             } catch (IOException e) {
+                System.out.println("Something happened----");
                 closeEverything(socket, objectInputStream, objectOutputStream);
                 break; // break out from the while loop
             } catch (ClassNotFoundException e) {
@@ -97,7 +102,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     }
 
     private void removeClientHandler() {
-        clientHandlers.get(gameId).remove(clientName);
+        clientHandlers.get(currentGameState).remove(this);
     }
 
     private void closeEverything(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOuputStream) {

@@ -20,17 +20,15 @@ public class Client implements Runnable {
     private Socket socket;
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
-
     private String username;
     private boolean isPlayingGame = false;
 
     public Client(Socket socket, String username) {
         try {
             this.socket = socket;
+            this.username = username;
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream()); 
-
-            this.username = username;
         } catch (IOException e) {
             closeEverything(socket, objectInputStream, objectOutputStream);
         } 
@@ -70,31 +68,11 @@ public class Client implements Runnable {
         return "G" + timestamp + "-" + randomPart; // Format: G<timestamp>-<random>
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    private void sendGameState(GameState gameState) {
-        try {
-            objectOutputStream.writeObject(gameState);
-            objectOutputStream.flush();
-        } catch (IOException e) {
-            closeEverything(socket, objectInputStream, objectOutputStream);
-        } 
-    }
-
-    private void sendMessage(String msg) {
-        try {
-            objectOutputStream.writeObject(new Message(msg));
-            objectOutputStream.flush();
-        } catch (IOException e) {
-            closeEverything(socket, objectInputStream, objectOutputStream);
-        } 
-    }
-
     private void addPlayerToGame(GameState game) {
-        game.addPlayer(new Player(username, game.getDeck(), false));
+        Player player = new Player(username, game.getDeck(), false);
+        game.addPlayer(player);
         isPlayingGame = true;
+        sendPlayer(player); // for clientHandler identification
     }
 
     private void createGame() {
@@ -123,6 +101,43 @@ public class Client implements Runnable {
         System.out.println(Constants.WAITING_LOBBY_BANNER);
     }
 
+    private void printPlayerList(GameState game) {
+        for (Player player : game.getPlayers()) {
+            System.out.println(player.getName());
+        }
+    }
+
+    private void renderGame() {
+
+    }
+
+    private void sendGameState(GameState gameState) {
+        try {
+            objectOutputStream.writeObject(gameState);
+            objectOutputStream.flush();
+        } catch (IOException e) {
+            closeEverything(socket, objectInputStream, objectOutputStream);
+        } 
+    }
+
+    private void sendMessage(String msg) {
+        try {
+            objectOutputStream.writeObject(new Message(msg));
+            objectOutputStream.flush();
+        } catch (IOException e) {
+            closeEverything(socket, objectInputStream, objectOutputStream);
+        } 
+    }
+
+    private void sendPlayer(Player player) {
+        try {
+            objectOutputStream.writeObject(player);
+            objectOutputStream.flush();
+        } catch (IOException e) {
+            closeEverything(socket, objectInputStream, objectOutputStream);
+        } 
+    }
+
     private void listenForMessage() {
         while (socket.isConnected()) {
             try {
@@ -143,20 +158,12 @@ public class Client implements Runnable {
                 }
             } catch (IOException e) {
                 closeEverything(socket, objectInputStream, objectOutputStream);
+                break;
             } catch (ClassNotFoundException e) {
                 closeEverything(socket, objectInputStream, objectOutputStream);
+                break;
             }
         }
-    }
-
-    private void printPlayerList(GameState game) {
-        for (Player player : game.getPlayers()) {
-            System.out.println(player.getName());
-        }
-    }
-
-    private void renderGame() {
-
     }
 
     @Override
@@ -188,8 +195,6 @@ public class Client implements Runnable {
         String username = sc.nextLine();
         Socket socket = new Socket("localhost", 1234);
         Client client = new Client(socket, username);
-        // send name to clientHandler
-        client.sendMessage(username);
         StartMenu.showStartMenu();
 
         // Starting the Thread
