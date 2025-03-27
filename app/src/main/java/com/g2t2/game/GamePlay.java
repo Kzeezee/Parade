@@ -104,6 +104,7 @@ public class GamePlay {
         }
     }
 
+    // Chooses a card for the medium level difficulty bot to play
     private static Card chooseMediumDifficultyCard(Player player) {
         ArrayList<Card> hand = player.getCardsOnHand();
         int lowestNumCollect = Integer.MAX_VALUE;
@@ -119,6 +120,7 @@ public class GamePlay {
         return bestCard;
     }
 
+    // Chooses a card for the hard level difficulty bot to play
     private static Card chooseHardDifficultyCard(Player player) {
         ArrayList<Card> hand = player.getCardsOnHand();
         int lowestPoints = Integer.MAX_VALUE;
@@ -137,6 +139,7 @@ public class GamePlay {
         return bestCard;
     }
 
+    // Calculates the total amount of points gained if a specific card were to be played
     private static int calculateTotalPoints(ArrayList<Card> collectableCards) {
         int totalPoints = 0;
         for (Card card : collectableCards) {
@@ -328,7 +331,7 @@ public class GamePlay {
         return toCollection;
     }
  
-    // Returns the collectable cards of a card to be placed.
+    //  Returns the collectable cards of a card to be placed.
     private static ArrayList<Card> getCollectableCards(Card inputCard) {
         int cardValue = inputCard.getValue();
         ArrayList<Card> collectableCards = new ArrayList<>();
