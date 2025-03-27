@@ -189,7 +189,7 @@ public class Display {
     }
 
     public static String colorString(String s) {
-        return Constants.BLUE_ANSI + s;
+        return Constants.BLUE_ANSI + s + Constants.ANSI_RESET;
     }
 
     public static String errorColour(String s) {

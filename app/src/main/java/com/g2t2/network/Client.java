@@ -3,60 +3,52 @@ package com.g2t2.network;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.Socket;
-import java.util.Scanner;
-import java.util.Random;
 import java.time.Instant;
+import java.util.Random;
+import java.util.Scanner;
 
+import com.g2t2.game.GameState;
 import com.g2t2.game.StartMenu;
-import com.g2t2.types.CardDeck;
 import com.g2t2.types.ParadeBoard;
 import com.g2t2.types.Player;
-import com.g2t2.util.*;
+import com.g2t2.util.Constants;
+import com.g2t2.util.Display;
 
 
-public class Client implements Runnable{
-    private Socket socket;
-    private BufferedReader bufferedReader;
-    private BufferedWriter bufferedWriter;
+public class Client implements Runnable, Serializable {
+    private transient Socket socket;
+
+    // private BufferedReader bufferedReader;
+    // private BufferedWriter bufferedWriter;
+
+    private transient ObjectOutputStream objectOutputStream;
+    private transient ObjectInputStream objectInputStream;
+
     private String username;
+    private String gameId;
 
     public Client(Socket socket, String username) {
         try {
             this.socket = socket;
-            bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())); 
-            bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
+
+            objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            objectInputStream = new ObjectInputStream(socket.getInputStream());
+
+            // MySerializableClass obj = new MySerializableClass();
+            // objectOutputStream.writeObject(obj);
+            // objectOutputStream.flush();
+
+            // bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())); 
+            // bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
+
             this.username = username;
         } catch (IOException e) {
-            closeEverything(socket, bufferedReader, bufferedWriter);
+            closeEverything(socket, objectInputStream, objectOutputStream);
         } 
-    }
-
-    private void clientHandlerInitialisation() {
-        try {
-            // this is used to send over the username to the ClientHandler during initalisation phase
-            bufferedWriter.write(username);
-            bufferedWriter.newLine(); // to add a next line
-            bufferedWriter.flush(); // to send to the server    
-        } catch (IOException e) {
-            closeEverything(socket, bufferedReader, bufferedWriter);
-        }
-    }
-
-    private void sendMessage() {
-        try {
-            Scanner sc = new Scanner(System.in);
-            while (socket.isConnected()) { // loop so client can continuing sending message
-                String messageToSend = sc.nextLine();
-                bufferedWriter.write(username + ": " + messageToSend);
-                bufferedWriter.newLine();
-                bufferedWriter.flush();
-            }
-        } catch (IOException e) {
-            closeEverything(socket, bufferedReader, bufferedWriter);
-        }
     }
 
     private void joinOrCreateGame() {
@@ -69,15 +61,16 @@ public class Client implements Runnable{
             String userChoice = sc.nextLine();
             if (userChoice.equals(Constants.CREATE_GAME)) {
                 createGame();
-                break;
             } else if (userChoice.equals(Constants.JOIN_GAME)) {
                 joinGame();
-                break;
             } else {
-                System.out.println(Display.errorColour("❌ Please input either " +
+                System.out.println(Display.errorColour(" ❌ Please input either " +
                 Constants.CREATE_GAME + " or " + Constants.JOIN_GAME));
                 System.out.println();
+                continue; // reprompt the user
             }
+
+            //shift to waiting area
         }
     }
 
@@ -94,26 +87,55 @@ public class Client implements Runnable{
         return "G" + timestamp + "-" + randomPart; // Format: G<timestamp>-<random>
     }
 
+    public void sendClient() {
+        try {
+            objectOutputStream.writeObject(this);
+            objectOutputStream.flush();
+        } catch (IOException e) {
+            closeEverything(socket, objectInputStream, objectOutputStream);
+        } 
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getGameId() {
+        return gameId;
+    }
+
     private void createGame() {
         // NOT COMPLETED
-        String gameId = generateGameId();
-        new Player(username, ParadeBoard.getDECK(), true, false); // create gameMaster
-        System.out.println(gameId);
+        String generatedGameId = generateGameId();
+        GameState game = new GameState(generatedGameId);
+        new Player(username, ParadeBoard.getDECK(), false);
+        this.gameId = generatedGameId;
+        sendClient(); // to update ClientHandler information
+
     }
 
     private void joinGame() {
         // NOT COMPLETED
-        System.out.println("testing");
+        System.out.println("Success");
+        // Scanner sc = new Scanner(System.in);
+        // String input = null;
+        // while () {
+        //     System.out.println(" 📌 To join a game, enter the gameId");
+        //     System.out.print(Display.colorString(" ➢ Enter gameId: "));
+        //     input = sc.nextLine();
+        // }
+
     }
 
     private void listenForMessage() {
-        String msgFromGroupChat;
+        
         while (socket.isConnected()) {
             try {
-                msgFromGroupChat = bufferedReader.readLine();
-                System.out.println(msgFromGroupChat);
+                Object incomingObject = objectInputStream.readObject();
             } catch (IOException e) {
-                closeEverything(socket, bufferedReader, bufferedWriter);
+                closeEverything(socket, objectInputStream, objectOutputStream);
+            } catch (ClassNotFoundException e) {
+                closeEverything(socket, objectInputStream, objectOutputStream);
             }
         }
     }
@@ -123,13 +145,13 @@ public class Client implements Runnable{
         listenForMessage();
     }
 
-    private void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
+    private void closeEverything(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOuputStream) {
         try {
-            if (bufferedReader != null) {
-                bufferedReader.close();
+            if (objectInputStream != null) {
+                objectInputStream.close(); // closing the outer wrapper will close all inner wrapers
             }
-            if (bufferedWriter != null) {
-                bufferedWriter.close();
+            if (objectOutputStream != null) {
+                objectOutputStream.close();
             }
             if (socket != null) {
                 socket.close();
@@ -147,16 +169,12 @@ public class Client implements Runnable{
         String username = sc.nextLine();
         Socket socket = new Socket("localhost", 1234);
         Client client = new Client(socket, username);
-        client.clientHandlerInitialisation();
-
-        // let client decide whether to join game / create game
         StartMenu.showStartMenu();
-        client.joinOrCreateGame();
 
         // Starting the Thread
         Thread thread = new Thread(client);
         thread.start();
 
-        client.sendMessage();
+        client.joinOrCreateGame();
     }
 }

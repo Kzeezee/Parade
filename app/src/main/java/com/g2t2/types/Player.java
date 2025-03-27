@@ -18,30 +18,6 @@ public class Player {
     private int score;
     private boolean isCPU;
 
-    // for network
-    private boolean isGameMaster = false;
-
-    public Player(String name, CardDeck deck, boolean isGameMaster, boolean isCPU) {
-        numOfPlayers++;
-        playerId = numOfPlayers;
-        this.name = name;
-
-        // // set as gameMaster if he creates the game
-        // if (playerId == 1) {
-        //     isGameMaster = true;
-        // }
-        this.isGameMaster = isGameMaster;
-
-        // draw 5 cards from the deck
-        cardsOnHand = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            cardsOnHand.add(deck.drawCard());
-        }
-
-        cardsInCollection = new ArrayList<>();
-    }
-    // -----------------------------------------------
-
     public Player(String name, CardDeck deck, boolean isCPU) {
         numOfPlayers++;
         playerId = numOfPlayers;
