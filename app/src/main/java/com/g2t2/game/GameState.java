@@ -60,8 +60,9 @@ public class GameState implements Serializable { // to allow it to be sent over
             // getting the role of the player
             String playerRole = gameMaster.equals(player) ? "GameMaster" : "Player";
             playerRole = player.getCPU() ? "CPU" : "Player";
-            
-            System.out.println(i+1 + ") " + player.getName() + " (" + playerRole + ")");
+
+            System.out.println(i+1 + ") " + player.getName() + " (id=" + player.getPlayerId() 
+            + ") (" + playerRole + ")");
         }
     }
 

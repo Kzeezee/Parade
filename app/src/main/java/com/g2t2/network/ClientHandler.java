@@ -44,10 +44,11 @@ public class ClientHandler implements Runnable { // allows instances to be execu
 
     private void createPlayer(String name) {
         GameState game = findGameState(gameId);
-        Player player = new Player(name, game.getDeck(), false);
+        Player player = new Player(name, false);
         currentPlayer = player;
         game.addPlayer(player);
         clientHandlers.get(gameId).add(this);
+        sendPlayer(player);
         broadcastGameStatus(game); // to put to waiting area
     }
 
@@ -104,6 +105,15 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     private void sendGameState(GameState game) {
         try {
             objectOutputStream.writeObject(game);
+            objectOutputStream.flush();
+        } catch (IOException e) {
+            closeEverything(socket, objectInputStream, objectOutputStream);
+        }
+    }
+
+    private void sendPlayer(Player player) {
+        try {
+            objectOutputStream.writeObject(player);
             objectOutputStream.flush();
         } catch (IOException e) {
             closeEverything(socket, objectInputStream, objectOutputStream);

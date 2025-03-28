@@ -11,27 +11,26 @@ import java.util.*;
 
 public class Player implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static int numOfPlayers; // automatically increases whenever a player is created
-    private int playerId; // autoassigned based on the number of players
+    private int playerId; // autoincrement
     private String name;
     private ArrayList<Card> cardsOnHand;
     private ArrayList<Card> cardsInCollection;
     private int score;
     private boolean isCPU;
 
-    public Player(String name, CardDeck deck, boolean isCPU) {
-        numOfPlayers++;
-        playerId = numOfPlayers;
+    public Player(String name, boolean isCPU) {
+        this.playerId = ++playerId;
         this.name = name;
+        cardsInCollection = new ArrayList<>();    
+        this.isCPU = isCPU;
+    }
 
+    public void drawStartingCards(CardDeck deck) {
         // draw 5 cards from the deck
         cardsOnHand = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             cardsOnHand.add(deck.drawCard());
         }
-
-        cardsInCollection = new ArrayList<>();
-        this.isCPU = isCPU;
     }
 
     public void drawCard(CardDeck deck) {

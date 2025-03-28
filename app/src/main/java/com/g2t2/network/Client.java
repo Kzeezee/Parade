@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.time.Instant;
-import java.util.Random;
 import java.util.Scanner;
 
 import com.g2t2.game.GameState;
@@ -21,7 +19,7 @@ public class Client implements Runnable {
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
     private String username;
-    // private boolean isPlayingGame = false;
+    private Player currentPlayer; // track player
 
     public Client(Socket socket, String username) {
         try {
@@ -74,10 +72,14 @@ public class Client implements Runnable {
     }
 
     private void printWaitingRoomDetails(GameState game) {
-        // Utility.clearConsoleScreen();
+        Utility.clearConsoleScreen();
         System.out.println(Constants.WAITING_LOBBY_BANNER);
         System.out.println(" 📌 GAME ID: " + game.getGameId());
         game.printPlayerList();
+    }
+
+    private void printWaitingRoomCommands() {
+
     }
 
     private void renderGame() {
@@ -110,6 +112,9 @@ public class Client implements Runnable {
                         System.out.println(Constants.INVALID_GAME_ID);
                         joinGamePrompt();
                     }
+
+                } else if (incomingObject instanceof Player player) {
+                    currentPlayer = player;
                 }
             } catch (IOException e) {
                 closeEverything(socket, objectInputStream, objectOutputStream);
