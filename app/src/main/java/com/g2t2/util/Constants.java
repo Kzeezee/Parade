@@ -78,6 +78,9 @@ public class Constants {
     public static final List<String> EMOJIS = List.of(
             "🌹", "💧", "☀️ ", "🪻 ", "🍀", "🕷️ ");
 
+    // ERRORS
+    public static final String INVALID_GAME_ID = "INVALID GAME ID";
+
     // Constants
     public static final List<CardColour> CARD_COLOURS = List.of(CardColour.RED, CardColour.BLUE, CardColour.YELLOW, 
                                                                 CardColour.PURPLE, CardColour.GREEN, CardColour.BLACK);
