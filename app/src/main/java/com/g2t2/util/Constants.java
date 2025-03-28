@@ -64,6 +64,7 @@ public class Constants {
 
     // ERRORS
     public static final String INVALID_GAME_ID = "INVALID GAME ID";
+    public static final String INVALID_COMMAND = "INVALID COMMAND";
 
     // Constants
     public static final List<CardColour> CARD_COLOURS = List.of(
