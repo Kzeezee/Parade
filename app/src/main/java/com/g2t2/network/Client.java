@@ -7,6 +7,8 @@ import java.net.Socket;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import org.checkerframework.checker.units.qual.C;
+
 import com.g2t2.game.GameState;
 import com.g2t2.game.StartMenu;
 import com.g2t2.types.Player;
@@ -113,6 +115,89 @@ public class Client implements Runnable {
                     sendMessage(CPUInformation);
                     break;
                 } else if (input.equals(Constants.START_GAME)) { // haven't implement
+                    sendMessage(new String[] {Constants.START_GAME});
+                    break;
+                }
+            }
+
+            if (input.equals(Constants.LEAVE_GAME)) {
+                sendMessage(new String[] {Constants.LEAVE_GAME}); // haven't implement
+                break;
+            }
+            System.out.println(Constants.INVALID_COMMAND);
+        }
+    }
+
+    private String[] addCPU(int numOfPlayers) {
+        Scanner sc = new Scanner(System.in);
+        int maxNumOfCPU = 6 -numOfPlayers;
+        int numOfCPU = 0;
+        while (true) {
+            try {        
+                System.out.println(" 📌 How many CPU do you want to add?"); 
+                System.out.print(Display.colorString(" ➢ Enter a number (max = " + maxNumOfCPU + "): "));
+                numOfCPU = sc.nextInt();
+                if (numOfCPU < 0 || numOfCPU > maxNumOfCPU) {
+                    throw new IllegalArgumentException(Display.errorColour(" ❌ Please enter a number between 0 to " 
+                    + maxNumOfCPU + ". Maximum number of players = 6"));
+                }
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println(Display.errorColour(" ❌ Please enter a number"));
+                System.out.println();
+                sc.nextLine();
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                System.out.println();
+            }
+        }
+
+        if (numOfCPU == 0) {
+            return null;
+        }
+        
+        int difficulty = 0;
+        while (true) {
+            try {
+                System.out.print(Constants.ANSI_RESET);
+                System.out.println(Constants.DIVIDER);
+                System.out.println("Choose the difficulty level for your CPU players");
+                System.out.println(" Easy (1)");
+                System.out.println(" Medium (2)");
+                System.out.println(" Hard (3)");
+                System.out.print(Display.colorString(" ⚜ Enter option ➢ "));
+                difficulty = sc.nextInt();
+                System.out.print(Constants.ANSI_RESET);
+                if (difficulty < 1 || difficulty > 3) {
+                    throw new IllegalArgumentException(Display.errorColour(" ❌ Please enter a number between 1 to 3"));
+                }
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println(Display.errorColour(" ❌ Please enter a number"));
+                System.out.println();
+                sc.nextLine();
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                System.out.println();
+            }
+        }
+        return new String[] {Constants.ADD_CPU, "" + numOfCPU, "" + difficulty};
+    }
+
+    private void activatingUserControlCommands(boolean isGameMaster, int numberOfPlayers) {
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            String input = sc.nextLine();
+            if (isGameMaster) {
+                if (input.equals(Constants.ADD_CPU)) {
+                    String[] CPUInformation = addCPU(numberOfPlayers);
+                    if (CPUInformation == null) { // user input 0 CPU
+                        System.out.println("> No CPU added");
+                        continue;
+                    }
+                    sendMessage(CPUInformation);
+                    break;
+                } else if (input.equals(Constants.START_GAME)) {
                     sendMessage(new String[] {Constants.START_GAME});
                     break;
                 }
