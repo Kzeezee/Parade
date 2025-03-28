@@ -22,7 +22,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
     private Player currentPlayer; // to know the message is from who
-    private GameState currentGameState; // used to check what game the player is playing
+    private String gameId;  // used to check what game the player is playing
 
     public ClientHandler(Socket socket) {
         try {
@@ -33,6 +33,39 @@ public class ClientHandler implements Runnable { // allows instances to be execu
             closeEverything(socket, objectInputStream, objectOutputStream);
         }
     }
+
+    private void createGame(String name) {
+        GameState game = new GameState();
+        gameId = game.getGameId();
+        clientHandlers.put(game, new ArrayList<>());
+        availableGames.add(game);
+        createPlayer(name);
+    }
+
+    private void createPlayer(String name) {
+        GameState game = findGameState(gameId);
+        Player player = new Player(name, game.getDeck(), false);
+        currentPlayer = player;
+        game.addPlayer(player);
+        clientHandlers.get(game).add(this);
+        sendGameState(game); // to put to waiting area
+
+        System.out.println("Number of clienthandlers: " + clientHandlers.get(game).size());
+        System.out.println("Number of players (number): " + game.getNumOfPlayers());
+        System.out.println("Number of players: " + game.getPlayers().size());
+        System.out.println(name + " Player is created ");
+        System.out.println();
+    }
+
+    private GameState findGameState(String gameId) {
+        for (GameState game : availableGames) {
+            if (game.getGameId().equals(gameId)) {
+                return game;
+            }
+        }
+        return null;
+    }
+    
     
     // This method contains everything that is supposed to ran on a separate thread, such as blocking operations
     @Override
@@ -40,39 +73,20 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         while (socket.isConnected()) {
             try {
                 Object incomingObject = objectInputStream.readObject();
-                if (incomingObject instanceof GameState game) {
-                    if (!availableGames.contains(game)) {// creator will active this
-                        availableGames.add(game);
-                        clientHandlers.put(game, new ArrayList<>());
-                        System.out.println("MAP AND LIST CREATED");
-                        currentGameState = game;
-                        
-                    } else if (!game.hasStarted()) { // joiners will active this
-                        // waiting lobby
-                        broadcastGameStatus(game);
-
-                    } else {
-                        // game started
-                        broadcastGameStatus(game);
-                    }
-    
-                } else if (incomingObject instanceof Message messageToProcess) {
-                    if (currentGameState == null) { // request to join game
-                        GameState game = findMatchingGame(messageToProcess.getMessage());
+                if (incomingObject instanceof Message messageToProcess) {
+                    if (messageToProcess.getMessage()[0].equals(Constants.CREATE_GAME)) { // create game
+                        createGame(messageToProcess.getMessage()[2]);
+                    
+                    } else if (messageToProcess.getMessage()[0].equals(Constants.JOIN_GAME)) {
+                        // checking if gameId sent in is valid
+                        GameState game = findGameState(messageToProcess.getMessage()[1]);
                         if (game != null) {
-                            // System.out.println("GAME ID: " + game.getGameId());
-                            currentGameState = game;
-                            sendGameState(game);
+                            gameId = messageToProcess.getMessage()[1];
+                            createPlayer(messageToProcess.getMessage()[2]);
                         } else {
-                            sendMessage(Constants.INVALID_GAME_ID);
+                            sendMessage(new String[] {Constants.INVALID_GAME_ID});
                         }
                     }
-
-                } else if (incomingObject instanceof Player player) {
-                    clientHandlers.get(currentGameState).add(this);
-                    currentPlayer = player;
-                    // System.out.println(currentPlayer.getName() + " | " + currentPlayer.getPlayerId());
-                    // System.out.println("Number of clienthandlers: " + clientHandlers.get(currentGameState).size());
                 }
             } catch (IOException e) {
                 System.out.println("Something happened----");
@@ -95,15 +109,6 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         }
     }
 
-    private GameState findMatchingGame(String gameId) {
-        for (GameState game : availableGames) {
-            if (game.getGameId().equals(gameId)) {
-                return game;
-            }
-        }
-        return null;
-    }
-
     private void sendGameState(GameState gameState) {
         try {
             objectOutputStream.writeObject(gameState);
@@ -113,7 +118,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         }
     }
 
-    private void sendMessage(String message) {
+    private void sendMessage(String message[]) {
         try {
             objectOutputStream.writeObject(new Message(message));
             objectOutputStream.flush();
@@ -123,7 +128,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     }
 
     private void removeClientHandler() {
-        clientHandlers.get(currentGameState).remove(this);
+        clientHandlers.get(findGameState(gameId)).remove(this);
     }
 
     private void closeEverything(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOuputStream) {

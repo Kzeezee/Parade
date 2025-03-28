@@ -91,16 +91,16 @@ public class GameState implements Serializable { // to allow it to be sent over
         this.parade = parade;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof GameState gameState) {
-            return this.getGameId().equals(gameState.getGameId());
-        }
-        return false;
-    }
+    // @Override
+    // public boolean equals(Object o) {
+    //     if (o instanceof GameState gameState) {
+    //         return this.getGameId().equals(gameState.getGameId());
+    //     }
+    //     return false;
+    // }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(gameId);
-    }
+    // @Override
+    // public int hashCode() {
+    //     return Objects.hash(gameId);
+    // }
 }

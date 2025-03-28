@@ -7,13 +7,13 @@ import java.io.Serializable;
  * This class allows messages (Strings) to be send across the network
  */
 public class Message implements Serializable{
-    private String messageToSend;
+    private String[] messageToSend;
 
-    public Message(String messagetToSend) {
+    public Message(String[] messagetToSend) {
         this.messageToSend = messagetToSend;
     }
 
-    public String getMessage() {
+    public String[] getMessage() {
         return messageToSend;
     }
 }

@@ -21,7 +21,7 @@ public class Client implements Runnable {
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
     private String username;
-    private boolean isPlayingGame = false;
+    // private boolean isPlayingGame = false;
 
     public Client(Socket socket, String username) {
         try {
@@ -34,7 +34,7 @@ public class Client implements Runnable {
         } 
     }
 
-    private void joinOrCreateGame() {
+    private void gameJoiningLobby() {
         Scanner sc = new Scanner(System.in);
         boolean hasCorrectInput = false;
         while (!hasCorrectInput) {
@@ -42,13 +42,17 @@ public class Client implements Runnable {
             System.out.println(" 📌 To join a game, enter: '" + Constants.JOIN_GAME + "'");
             System.out.print(Display.colorString(" ➢ Enter your choice: "));
 
-            String userChoice = sc.nextLine();
-            if (userChoice.equals(Constants.CREATE_GAME)) {
+            String[] userChoice = {"", "", username};
+            userChoice[0] = sc.nextLine();
+
+            if (userChoice[0].equals(Constants.CREATE_GAME)) {
+                sendMessage(userChoice); // create game
                 hasCorrectInput = true;
-                createGame();
-            } else if (userChoice.equals(Constants.JOIN_GAME)) {
+
+            } else if (userChoice[0].equals(Constants.JOIN_GAME)) {
+                joinGamePrompt();
                 hasCorrectInput = true;
-                joinGame();
+
             } else {
                 System.out.println(Display.errorColour(" ❌ Please input either " +
                 Constants.CREATE_GAME + " or " + Constants.JOIN_GAME));
@@ -57,28 +61,16 @@ public class Client implements Runnable {
         }
     }
 
-    private void createGame() {
-        GameState game = new GameState();
-        sendGameState(game); // update gameId
-        addPlayerToGame(game);
-        printWaitingRoomDetails(game);
-    }
-
-    private void joinGame() {
+    private void joinGamePrompt() {
         Scanner sc = new Scanner(System.in);
-        String input = null;
+        String[] userChoice = {Constants.JOIN_GAME, "", username};
+
         System.out.println();
         System.out.println(" 📌 To join a game, enter the gameId");
         System.out.print(Display.colorString(" ➢ Enter gameId: "));
-        input = sc.nextLine();
-        sendMessage(input); // send to ClientHandler to request to join
-    }
 
-    public void addPlayerToGame(GameState game) {
-        Player player = new Player(username, game.getDeck(), false);
-        game.addPlayer(player);
-        isPlayingGame = true;
-        sendPlayer(player); // for clientHandler identification
+        userChoice[1] = sc.nextLine();
+        sendMessage(userChoice); // attempt to join game   
     }
 
     private void printWaitingRoomDetails(GameState game) {
@@ -101,7 +93,7 @@ public class Client implements Runnable {
         } 
     }
 
-    private void sendMessage(String msg) {
+    private void sendMessage(String msg[]) {
         try {
             objectOutputStream.writeObject(new Message(msg));
             objectOutputStream.flush();
@@ -124,18 +116,16 @@ public class Client implements Runnable {
             try {
                 Object incomingObject = objectInputStream.readObject();
                 if (incomingObject instanceof GameState game) {
-                    if (!isPlayingGame) { // add to game -> join by gameId
-                        addPlayerToGame(game);
-                        sendGameState(game); // refresh the player's list
-                    } else if (!game.hasStarted()){ // means still in waiting room
+                    if (!game.hasStarted()){ // means still in waiting room
                         printWaitingRoomDetails(game);
                     } else {
                         // render game  
                     }
+
                 } else if (incomingObject instanceof Message incomingMessage) {
-                    if (incomingMessage.getMessage().equals(Constants.INVALID_GAME_ID)) { // wrong gameId
+                    if (incomingMessage.getMessage()[0].equals(Constants.INVALID_GAME_ID)) { // wrong gameId
                         System.out.println(Constants.INVALID_GAME_ID);
-                        joinGame();
+                        joinGamePrompt();
                     }
                 }
             } catch (IOException e) {
@@ -182,6 +172,6 @@ public class Client implements Runnable {
         // Starting the Thread
         Thread thread = new Thread(client);
         thread.start();
-        client.joinOrCreateGame();
+        client.gameJoiningLobby();
     }
 }
