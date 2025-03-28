@@ -1,5 +1,10 @@
 package com.g2t2.game;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
@@ -103,4 +108,20 @@ public class GameState implements Serializable { // to allow it to be sent over
     // public int hashCode() {
     //     return Objects.hash(gameId);
     // }
+
+    // Implement deepCopy() in GameState
+    public GameState deepCopy() {
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(this);
+            oos.flush();
+            
+            ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            return (GameState) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException("Deep copy failed", e);
+        }
+    }
 }

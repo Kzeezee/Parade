@@ -74,7 +74,7 @@ public class Client implements Runnable {
     }
 
     private void printWaitingRoomDetails(GameState game) {
-        Utility.clearConsoleScreen();
+        // Utility.clearConsoleScreen();
         System.out.println(Constants.WAITING_LOBBY_BANNER);
         System.out.println(" 📌 GAME ID: " + game.getGameId());
         game.printPlayerList();
@@ -82,15 +82,6 @@ public class Client implements Runnable {
 
     private void renderGame() {
 
-    }
-
-    private void sendGameState(GameState gameState) {
-        try {
-            objectOutputStream.writeObject(gameState);
-            objectOutputStream.flush();
-        } catch (IOException e) {
-            closeEverything(socket, objectInputStream, objectOutputStream);
-        } 
     }
 
     private void sendMessage(String msg[]) {
@@ -102,20 +93,12 @@ public class Client implements Runnable {
         } 
     }
 
-    private void sendPlayer(Player player) {
-        try {
-            objectOutputStream.writeObject(player);
-            objectOutputStream.flush();
-        } catch (IOException e) {
-            closeEverything(socket, objectInputStream, objectOutputStream);
-        } 
-    }
-
     private void listenForMessage() {
         while (socket.isConnected()) {
             try {
                 Object incomingObject = objectInputStream.readObject();
                 if (incomingObject instanceof GameState game) {
+                    System.out.println("number of player: " + game.getNumOfPlayers());
                     if (!game.hasStarted()){ // means still in waiting room
                         printWaitingRoomDetails(game);
                     } else {

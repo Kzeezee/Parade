@@ -16,8 +16,8 @@ import com.g2t2.util.Constants;
 public class ClientHandler implements Runnable { // allows instances to be executed by a separate thread
     
     // keep track of all the clients - to send msg to all of them (broadcast to all)
-    public static Map<GameState, List<ClientHandler>> clientHandlers = new HashMap<>();
-    public static List<GameState> availableGames = new ArrayList<>();
+    public static Map<String, List<ClientHandler>> clientHandlers = new HashMap<>();
+    public static Map<String, GameState> availableGames = new HashMap<>();
     private Socket socket;
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
@@ -37,8 +37,8 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     private void createGame(String name) {
         GameState game = new GameState();
         gameId = game.getGameId();
-        clientHandlers.put(game, new ArrayList<>());
-        availableGames.add(game);
+        clientHandlers.put(gameId, new ArrayList<>());
+        availableGames.put(gameId, game);
         createPlayer(name);
     }
 
@@ -47,25 +47,18 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         Player player = new Player(name, game.getDeck(), false);
         currentPlayer = player;
         game.addPlayer(player);
-        clientHandlers.get(game).add(this);
-        sendGameState(game); // to put to waiting area
-
-        System.out.println("Number of clienthandlers: " + clientHandlers.get(game).size());
-        System.out.println("Number of players (number): " + game.getNumOfPlayers());
-        System.out.println("Number of players: " + game.getPlayers().size());
-        System.out.println(name + " Player is created ");
-        System.out.println();
+        clientHandlers.get(gameId).add(this);
+        broadcastGameStatus(game); // to put to waiting area
     }
 
     private GameState findGameState(String gameId) {
-        for (GameState game : availableGames) {
-            if (game.getGameId().equals(gameId)) {
-                return game;
+        for (String id : availableGames.keySet()) {
+            if (id.equals(gameId)) {
+                return availableGames.get(gameId);
             }
         }
         return null;
     }
-    
     
     // This method contains everything that is supposed to ran on a separate thread, such as blocking operations
     @Override
@@ -100,18 +93,17 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     }
     
     // send gameStatus to all players in the game
-    private void broadcastGameStatus(GameState gameState) {
-        System.out.println("Number of clienthandlers: " + clientHandlers.get(gameState).size());
-        System.out.println("Number of players (number): " + gameState.getNumOfPlayers());
-        System.out.println("Number of players: " + gameState.getPlayers().size());
-        for (ClientHandler clientHandler : clientHandlers.get(gameState)) {
-            clientHandler.sendGameState(gameState);
+    private void broadcastGameStatus(GameState game) {
+        for (ClientHandler clientHandler : clientHandlers.get(gameId)) {
+            GameState snapshot = availableGames.get(gameId).deepCopy(); // Create a snapshot
+            clientHandler.sendGameState(snapshot);
+            // clientHandler.sendGameState(findGameState(gameId));
         }
     }
 
-    private void sendGameState(GameState gameState) {
+    private void sendGameState(GameState game) {
         try {
-            objectOutputStream.writeObject(gameState);
+            objectOutputStream.writeObject(game);
             objectOutputStream.flush();
         } catch (IOException e) {
             closeEverything(socket, objectInputStream, objectOutputStream);
@@ -128,7 +120,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     }
 
     private void removeClientHandler() {
-        clientHandlers.get(findGameState(gameId)).remove(this);
+        clientHandlers.get(gameId).remove(this);
     }
 
     private void closeEverything(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOuputStream) {
