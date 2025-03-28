@@ -74,9 +74,9 @@ public class GameState implements Serializable { // to allow it to be sent over
         return numOfPlayers;
     }
 
-    // public Player getGameMaster() {
-    //     return gameMaster;
-    // }
+    public Player getGameMaster() {
+        return gameMaster;
+    }
 
     // public void setGameMaster(Player gameMaster) {
     //     this.gameMaster = gameMaster;

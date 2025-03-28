@@ -74,12 +74,20 @@ public class Client implements Runnable {
     private void printWaitingRoomDetails(GameState game) {
         Utility.clearConsoleScreen();
         System.out.println(Constants.WAITING_LOBBY_BANNER);
+        printWaitingRoomCommands(game);
         System.out.println(" 📌 GAME ID: " + game.getGameId());
         game.printPlayerList();
     }
 
-    private void printWaitingRoomCommands() {
-
+    private void printWaitingRoomCommands(GameState game) {
+        System.out.println("> Here are some available commands you can use <");
+        if (game.getGameMaster().equals(currentPlayer)) { // show available GameMaster Commands
+            System.out.println("--GameMaster Specific Commands--");
+            System.out.println("> To add CPU, enter '" + Constants.ADD_CPU + "'");
+            System.out.println("> To start game, enter '" + Constants.START_GAME + "'");
+            System.out.println(Constants.DIVIDER);
+        }
+            System.out.println("> To leave room, enter '" + Constants.LEAVE_GAME + "'");
     }
 
     private void renderGame() {

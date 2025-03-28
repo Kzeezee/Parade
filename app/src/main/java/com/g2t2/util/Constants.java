@@ -58,6 +58,9 @@ public class Constants {
     // Commands
     public static final String CREATE_GAME = "c"; //"CREATE_GAME";
     public static final String JOIN_GAME = "j"; //"JOIN_GAME";
+    public static final String ADD_CPU = "x"; //"ADD_CPU";
+    public static final String START_GAME = "w"; //"START_GAME";
+    public static final String LEAVE_GAME = "y"; //"LEAVE_GAME";
 
     // ERRORS
     public static final String INVALID_GAME_ID = "INVALID GAME ID";
