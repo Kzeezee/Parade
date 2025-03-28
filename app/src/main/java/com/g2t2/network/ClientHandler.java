@@ -83,11 +83,14 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                     } else if (messageToProcess.getMessage()[0].equals(Constants.JOIN_GAME)) { // join game
                         // checking if gameId sent in is valid
                         GameState game = findGameState(messageToProcess.getMessage()[1]);
-                        if (game != null) {
+                        if (game == null) {
+                            sendMessage(new String[] {Constants.INVALID_GAME_ID});
+                        } else if (game.getNumOfPlayers() >= 6) {
+                            sendMessage(new String[] {Constants.FULL_CAPACITY});
+                        }
+                        else {
                             gameId = messageToProcess.getMessage()[1];
                             createPlayer(messageToProcess.getMessage()[2]);
-                        } else {
-                            sendMessage(new String[] {Constants.INVALID_GAME_ID});
                         }
 
                     } else if (messageToProcess.getMessage()[0].equals(Constants.ADD_CPU)) { // add cpu

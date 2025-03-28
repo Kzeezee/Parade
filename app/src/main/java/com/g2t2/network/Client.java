@@ -76,24 +76,27 @@ public class Client implements Runnable {
 
     private void printWaitingRoomDetails(GameState game) {
         boolean isGameMaster = game.getGameMaster().equals(currentPlayer);
+        int numberOfPlayers = game.getNumOfPlayers();
         Utility.clearConsoleScreen();
         System.out.println(Constants.WAITING_LOBBY_BANNER);
-        printWaitingRoomCommands(isGameMaster);
+        printWaitingRoomCommands(isGameMaster, numberOfPlayers);
         System.out.println(Constants.DIVIDER);
         System.out.println(" 📌 GAME ID: " + game.getGameId());
         game.printPlayerList();
-        int numberOfPlayers = game.getNumOfPlayers();
         activatingUserControlCommands(isGameMaster, numberOfPlayers);
     }
 
-    private void printWaitingRoomCommands(boolean isGameMaster) {
+    private void printWaitingRoomCommands(boolean isGameMaster, int numberOfPlayers) {
         System.out.println("> Here are some available commands you can use <");
+        System.out.println("> To leave room, enter '" + Constants.LEAVE_GAME + "'");
         if (isGameMaster) { // show available GameMaster Commands
             System.out.println("--GameMaster Specific Commands--");
-            System.out.println("> To add CPU, enter '" + Constants.ADD_CPU + "'"); // TODO: if player >= 6 then no more 
+            if (numberOfPlayers < 6) {
+                System.out.println("> To add CPU, enter '" + Constants.ADD_CPU + "'");
+            } 
             System.out.println("> To start game, enter '" + Constants.START_GAME + "'");
         }
-            System.out.println("> To leave room, enter '" + Constants.LEAVE_GAME + "'");
+            // TODO: enable the removal of CPUs / Players
     }
 
     private void activatingUserControlCommands(boolean isGameMaster, int numberOfPlayers) {
@@ -101,7 +104,7 @@ public class Client implements Runnable {
         while (true) {
             String input = sc.nextLine();
             if (isGameMaster) {
-                if (input.equals(Constants.ADD_CPU)) {
+                if (numberOfPlayers < 6 && input.equals(Constants.ADD_CPU)) {
                     String[] CPUInformation = addCPU(numberOfPlayers);
                     if (CPUInformation == null) { // user input 0 CPU
                         System.out.println("> No CPU added");
@@ -109,7 +112,7 @@ public class Client implements Runnable {
                     }
                     sendMessage(CPUInformation);
                     break;
-                } else if (input.equals(Constants.START_GAME)) {
+                } else if (input.equals(Constants.START_GAME)) { // haven't implement
                     sendMessage(new String[] {Constants.START_GAME});
                     break;
                 }
@@ -207,6 +210,9 @@ public class Client implements Runnable {
                 } else if (incomingObject instanceof Message incomingMessage) {
                     if (incomingMessage.getMessage()[0].equals(Constants.INVALID_GAME_ID)) { // wrong gameId
                         System.out.println(Constants.INVALID_GAME_ID);
+                        joinGamePrompt();
+                    } else if (incomingMessage.getMessage()[0].equals(Constants.FULL_CAPACITY)) { // full capacity
+                        System.out.println(Constants.FULL_CAPACITY);
                         joinGamePrompt();
                     }
 

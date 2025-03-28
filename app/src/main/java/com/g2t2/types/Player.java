@@ -11,8 +11,8 @@ import java.util.*;
 
 public class Player implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static int counter = 1;
-    private int playerId; // autoincrement
+    private static int counter = 1;  // autoincrement
+    private int playerId;
     private String name;
     private ArrayList<Card> cardsOnHand;
     private ArrayList<Card> cardsInCollection;
