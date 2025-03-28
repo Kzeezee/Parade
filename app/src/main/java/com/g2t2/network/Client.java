@@ -189,7 +189,7 @@ public class Client implements Runnable {
         while (true) {
             String input = sc.nextLine();
             if (isGameMaster) {
-                if (input.equals(Constants.ADD_CPU)) {
+                if (numberOfPlayers < 6 && input.equals(Constants.ADD_CPU)) {
                     String[] CPUInformation = addCPU(numberOfPlayers);
                     if (CPUInformation == null) { // user input 0 CPU
                         System.out.println("> No CPU added");
@@ -197,7 +197,7 @@ public class Client implements Runnable {
                     }
                     sendMessage(CPUInformation);
                     break;
-                } else if (input.equals(Constants.START_GAME)) {
+                } else if (input.equals(Constants.START_GAME)) { // haven't implement
                     sendMessage(new String[] {Constants.START_GAME});
                     break;
                 }
