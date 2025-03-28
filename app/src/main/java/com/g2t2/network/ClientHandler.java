@@ -44,12 +44,21 @@ public class ClientHandler implements Runnable { // allows instances to be execu
 
     private void createPlayer(String name) {
         GameState game = findGameState(gameId);
-        Player player = new Player(name, false);
+        Player player = new Player(name);
         currentPlayer = player;
         game.addPlayer(player);
         clientHandlers.get(gameId).add(this);
         sendPlayer(player);
-        broadcastGameStatus(game); // to put to waiting area
+        broadcastGameStatus(game); // to put to waiting lobby
+    }
+
+    private void createCPU(int numOfCPU, int difficulty) {
+        GameState game = findGameState(gameId);
+        for (int i = 0; i < numOfCPU; i++ ) {
+        Player cpu = new Player(true, difficulty);
+        game.addPlayer(cpu);
+        }
+        broadcastGameStatus(game); // update waiting lobby
     }
 
     private GameState findGameState(String gameId) {
@@ -71,7 +80,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                     if (messageToProcess.getMessage()[0].equals(Constants.CREATE_GAME)) { // create game
                         createGame(messageToProcess.getMessage()[2]);
                     
-                    } else if (messageToProcess.getMessage()[0].equals(Constants.JOIN_GAME)) {
+                    } else if (messageToProcess.getMessage()[0].equals(Constants.JOIN_GAME)) { // join game
                         // checking if gameId sent in is valid
                         GameState game = findGameState(messageToProcess.getMessage()[1]);
                         if (game != null) {
@@ -80,6 +89,9 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         } else {
                             sendMessage(new String[] {Constants.INVALID_GAME_ID});
                         }
+
+                    } else if (messageToProcess.getMessage()[0].equals(Constants.ADD_CPU)) { // add cpu
+                        createCPU(Integer.parseInt(messageToProcess.getMessage()[1]), Integer.parseInt(messageToProcess.getMessage()[2]));
                     }
                 }
             } catch (IOException e) {

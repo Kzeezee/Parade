@@ -11,18 +11,27 @@ import java.util.*;
 
 public class Player implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static int counter = 1;
     private int playerId; // autoincrement
     private String name;
     private ArrayList<Card> cardsOnHand;
     private ArrayList<Card> cardsInCollection;
     private int score;
-    private boolean isCPU;
+    private boolean isCPU = false;
+    private int difficulty;
 
-    public Player(String name, boolean isCPU) {
-        this.playerId = ++playerId;
+    public Player(String name) {
+        playerId = counter++;
         this.name = name;
         cardsInCollection = new ArrayList<>();    
+    }
+
+    public Player(boolean isCPU, int difficulty) {
+        playerId = counter++;
+        name = "CPU" + playerId;
         this.isCPU = isCPU;
+        this.difficulty = difficulty;
+        cardsInCollection = new ArrayList<>();  
     }
 
     public void drawStartingCards(CardDeck deck) {
@@ -67,6 +76,10 @@ public class Player implements Serializable {
 
     public boolean getCPU(){
         return isCPU;
+    }
+    
+    public int getDifficulty() {
+        return difficulty;
     }
 
     @Override

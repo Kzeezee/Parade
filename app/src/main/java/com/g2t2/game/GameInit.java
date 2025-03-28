@@ -143,7 +143,7 @@ public class GameInit {
                     if (name.equals("")) {
                         throw new InputMismatchException(" 📌 Please enter an appropriate name.");
                     }
-                    players.add(new Player(name, false));
+                    players.add(new Player(name));
                     break;
                 } catch (InputMismatchException e) {
                     System.out.println(e.getMessage());
@@ -157,7 +157,7 @@ public class GameInit {
 
         for (int i = 1; i <= numOfCPU; i++){
             String name = "CPU " + i;
-            players.add(new Player(name, true));
+            players.add(new Player(true, 1));
         }
         
         ParadeBoard.setPlayers(players);
