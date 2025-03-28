@@ -59,6 +59,9 @@ public class Constants {
     public static final String CREATE_GAME = "CREATE_GAME";
     public static final String JOIN_GAME = "JOIN_GAME";
 
+    // ERRORS
+    public static final String INVALID_GAME_ID = "INVALID GAME ID";
+
     // Constants
     public static final List<CardColour> CARD_COLOURS = List.of(
             CardColour.RED, CardColour.BLUE, CardColour.YELLOW, CardColour.PURPLE,

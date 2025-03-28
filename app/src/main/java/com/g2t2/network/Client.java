@@ -36,15 +36,18 @@ public class Client implements Runnable {
 
     private void joinOrCreateGame() {
         Scanner sc = new Scanner(System.in);
-        while (!isPlayingGame) {
+        boolean hasCorrectInput = false;
+        while (!hasCorrectInput) {
             System.out.println(" 📌 To create a game, enter: '" + Constants.CREATE_GAME + "'");
             System.out.println(" 📌 To join a game, enter: '" + Constants.JOIN_GAME + "'");
             System.out.print(Display.colorString(" ➢ Enter your choice: "));
 
             String userChoice = sc.nextLine();
             if (userChoice.equals(Constants.CREATE_GAME)) {
+                hasCorrectInput = true;
                 createGame();
             } else if (userChoice.equals(Constants.JOIN_GAME)) {
+                hasCorrectInput = true;
                 joinGame();
             } else {
                 System.out.println(Display.errorColour(" ❌ Please input either " +
@@ -83,7 +86,7 @@ public class Client implements Runnable {
     private void joinGame() {
         Scanner sc = new Scanner(System.in);
         String input = null;
-        while (!isPlayingGame) {  // TO ADJUST CONDITIONAL
+        // while (!isPlayingGame) {  // TO ADJUST CONDITIONAL
             System.out.println();
             System.out.println(" 📌 To join a game, enter the gameId");
             System.out.print(Display.colorString(" ➢ Enter gameId: "));
@@ -91,7 +94,7 @@ public class Client implements Runnable {
             
             // send to ClientHandler to request to join
             sendMessage(input);
-        }
+        // }
     }
 
     private static void goTowaitingArea() {
@@ -157,6 +160,12 @@ public class Client implements Runnable {
                         printWaitingRoomDetails(game);
                     } else {
                         // render game  
+                    }
+                } else if (incomingObject instanceof Message incomingMessage) {
+                    if (incomingMessage.getMessage().equals(Constants.INVALID_GAME_ID)) {
+                        System.out.println(Constants.INVALID_GAME_ID);
+                        System.out.println();
+                        joinGame();
                     }
                 }
             } catch (IOException e) {

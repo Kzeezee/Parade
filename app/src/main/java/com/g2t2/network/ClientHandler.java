@@ -11,6 +11,7 @@ import java.util.Map;
 
 import com.g2t2.game.GameState;
 import com.g2t2.types.Player;
+import com.g2t2.util.Constants;
 
 public class ClientHandler implements Runnable { // allows instances to be executed by a separate thread
     
@@ -60,9 +61,12 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     
                 } else if (incomingObject instanceof Message messageToProcess) {
                     // finding the correct game
-                    for (GameState game : availableGames) {
-                        if (checkGameId(game, messageToProcess.getMessage())) {
+                    if (currentGameState == null) { // because haven't join any game yet
+                        GameState game = findMatchingGame(messageToProcess.getMessage());
+                        if (game != null) {
                             sendGameState(game);
+                        } else {
+                            sendMessage(Constants.INVALID_GAME_ID);
                         }
                     }
                 } else if (incomingObject instanceof Player player) {
@@ -80,16 +84,27 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         }
     }
 
-    private boolean checkGameId(GameState gameState, String gameId) {
-        if (gameState.getGameId().equals(gameId)) {
-            return true;
+    private GameState findMatchingGame(String gameId) {
+        for (GameState game : availableGames) {
+            if (game.getGameId().equals(gameId)) {
+                return game;
+            }
         }
-        return false;
+        return null;
     }
 
     private void sendGameState(GameState gameState) {
         try {
             objectOutputStream.writeObject(gameState);
+            objectOutputStream.flush();
+        } catch (IOException e) {
+            closeEverything(socket, objectInputStream, objectOutputStream);
+        }
+    }
+
+    private void sendMessage(String message) {
+        try {
+            objectOutputStream.writeObject(new Message(message));
             objectOutputStream.flush();
         } catch (IOException e) {
             closeEverything(socket, objectInputStream, objectOutputStream);
