@@ -55,57 +55,37 @@ public class Client implements Runnable {
                 System.out.println();
             }
         }
-        goTowaitingArea();
     }
 
-    private String generateGameId() {
-        long timestamp = Instant.now().getEpochSecond();
-        Random random = new Random();
-        String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        StringBuilder randomPart = new StringBuilder();
-        for (int i = 0; i < 4; i++) { // Generate 4 random characters
-            randomPart.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
-        }
-        return "G" + timestamp + "-" + randomPart; // Format: G<timestamp>-<random>
+    private void createGame() {
+        GameState game = new GameState();
+        sendGameState(game); // update gameId
+        addPlayerToGame(game);
+        printWaitingRoomDetails(game);
     }
 
-    private void addPlayerToGame(GameState game) {
+    private void joinGame() {
+        Scanner sc = new Scanner(System.in);
+        String input = null;
+        System.out.println();
+        System.out.println(" 📌 To join a game, enter the gameId");
+        System.out.print(Display.colorString(" ➢ Enter gameId: "));
+        input = sc.nextLine();
+        sendMessage(input); // send to ClientHandler to request to join
+    }
+
+    public void addPlayerToGame(GameState game) {
         Player player = new Player(username, game.getDeck(), false);
         game.addPlayer(player);
         isPlayingGame = true;
         sendPlayer(player); // for clientHandler identification
     }
 
-    private void createGame() {
-        String generatedGameId = generateGameId();
-        GameState game = new GameState(generatedGameId);
-        addPlayerToGame(game);
-        sendGameState(game);
-    }
-
-    private void joinGame() {
-        Scanner sc = new Scanner(System.in);
-        String input = null;
-        // while (!isPlayingGame) {  // TO ADJUST CONDITIONAL
-            System.out.println();
-            System.out.println(" 📌 To join a game, enter the gameId");
-            System.out.print(Display.colorString(" ➢ Enter gameId: "));
-            input = sc.nextLine();
-            
-            // send to ClientHandler to request to join
-            sendMessage(input);
-        // }
-    }
-
-    private static void goTowaitingArea() {
+    private void printWaitingRoomDetails(GameState game) {
         Utility.clearConsoleScreen();
         System.out.println(Constants.WAITING_LOBBY_BANNER);
-    }
-
-    private void printPlayerList(GameState game) {
-        for (Player player : game.getPlayers()) {
-            System.out.println(player.getName());
-        }
+        System.out.println(" 📌 GAME ID: " + game.getGameId());
+        game.printPlayerList();
     }
 
     private void renderGame() {
@@ -139,32 +119,22 @@ public class Client implements Runnable {
         } 
     }
 
-    private void printWaitingRoomDetails(GameState game) {
-        Utility.clearConsoleScreen();
-        System.out.println(Constants.WAITING_LOBBY_BANNER);
-        System.out.println(" 📌 GAME ID: " + game.getGameId());
-        printPlayerList(game);
-    }
-
     private void listenForMessage() {
         while (socket.isConnected()) {
             try {
                 Object incomingObject = objectInputStream.readObject();
                 if (incomingObject instanceof GameState game) {
-                    if (!isPlayingGame) {
-                        // add to game -> join by gameId
+                    if (!isPlayingGame) { // add to game -> join by gameId
                         addPlayerToGame(game);
-                        sendGameState(game);
-                    } else if (!game.hasStarted()){
-                        // means still in waiting room
+                        sendGameState(game); // refresh the player's list
+                    } else if (!game.hasStarted()){ // means still in waiting room
                         printWaitingRoomDetails(game);
                     } else {
                         // render game  
                     }
                 } else if (incomingObject instanceof Message incomingMessage) {
-                    if (incomingMessage.getMessage().equals(Constants.INVALID_GAME_ID)) {
+                    if (incomingMessage.getMessage().equals(Constants.INVALID_GAME_ID)) { // wrong gameId
                         System.out.println(Constants.INVALID_GAME_ID);
-                        System.out.println();
                         joinGame();
                     }
                 }

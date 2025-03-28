@@ -11,7 +11,7 @@ import java.util.*;
  */
 
 public class CardDeck implements Serializable {
-
+    private static final long serialVersionUID = 1L;
     private ArrayList<Card> deck;
 
     public CardDeck() {

@@ -12,6 +12,7 @@ import java.util.Objects;
  * @author Oliver
  */
 public class Card implements Comparable<Card>, Serializable {
+    private static final long serialVersionUID = 1L;
     private int value;
     private CardColour colour;
 

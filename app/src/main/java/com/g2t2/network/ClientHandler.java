@@ -40,38 +40,39 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         while (socket.isConnected()) {
             try {
                 Object incomingObject = objectInputStream.readObject();
-                if (incomingObject instanceof GameState gameState) {
-                    if (!gameState.hasStarted()) { 
+                if (incomingObject instanceof GameState game) {
+                    if (!availableGames.contains(game)) {// creator will active this
+                        availableGames.add(game);
+                        clientHandlers.put(game, new ArrayList<>());
+                        System.out.println("MAP AND LIST CREATED");
+                        currentGameState = game;
+                        
+                    } else if (!game.hasStarted()) { // joiners will active this
                         // waiting lobby
-                        if (!availableGames.contains(gameState)) {// first time. Adding game to Map
-                            availableGames.add(gameState);
-                            clientHandlers.put(gameState, new ArrayList<>());
-                            // System.out.println("MAP AND LIST CREATED");
-                            
-                        }
-                        currentGameState = gameState;
-                        clientHandlers.get(gameState).add(this);
-                        System.out.println("MADE IT TO WAITING ROOM: " + gameState.getGameId()); // testing
-                        broadcastGameStatus(gameState);
+                        broadcastGameStatus(game);
 
                     } else {
                         // game started
-                        broadcastGameStatus(gameState);
+                        broadcastGameStatus(game);
                     }
     
                 } else if (incomingObject instanceof Message messageToProcess) {
-                    // finding the correct game
-                    if (currentGameState == null) { // because haven't join any game yet
+                    if (currentGameState == null) { // request to join game
                         GameState game = findMatchingGame(messageToProcess.getMessage());
                         if (game != null) {
+                            // System.out.println("GAME ID: " + game.getGameId());
+                            currentGameState = game;
                             sendGameState(game);
                         } else {
                             sendMessage(Constants.INVALID_GAME_ID);
                         }
                     }
+
                 } else if (incomingObject instanceof Player player) {
+                    clientHandlers.get(currentGameState).add(this);
                     currentPlayer = player;
                     // System.out.println(currentPlayer.getName() + " | " + currentPlayer.getPlayerId());
+                    // System.out.println("Number of clienthandlers: " + clientHandlers.get(currentGameState).size());
                 }
             } catch (IOException e) {
                 System.out.println("Something happened----");
@@ -81,6 +82,16 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                 closeEverything(socket, objectInputStream, objectOutputStream);
                 break;
             }
+        }
+    }
+    
+    // send gameStatus to all players in the game
+    private void broadcastGameStatus(GameState gameState) {
+        System.out.println("Number of clienthandlers: " + clientHandlers.get(gameState).size());
+        System.out.println("Number of players (number): " + gameState.getNumOfPlayers());
+        System.out.println("Number of players: " + gameState.getPlayers().size());
+        for (ClientHandler clientHandler : clientHandlers.get(gameState)) {
+            clientHandler.sendGameState(gameState);
         }
     }
 
@@ -108,13 +119,6 @@ public class ClientHandler implements Runnable { // allows instances to be execu
             objectOutputStream.flush();
         } catch (IOException e) {
             closeEverything(socket, objectInputStream, objectOutputStream);
-        }
-    }
-
-    // send gameStatus to all players in the game
-    private void broadcastGameStatus(GameState gameState) {
-        for (ClientHandler clientHandler : clientHandlers.get(gameState)) {
-            clientHandler.sendGameState(gameState);
         }
     }
 

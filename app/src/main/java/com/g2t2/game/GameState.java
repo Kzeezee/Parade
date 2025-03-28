@@ -1,6 +1,7 @@
 package com.g2t2.game;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.*;
 
 import com.g2t2.types.*;
@@ -10,6 +11,7 @@ import com.g2t2.types.*;
  * ie. num of player, GameId, who is the gameMaster, the paradeboard, and deck
  */
 public class GameState implements Serializable { // to allow it to be sent over
+    private static final long serialVersionUID = 1L;
     private int numOfPlayers;
     private String gameId;
     private Player gameMaster;
@@ -19,8 +21,19 @@ public class GameState implements Serializable { // to allow it to be sent over
     private CardDeck deck = new CardDeck();
     private boolean hasStarted = false;
 
-    public GameState(String gameId) {
-        this.gameId = gameId;
+    public GameState() {
+        gameId = generateGameId();
+    }
+
+    private String generateGameId() {
+        long timestamp = Instant.now().getEpochSecond();
+        Random random = new Random();
+        String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder randomPart = new StringBuilder();
+        for (int i = 0; i < 4; i++) { // Generate 4 random characters
+            randomPart.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
+        }
+        return "G" + timestamp + "-" + randomPart; // Format: G<timestamp>-<random>
     }
 
     public void addPlayer(Player player) {
@@ -32,20 +45,22 @@ public class GameState implements Serializable { // to allow it to be sent over
         }
     }
 
-    // public int getNumOfPlayers() {
-    //     return numOfPlayers;
-    // }
-
     public List<Player> getPlayers() {
         return players;
     }
 
-    // public void setPlayers(List<Player> players) {
-    //     this.players = players;
-    // }
+    public void printPlayerList() {
+        for (Player player : players) {
+            System.out.println(player.getName());
+        }
+    }
 
     public String getGameId() {
         return gameId;
+    }
+
+    public int getNumOfPlayers() {
+        return numOfPlayers;
     }
 
     // public Player getGameMaster() {
@@ -74,5 +89,18 @@ public class GameState implements Serializable { // to allow it to be sent over
 
     public void setParade(List<Card> parade) {
         this.parade = parade;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof GameState gameState) {
+            return this.getGameId().equals(gameState.getGameId());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(gameId);
     }
 }

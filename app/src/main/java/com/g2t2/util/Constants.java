@@ -56,8 +56,8 @@ public class Constants {
     public static final List<String> EMOJIS = List.of("🌹", "💧", "☀️ ", "🪻 ", "🍀", "🕷️ ");
 
     // Commands
-    public static final String CREATE_GAME = "CREATE_GAME";
-    public static final String JOIN_GAME = "JOIN_GAME";
+    public static final String CREATE_GAME = "c"; //"CREATE_GAME";
+    public static final String JOIN_GAME = "j"; //"JOIN_GAME";
 
     // ERRORS
     public static final String INVALID_GAME_ID = "INVALID GAME ID";

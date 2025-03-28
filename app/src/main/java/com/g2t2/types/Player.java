@@ -10,7 +10,7 @@ import java.util.*;
  */
 
 public class Player implements Serializable {
-
+    private static final long serialVersionUID = 1L;
     private static int numOfPlayers; // automatically increases whenever a player is created
     private int playerId; // autoassigned based on the number of players
     private String name;
