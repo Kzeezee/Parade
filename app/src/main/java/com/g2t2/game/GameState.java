@@ -55,8 +55,13 @@ public class GameState implements Serializable { // to allow it to be sent over
     }
 
     public void printPlayerList() {
-        for (Player player : players) {
-            System.out.println(player.getName());
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
+            // getting the role of the player
+            String playerRole = gameMaster.equals(player) ? "GameMaster" : "Player";
+            playerRole = player.getCPU() ? "CPU" : "Player";
+            
+            System.out.println(i+1 + ") " + player.getName() + " (" + playerRole + ")");
         }
     }
 

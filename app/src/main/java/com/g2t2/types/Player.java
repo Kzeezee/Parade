@@ -70,4 +70,14 @@ public class Player implements Serializable {
         return isCPU;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Player player) {
+            if (player.name.equals(this.name) && player.playerId == this.playerId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
