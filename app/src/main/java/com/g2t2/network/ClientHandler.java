@@ -67,6 +67,13 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         return null;
     }
     
+    private void startGame() {
+        GameState game = findGameState(gameId);
+        game.giveOutInitialCards();
+        game.startGame();
+        sendGameState(game);
+    }
+
     // This method contains everything that is supposed to ran on a separate thread, such as blocking operations
     @Override
     public void run() {
@@ -96,7 +103,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         createCPU(Integer.parseInt(messageToProcess.getMessage()[1]), Integer.parseInt(messageToProcess.getMessage()[2]));
 
                     } else if (command.equals(Constants.START_GAME)) { // start game
-
+                        startGame();
                     }
                 }
             } catch (IOException e) {

@@ -9,7 +9,7 @@ import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 
 public class GameRenderer {
-    public static void displayRoundInformation(GameState game) {
+    public static void displayRoundInformation(GameState game) { // show everything that everyone can see (no player's hand)
         Display.printGameHeader();
         displayCollections(game);
         displayParade(game);

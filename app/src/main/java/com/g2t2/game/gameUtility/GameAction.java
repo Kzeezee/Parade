@@ -30,6 +30,17 @@ public class GameAction {
         }    
     }
 
+    public static void processCardChosenToPutToParade(int cardIndex, Player player,  GameState game) {        
+        Card chosenCard = player.getCardsOnHand().get(cardIndex);
+        player.getCardsOnHand().remove(chosenCard);
+
+        List<Card> cardsCollected = adjustParadeBoard(chosenCard, game);
+        addToCollection(cardsCollected, player);
+        if (game.isLastRound()) {
+            player.drawCard(game.getDeck());
+        }    
+    }
+
     // print out the prompt string and accordingly ask the player for valid entry
     private static Card promptForCard(String prompt, Player player) {
         Card chosenCard = null;

@@ -80,6 +80,10 @@ public class GameState implements Serializable { // to allow it to be sent over
         return numOfPlayers;
     }
 
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+    
     public Player getGameMaster() {
         return gameMaster;
     }
@@ -116,7 +120,7 @@ public class GameState implements Serializable { // to allow it to be sent over
         for (Player player : players) {
             player.drawStartingCards(deck);
         }
-
+        // set parade board
         for (int i = 0; i < 6; i++) {
             paradeBoard.add(deck.drawCard());
         }
@@ -128,7 +132,7 @@ public class GameState implements Serializable { // to allow it to be sent over
         int currentPlayerIndex = (int) (Math.random() * players.size());
         currentPlayer = players.get(currentPlayerIndex);
 
-
+    }
         // int previousPlayer = currentPlayer;
         // // checks the previous player because they are the one that might have a
         // // complete collection (ALL COLOURS)
@@ -164,7 +168,6 @@ public class GameState implements Serializable { // to allow it to be sent over
         // displayScores(ParadeBoard.getPlayers());
 
         // promptForNewGame();
-    }
 
     public void printNumOfCardsLeft() {
         System.out.println(" 📌 Number of Cards Left in the Deck: " + deck.getCardsInDeck().size());
@@ -189,7 +192,6 @@ public class GameState implements Serializable { // to allow it to be sent over
     //     return Objects.hash(gameId);
     // }
 
-    // Implement deepCopy() in GameState
     public GameState deepCopy() {
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();

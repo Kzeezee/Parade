@@ -9,6 +9,8 @@ import java.util.Scanner;
 
 import com.g2t2.game.GameState;
 import com.g2t2.game.StartMenu;
+import com.g2t2.game.gameUtility.GameAction;
+import com.g2t2.game.gameUtility.GameRenderer;
 import com.g2t2.game.gameUtility.Prompt;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
@@ -177,8 +179,12 @@ public class Client implements Runnable {
         return new String[] {Constants.ADD_CPU, "" + numOfCPU, "" + difficulty};
     }
 
-    private void renderGame() {
+    private void renderGame(GameState game) { // TODO: show available commands on top
+        if (game.getCurrentPlayer().equals(currentPlayer)) { // my turn 
+            // GameAction.playTurn(currentPlayer, game);
+        } else {
 
+        }
     }
 
     private void sendMessage(String msg[]) {
@@ -198,8 +204,8 @@ public class Client implements Runnable {
                     System.out.println("number of player: " + game.getNumOfPlayers());
                     if (!game.hasStarted()){ // means still in waiting room
                         printWaitingRoomDetails(game);
-                    } else {
-                        // render game  
+                    } else { // game started
+                        renderGame(game);
                     }
 
                 } else if (incomingObject instanceof Message incomingMessage) {
