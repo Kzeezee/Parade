@@ -14,8 +14,8 @@ public class Player implements Serializable {
     private static int counter = 1;  // autoincrement
     private int playerId;
     private String name;
-    private ArrayList<Card> cardsOnHand;
-    private ArrayList<Card> cardsInCollection;
+    private List<Card> cardsOnHand;
+    private List<Card> cardsInCollection;
     private int score;
     private boolean isCPU = false;
     private int difficulty;
@@ -54,15 +54,15 @@ public class Player implements Serializable {
         return name;
     }
 
-    public ArrayList<Card> getCardsOnHand() {
+    public List<Card> getCardsOnHand() {
         return cardsOnHand;
     }
 
-    public ArrayList<Card> getCardsInCollection() {
+    public List<Card> getCardsInCollection() {
         return cardsInCollection;
     }
 
-    public void setCardsInCollection(ArrayList<Card> cardsInCollection) {
+    public void setCardsInCollection(List<Card> cardsInCollection) {
         this.cardsInCollection = cardsInCollection;
     }
 

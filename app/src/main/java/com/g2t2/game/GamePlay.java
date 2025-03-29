@@ -106,12 +106,12 @@ public class GamePlay {
 
     // Chooses a card for the medium level difficulty bot to play
     private static Card chooseMediumDifficultyCard(Player player) {
-        ArrayList<Card> hand = player.getCardsOnHand();
+        List<Card> hand = player.getCardsOnHand();
         int lowestNumCollect = Integer.MAX_VALUE;
         Card bestCard = player.getCardsOnHand().get(0);
 
         for (Card card : hand) {
-            ArrayList<Card> collectableCards = getCollectableCards(card);
+            List<Card> collectableCards = getCollectableCards(card);
             if (collectableCards.size() < lowestNumCollect) {
                 lowestNumCollect = collectableCards.size();
                 bestCard = card;
@@ -122,12 +122,12 @@ public class GamePlay {
 
     // Chooses a card for the hard level difficulty bot to play
     private static Card chooseHardDifficultyCard(Player player) {
-        ArrayList<Card> hand = player.getCardsOnHand();
+        List<Card> hand = player.getCardsOnHand();
         int lowestPoints = Integer.MAX_VALUE;
         Card bestCard = null; 
 
         for (Card card : hand) {
-            ArrayList<Card> collectableCards = getCollectableCards(card);
+            List<Card> collectableCards = getCollectableCards(card);
             int totalPoints = calculateTotalPoints(collectableCards);
 
             if (totalPoints < lowestPoints) {
@@ -140,7 +140,7 @@ public class GamePlay {
     }
 
     // Calculates the total amount of points gained if a specific card were to be played
-    private static int calculateTotalPoints(ArrayList<Card> collectableCards) {
+    private static int calculateTotalPoints(List<Card> collectableCards) {
         int totalPoints = 0;
         for (Card card : collectableCards) {
             totalPoints += card.getValue();
@@ -178,7 +178,7 @@ public class GamePlay {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            ArrayList<Card> cardsSelected = new ArrayList<>();
+            List<Card> cardsSelected = new ArrayList<>();
             for (int i = 0; i < 2; i++){
                 Card selectedCard = chooseCPUCard(player, 4 - i);
                 player.getCardsOnHand().remove(selectedCard);
@@ -210,7 +210,7 @@ public class GamePlay {
         System.out.println(Constants.ANSI_RESET); 
         player.getCardsOnHand().remove(chosenCard);
 
-            ArrayList<Card> cardsCollected = adjustParadeBoard(chosenCard);
+            List<Card> cardsCollected = adjustParadeBoard(chosenCard);
             addToCollection(cardsCollected, player);
             if (!isLastRound) {
                 player.drawCard(ParadeBoard.getDECK());
@@ -242,7 +242,7 @@ public class GamePlay {
             System.out.println(Constants.ANSI_RESET);
             player.getCardsOnHand().remove(chosenCard);
 
-            ArrayList<Card> cardsCollected = adjustParadeBoard(chosenCard);
+            List<Card> cardsCollected = adjustParadeBoard(chosenCard);
             addToCollection(cardsCollected, player);
             if (!isLastRound) {
                 player.drawCard(ParadeBoard.getDECK());
@@ -295,7 +295,7 @@ public class GamePlay {
 
     // function to prompt for selected cards and add to the Collections from hand
     private static void addSelectedCardsToParade(Player player) {
-        ArrayList<Card> cardsSelected = new ArrayList<>();
+        List<Card> cardsSelected = new ArrayList<>();
         for (int i = 0; i < 2; i++) { // prompt for 2 cards and add to collection
             displayHandCards(player);
 
@@ -313,8 +313,8 @@ public class GamePlay {
     }
 
     // returns the cards to be added to the player's collection
-    private static ArrayList<Card> adjustParadeBoard(Card inputCard) {
-        ArrayList<Card> toCollection = new ArrayList<>();
+    private static List<Card> adjustParadeBoard(Card inputCard) {
+        List<Card> toCollection = new ArrayList<>();
         int cardValue = inputCard.getValue();
         for (int i = 0; i < ParadeBoard.getParade().size() - cardValue; i++) {
 
@@ -332,10 +332,10 @@ public class GamePlay {
     }
  
     //  Returns the collectable cards of a card to be placed.
-    private static ArrayList<Card> getCollectableCards(Card inputCard) {
+    private static List<Card> getCollectableCards(Card inputCard) {
         int cardValue = inputCard.getValue();
-        ArrayList<Card> collectableCards = new ArrayList<>();
-        ArrayList<Card> parade = ParadeBoard.getParade();
+        List<Card> collectableCards = new ArrayList<>();
+        List<Card> parade = ParadeBoard.getParade();
 
         for (int i = 0; i < parade.size() - cardValue; i++) {
             if (isCollectable(inputCard, parade.get(i))) {
@@ -361,7 +361,7 @@ public class GamePlay {
     }
 
     // add the card to the player's collection
-    private static void addToCollection(ArrayList<Card> cardsToAdd, Player player) {
+    private static void addToCollection(List<Card> cardsToAdd, Player player) {
         for (Card c : cardsToAdd) {
             player.getCardsInCollection().add(c);
         }
@@ -394,7 +394,7 @@ public class GamePlay {
     }
 
     // display the scores of the players and rank them in ascending order
-    private static void displayScores(ArrayList<Player> players) {
+    private static void displayScores(List<Player> players) {
         System.out.println(Constants.DIVIDER);
         System.out.println(Display.colorString("「 ✦ RANKING ✦ 」") + Constants.ANSI_RESET);
 

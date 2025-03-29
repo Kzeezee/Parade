@@ -89,10 +89,6 @@ public class GameState implements Serializable { // to allow it to be sent over
         return hasStarted;
     }
 
-    public void setHasStarted(boolean hasStarted) {
-        this.hasStarted = hasStarted;
-    }
-
     public CardDeck getDeck() {
         return deck;
     }
@@ -103,6 +99,14 @@ public class GameState implements Serializable { // to allow it to be sent over
 
     public void setParade(List<Card> parade) {
         this.parade = parade;
+    }
+
+    public void startGame() {
+        hasStarted = true;
+        for (Player player : players) {
+            player.drawStartingCards(deck);
+        }
+        
     }
 
     // @Override
