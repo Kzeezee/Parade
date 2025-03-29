@@ -21,6 +21,29 @@ public class Prompt {
                                                     + Display.colorString(" ⚜ Enter option ➢ ");
 
     public static final String PLAYER_NO_ERROR_MESSAGE = Display.errorColour(" ❌ A minimum of 2 players and a maximum of 6 players are allowed." 
-                                                        + "Please enter a number between 2 to 6.");
+    + "Please enter a number between 2 to 6.");
+
+    // ask whether the player wants to play another round
+    public static void promptForNewGame() {
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            try {
+                System.out.println(" 📌 The game has ended. 📌 ");
+                System.out.println(Display.colorString(" ⚜ Do you want to play another game? (y/n) ➢ "));
+                String confirmation = sc.nextLine();
+
+                if (confirmation.equalsIgnoreCase("y")) {
+                    StartMenu.showStartMenu();
+                    GamePlay.startGame();
+                } else if (confirmation.equalsIgnoreCase("n")) {
+                    Display.sayGoodBye();
+                    System.exit(0);
+                }
+                System.out.println(Constants.ANSI_RESET);
+            } catch (IllegalArgumentException e) {
+                System.out.println();
+            }
+        }
+    }
 
 }
