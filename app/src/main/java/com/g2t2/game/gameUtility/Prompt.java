@@ -25,9 +25,61 @@ public class Prompt {
     public static final String PLAYER_NO_ERROR_MESSAGE = Display.errorColour(" ❌ A minimum of 2 players and a maximum of 6 players are allowed." 
     + "Please enter a number between 2 to 6.");
 
+    // return String[] = {"number of cpu to add", "difficulty level"} -> string cause easier for me to process in network
+    public static String[] promptForCPUDetails(int numOfPlayers) {
+        Scanner sc = new Scanner(System.in);
+        int maxNumOfCPU = 6 -numOfPlayers;
+        int numOfCPU = 0;
+        while (true) {
+            try {        
+                System.out.println(" 📌 How many CPU do you want to add?"); 
+                System.out.print(Display.colorString(" ➢ Enter a number (max = " + maxNumOfCPU + "): "));
+                numOfCPU = sc.nextInt();
+                if (numOfCPU < 0 || numOfCPU > maxNumOfCPU) {
+                    throw new IllegalArgumentException(Display.errorColour(" ❌ Please enter a number between 0 to " 
+                    + maxNumOfCPU + ". Maximum number of players = 6"));
+                }
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println(Display.errorColour(" ❌ Please enter a number"));
+                System.out.println();
+                sc.nextLine();
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                System.out.println();
+            }
+        }
+
+        if (numOfCPU == 0) {
+            return null;
+        }
+        
+        int difficulty = 0;
+        while (true) {
+            try {
+                System.out.print(Constants.ANSI_RESET);
+                System.out.println(Constants.DIVIDER);
+                System.out.println(Prompt.GAME_DIFFICULTY_OPTIONS);
+                difficulty = sc.nextInt();
+                System.out.print(Constants.ANSI_RESET);
+                if (difficulty < 1 || difficulty > 3) {
+                    throw new IllegalArgumentException(Display.errorColour(" ❌ Please enter a number between 1 to 3"));
+                }
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println(Display.errorColour(" ❌ Please enter a number"));
+                System.out.println();
+                sc.nextLine();
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                System.out.println();
+            }
+        }
+        return new String[] {"" + numOfCPU, "" + difficulty};
+    }
+
     // return the index of the card
     public static int promptForCard(Player player) {
-        //Card chosenCard = null;
         int chosenCardIndex = 0;
         Scanner sc = new Scanner(System.in);
         int numOfCards = player.getCardsOnHand().size();
@@ -36,7 +88,6 @@ public class Prompt {
                 System.out.println(Constants.ANSI_RESET + " 📌 Which card do you want to place in the Parade?");
                 System.out.print(
                         Display.colorString(" ⚜ Choose card number (1 to " + numOfCards + ") or 'q' to quit ➢ "));
-                // int chosenCardIndex = sc.nextInt() - 1;
                 String chosenCardString = sc.nextLine();
                 if (chosenCardString.equalsIgnoreCase("q")) {
                     Display.sayGoodBye();
@@ -55,7 +106,6 @@ public class Prompt {
                     continue;
 
                 }
-                // chosenCard = player.getCardsOnHand().get(chosenCardIndex - 1);
                 break;
             } catch (InputMismatchException e) {
                 System.out.println(Display.errorColour(" ❌ Please input a number"));

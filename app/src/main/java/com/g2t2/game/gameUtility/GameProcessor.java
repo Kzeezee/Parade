@@ -13,23 +13,8 @@ import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 
 
-public class GameAction {
-    public static void playTurn(Player player,  GameState game) {
-        GameRenderer.displayRoundInformation(game);
-        GameRenderer.displayHandCards(player); 
-
-        String prompt = String.format(Constants.ANSI_RESET + " 📌 Which card do you want to place in the Parade?%n");
-        Card chosenCard = promptForCard(prompt, player);
-        System.out.println(Constants.ANSI_RESET); 
-        player.getCardsOnHand().remove(chosenCard);
-
-        List<Card> cardsCollected = adjustParadeBoard(chosenCard, game);
-        addToCollection(cardsCollected, player);
-        if (game.isLastRound()) {
-            player.drawCard(game.getDeck());
-        }    
-    }
-
+public class GameProcessor {
+    // remove card from player hand, adjust parade board, add cards to collection
     public static void processCardChosenToPutToParade(int cardIndex, Player player,  GameState game) {        
         Card chosenCard = player.getCardsOnHand().get(cardIndex);
         player.getCardsOnHand().remove(chosenCard);
@@ -39,50 +24,6 @@ public class GameAction {
         if (game.isLastRound()) {
             player.drawCard(game.getDeck());
         }    
-    }
-
-    // print out the prompt string and accordingly ask the player for valid entry
-    private static Card promptForCard(String prompt, Player player) {
-        Card chosenCard = null;
-        Scanner sc = new Scanner(System.in);
-        int numOfCards = player.getCardsOnHand().size();
-        while (true) {
-            try {
-                System.out.print(prompt);
-                System.out.print(
-                        Display.colorString(" ⚜ Choose card number (1 to " + numOfCards + ") or 'q' to quit ➢ "));
-                // int chosenCardIndex = sc.nextInt() - 1;
-                String chosenCardString = sc.nextLine();
-                if (chosenCardString.equalsIgnoreCase("q")) {
-                    Display.sayGoodBye();
-                    System.exit(0);
-                }
-                int chosenCardIndex = Integer.parseInt(chosenCardString);
-                chosenCard = player.getCardsOnHand().get(chosenCardIndex - 1);
-
-                // Confirmation on card choice
-                System.out.println(Constants.ANSI_RESET + " 📌 Chosen Card Number: " + (chosenCardIndex));
-                System.out.print(Display.colorString(" ⚜ Enter 'y' to confirm or 'q' to quit ➢ "));
-
-                String confirmation = sc.nextLine();
-                if (confirmation.length() > 1 || !Character.isLetter(confirmation.charAt(0))
-                        || Character.toLowerCase(confirmation.charAt(0)) != 'y') {
-                    System.out.println();
-                    continue;
-                }
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println(Display.errorColour(" ❌ Please input a number"));
-                System.out.println();
-                sc.nextLine();
-            } catch (IndexOutOfBoundsException e) {
-                System.out.println(Display.errorColour(" ❌ Please input a card number (1 to " + numOfCards + "): "));
-                System.out.println();
-            } catch (IllegalArgumentException e) {
-                System.out.println();
-            }
-        }
-        return chosenCard;
     }
 
     // returns the cards to be added to the player's collection
@@ -160,7 +101,8 @@ public class GameAction {
             String prompt = Display.colorString(" 📌 Which card do you want to place in the Collection?\n" +
                     " 📌 You need to choose TWO cards \n" +
                     " ⚜ Card " + (i + 1) + " :");
-            Card selectedCard = promptForCard(prompt, player);
+            int selectedCardIndex = Prompt.promptForCard(player);
+            Card selectedCard = player.getCardsOnHand().get(selectedCardIndex);
 
             player.getCardsOnHand().remove(selectedCard);
             player.getCardsInCollection().add(selectedCard);
