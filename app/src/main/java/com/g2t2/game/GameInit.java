@@ -144,7 +144,7 @@ public class GameInit {
         Utility.clearConsoleScreen();
         System.out.println(Constants.BANNER);
         Scanner sc = new Scanner(System.in);
-        ArrayList<Player> players = new ArrayList<>();
+        List<Player> players = new ArrayList<>();
       
         for (int i = 1; i <= numOfPlayers - numOfCPU; i++) {
             while (true) {
@@ -174,7 +174,7 @@ public class GameInit {
         ParadeBoard.setPlayers(players);
 
         // Setting up the board
-        ArrayList<Card> board = new ArrayList<>();
+        List<Card> board = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
             board.add(ParadeBoard.getDECK().drawCard());
         }
