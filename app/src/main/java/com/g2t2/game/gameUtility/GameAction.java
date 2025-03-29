@@ -1,10 +1,11 @@
-package com.g2t2.game;
+package com.g2t2.game.gameUtility;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
+import com.g2t2.game.GameState;
 import com.g2t2.types.Card;
 import com.g2t2.types.ParadeBoard;
 import com.g2t2.types.Player;

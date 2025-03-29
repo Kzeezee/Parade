@@ -1,8 +1,10 @@
-package com.g2t2.game;
+package com.g2t2.game.gameUtility;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import com.g2t2.game.GamePlay;
+import com.g2t2.game.StartMenu;
 import com.g2t2.types.Card;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;

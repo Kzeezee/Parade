@@ -1,8 +1,9 @@
-package com.g2t2.game;
+package com.g2t2.game.gameUtility;
 
 import java.util.Comparator;
 import java.util.List;
 
+import com.g2t2.game.GameState;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;

@@ -8,8 +8,8 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import com.g2t2.game.GameState;
-import com.g2t2.game.Prompt;
 import com.g2t2.game.StartMenu;
+import com.g2t2.game.gameUtility.Prompt;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
