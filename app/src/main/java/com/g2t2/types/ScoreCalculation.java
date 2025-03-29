@@ -32,7 +32,7 @@ public class ScoreCalculation {
         if (deck.isEmpty()) {
             return true;
         }
-        ArrayList<Card> cards = player.getCardsInCollection();
+        List<Card> cards = player.getCardsInCollection();
 
         // RED, BLUE, YELLOW, PURPLE, GREEN, BLACK
         // map the colour card numbers to a hashmap
@@ -71,6 +71,14 @@ public class ScoreCalculation {
             }
         }
         return true;
+    }
+
+    public static int calculateTotalPoints(List<Card> cardsCollected) {
+        int sum = 0;
+        for (Card card: cardsCollected) {
+            sum += card.getValue();
+        }
+        return sum;
     }
 
     /**

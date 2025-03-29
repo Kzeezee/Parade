@@ -18,8 +18,8 @@ public class Constants {
     public static final String GREEN_ANSI = "\033[38;2;85;205;121m";
     public static final String BLACK_ANSI = "\033[38;2;1;1;1m";
     public static final String ANSI_RESET = "\033[0m";
-    public static final String INVALID_OPTION_ERROR_MSG = " ❌ Please choose a valid option!";
-
+    public static final String INVALID_OPTION_ERROR_MSG = " ❌ Please choose a valid option";
+    public static final String WELCOMEMESSAGE_STRING = " ⚜ Welcome to G2T2 Parade! Please select an option. (1 or 3 for now)";
     public static final String DIVIDER = "\033[90m" + "───────────────────────────────────────" 
                                          + "⚜ ──────────────────────────────────────────" + ANSI_RESET;
 
@@ -28,24 +28,46 @@ public class Constants {
                                         + "                              │    P A R A D E   │\n"
                                         + "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
 
-    public static final String ONLINE_LOBBY_BANNER = String.format(CardColour.BLUE.getAnsiCode() 
-                                                     + "                              ┌──────── ⚜ ───────┐\n" 
-                                                     + "                              │   ONLINE  LOBBY  │\n"
-                                                     + "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
+    public static final String ONLINE_LOBBY_BANNER = String.format(CardColour.BLUE.getAnsiCode() +
+        "                              ┌──────── ⚜ ───────┐\n" + //
+        "                              │   ONLINE  LOBBY  │\n" + //
+        "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
 
-    
-    public static final String GOODBYE = BLUE_ANSI + "\n" 
-                                        + "                    ┌──────────────────── ⚜ ───────────────────────┐\n" 
-                                        + "                    │         Thank you for playing PARADE.        │\n" 
-                                        + "                    │    Have a nice day and see you again soon!   │\n" 
-                                        + "                    └──────────────────── ⚜ ───────────────────────┘\n" + ANSI_RESET;
+    public static final String WAITING_LOBBY_BANNER = String.format(CardColour.BLUE.getAnsiCode() +
+        "                              ┌──────── ⚜ ───────┐\n" + //
+        "                              │  WAITING  LOBBY  │\n" + //
+        "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
 
-    public static final List<String> EMOJIS = List.of(
-            "🌹", "💧", "☀️ ", "🪻 ", "🍀", "🕷️ ");
+    public static final String GOODBYE = BLUE_ANSI + "\n" +
+            "                    ┌──────────────────── ⚜ ───────────────────────┐\n" + //
+            "                    │         Thank you for playing PARADE.        │\n" + //
+            "                    │    Have a nice day and see you again soon!   │\n" + //
+            "                    └──────────────────── ⚜ ───────────────────────┘\n" + ANSI_RESET;
+
+    public static final List<String> EMOJIS = List.of("🌹", "💧", "☀️ ", "🪻 ", "🍀", "🕷️ ");
+
+    // Commands
+    public static final String CREATE_GAME = "c"; //"CREATE_GAME";
+    public static final String JOIN_GAME = "j"; //"JOIN_GAME";
+    public static final String ADD_CPU = "x"; //"ADD_CPU";
+    public static final String START_GAME = "w"; //"START_GAME";
+    public static final String LEAVE_GAME = "y"; //"LEAVE_GAME";
+
+
+    // ERRORS
+    public static final String INVALID_GAME_ID = "INVALID GAME ID";
+    public static final String INVALID_COMMAND = "INVALID COMMAND";
+    public static final String FULL_CAPACITY = "FULLY CAPACITY";
 
     // Constants
     public static final List<CardColour> CARD_COLOURS = List.of(CardColour.RED, CardColour.BLUE, CardColour.YELLOW, 
                                                                 CardColour.PURPLE, CardColour.GREEN, CardColour.BLACK);
     
     public static final String DB_CONNECTION = "jdbc:sqlite:../parade.db";
+
+    public static final int MIN_PLAYER_NO = 2;
+    public static final int MAX_PLAYER_NO = 6;
+
+    public static final int MIN_CPU_DIFFICULTY = 1;
+    public static final int MAX_CPU_DIFFICULTY = 3;
 }

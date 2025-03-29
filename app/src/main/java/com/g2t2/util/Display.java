@@ -178,7 +178,7 @@ public class Display {
 
     // returns colored string
     public static String colorString(String s) {
-        return Constants.BLUE_ANSI + s;
+        return Constants.BLUE_ANSI + s + Constants.ANSI_RESET;
     }
 
     // returns red colour error string
@@ -211,5 +211,11 @@ public class Display {
             }
         }
         System.out.println();
+    }
+
+    public static void printGameHeader() {
+        Utility.clearConsoleScreen();
+        System.out.println(Constants.BANNER);
+        System.out.println(Constants.DIVIDER);
     }
 }

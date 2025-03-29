@@ -2,7 +2,8 @@ package com.g2t2.types;
 
 import com.g2t2.enums.CardColour;
 
-import java.util.ArrayList;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * CardDeck class, modelling the deck of Parade cards.
@@ -10,8 +11,8 @@ import java.util.ArrayList;
  * @author Ben
  */
 
-public class CardDeck {
-
+public class CardDeck implements Serializable {
+    private static final long serialVersionUID = 1L;
     private ArrayList<Card> deck;
 
     public CardDeck() {

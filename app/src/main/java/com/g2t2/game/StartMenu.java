@@ -11,22 +11,21 @@ import com.g2t2.util.StateFlags;
 import com.g2t2.util.Utility;
 import com.g2t2.util.db.DBController;
 
-
 /**
- * Class handling the main menu of the application
- * Has methods handling GUI version and Console version
+ * Handles the main menu of the application.
+ * Provides methods for both GUI and console-based menu interactions.
  * 
  * @author Oliver
  */
 public class StartMenu {
     private static final String WELCOMEMESSAGE_STRING = " ⚜ Welcome to G2T2 Parade! Please select an option. (1 or 3 for now)";
     private static final String GAMEPLAY_OPTIONS = " 📌 Play local (1)\n" + " 📌 Play online (2)\n"
-                                                   + " 📌 Exit application (3)\n" 
-                                                   + Display.colorString(" ⚜ Enter option ➢ ");
+            + " 📌 Exit application (3)\n"
+            + Display.colorString(" ⚜ Enter option ➢ ");
+
     /**
-     * Main method to display the start menu of the application
-     * 
-     * @author Oliver
+     * Displays the start menu of the application based on the current mode (GUI or
+     * console).
      */
     public static void showStartMenu() {
         if (StateFlags.isGUIMode) {
@@ -41,14 +40,11 @@ public class StartMenu {
     }
 
     /**
-     * Let player select which profile he/she to play on.
-     * This allows the player to track various game progress.
+     * Allows the player to select a profile to play on, enabling progress tracking.
      * 
-     * @author Oliver
+     * @param players List of available player profiles.
      */
     public static void selectPlayerProfile(List<PlayerProfile> players) {
-        // System.out.println(Constants.ANSI_RESET);
-        // System.out.println(Constants.BANNER);
         System.out.println(Constants.DIVIDER);
         Scanner sc = new Scanner(System.in);
 
@@ -77,14 +73,13 @@ public class StartMenu {
                 StateManager.setPlayerProfile(pp);
             } catch (NumberFormatException e) {
                 System.out.println(Display.errorColour(" ❌ Invalid input"));
+                System.out.println("select player profiel number format");
             }
         }
     }
 
     /**
-     * Display a start menu for the console application
-     * 
-     * @author Oliver
+     * Displays the console-based start menu and handles user input.
      */
     private static void consoleStartMenu() {
         // Utility.clearConsoleScreen();
@@ -126,10 +121,15 @@ public class StartMenu {
             } catch (Exception e) {
                 Utility.clearConsoleScreen();
                 System.out.println(Display.errorColour(Constants.INVALID_OPTION_ERROR_MSG));
+                e.printStackTrace();
             }
         }
     }
 
+    /**
+     * Checks for existing player profiles in the database and prompts profile
+     * creation if none exist.
+     */
     private static void checkForPlayerProfiles() {
         Utility.clearConsoleScreen();
         System.out.println(Constants.ANSI_RESET);
@@ -149,6 +149,9 @@ public class StartMenu {
         }
     }
 
+    /**
+     * Prompts the user to create a new player profile.
+     */
     private static void showPlayerProfileCreation() {
         Utility.clearConsoleScreen();
         System.out.println(Constants.ANSI_RESET);
@@ -171,6 +174,7 @@ public class StartMenu {
             } catch (InputMismatchException e) {
                 System.out.println(e.getMessage());
                 System.out.println();
+                System.out.println("in profile creation");
             }
         }
         System.out.println(Display.colorString("Creating player profile: " + name));
@@ -183,10 +187,7 @@ public class StartMenu {
     }
 
     /**
-     * Display a start menu for the GUI application.
-     * Currently empty.
-     * 
-     * @author Oliver
+     * Displays the start menu for the GUI application. Currently not implemented.
      */
     private static void GUIStartMenu() {
 
