@@ -74,10 +74,12 @@ public class ClientHandler implements Runnable { // allows instances to be execu
             try {
                 Object incomingObject = objectInputStream.readObject();
                 if (incomingObject instanceof Message messageToProcess) {
-                    if (messageToProcess.getMessage()[0].equals(Constants.CREATE_GAME)) { // create game
+                    String command = messageToProcess.getMessage()[0];
+
+                    if (command.equals(Constants.CREATE_GAME)) { // create game
                         createGame(messageToProcess.getMessage()[2]);
                     
-                    } else if (messageToProcess.getMessage()[0].equals(Constants.JOIN_GAME)) { // join game
+                    } else if (command.equals(Constants.JOIN_GAME)) { // join game
                         // checking if gameId sent in is valid
                         GameState game = findGameState(messageToProcess.getMessage()[1]);
                         if (game == null) {
@@ -90,8 +92,11 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                             createPlayer(messageToProcess.getMessage()[2]);
                         }
 
-                    } else if (messageToProcess.getMessage()[0].equals(Constants.ADD_CPU)) { // add cpu
+                    } else if (command.equals(Constants.ADD_CPU)) { // add cpu
                         createCPU(Integer.parseInt(messageToProcess.getMessage()[1]), Integer.parseInt(messageToProcess.getMessage()[2]));
+
+                    } else if (command.equals(Constants.START_GAME)) { // start game
+
                     }
                 }
             } catch (IOException e) {

@@ -8,6 +8,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import com.g2t2.game.GameState;
+import com.g2t2.game.Prompt;
 import com.g2t2.game.StartMenu;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
@@ -157,11 +158,7 @@ public class Client implements Runnable {
             try {
                 System.out.print(Constants.ANSI_RESET);
                 System.out.println(Constants.DIVIDER);
-                System.out.println("Choose the difficulty level for your CPU players");
-                System.out.println(" Easy (1)");
-                System.out.println(" Medium (2)");
-                System.out.println(" Hard (3)");
-                System.out.print(Display.colorString(" ⚜ Enter option ➢ "));
+                System.out.println(Prompt.GAME_DIFFICULTY_OPTIONS);
                 difficulty = sc.nextInt();
                 System.out.print(Constants.ANSI_RESET);
                 if (difficulty < 1 || difficulty > 3) {
