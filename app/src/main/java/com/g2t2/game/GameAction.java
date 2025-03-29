@@ -10,11 +10,11 @@ import com.g2t2.types.ParadeBoard;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
-import com.g2t2.util.Utility;
+
 
 public class GameAction {
     public static void playTurn(Player player,  GameState game) {
-        GameRenderer.displayRoundInformation(player, game);
+        GameRenderer.displayRoundInformation(game);
         GameRenderer.displayHandCards(player); 
 
         String prompt = String.format(Constants.ANSI_RESET + " 📌 Which card do you want to place in the Parade?%n");
@@ -22,7 +22,7 @@ public class GameAction {
         System.out.println(Constants.ANSI_RESET); 
         player.getCardsOnHand().remove(chosenCard);
 
-        List<Card> cardsCollected = adjustParadeBoard(chosenCard);
+        List<Card> cardsCollected = adjustParadeBoard(chosenCard, game);
         addToCollection(cardsCollected, player);
         if (game.isLastRound()) {
             player.drawCard(game.getDeck());
@@ -100,7 +100,7 @@ public class GameAction {
 
         for (int i = 0; i < cardsInParade.size() - cardValue; i++) {
             if (isCollectable(inputCard, cardsInParade.get(i))) {
-                collectableCards.add(parade.get(i));
+                collectableCards.add(cardsInParade.get(i));
             }
         }
 
@@ -143,7 +143,7 @@ public class GameAction {
     private static void addSelectedCardsToParade(Player player) {
         List<Card> cardsSelected = new ArrayList<>();
         for (int i = 0; i < 2; i++) { // prompt for 2 cards and add to collection
-            displayHandCards(player);
+            GameRenderer.displayHandCards(player);
 
             String prompt = Display.colorString(" 📌 Which card do you want to place in the Collection?\n" +
                     " 📌 You need to choose TWO cards \n" +
@@ -176,11 +176,11 @@ public class GameAction {
         Display.delayPrint(" 📌 Player " + Display.colorString(player.getName() 
         + Constants.ANSI_RESET + " is choosing their card."),30);
 
-        Card chosenCard = chooseCPUCard(player, 5);
+        Card chosenCard = chooseCPUCard(player, 5, game);
         System.out.println(Constants.ANSI_RESET);
         player.getCardsOnHand().remove(chosenCard);
 
-        List<Card> cardsCollected = adjustParadeBoard(chosenCard);
+        List<Card> cardsCollected = adjustParadeBoard(chosenCard, game);
         addToCollection(cardsCollected, player);
 
         if (game.isLastRound()) {
@@ -189,7 +189,7 @@ public class GameAction {
     }
 
     // choose which card based on CPU difficulty
-    private static Card chooseCPUCard(Player player, int numOfCards) {
+    private static Card chooseCPUCard(Player player, int numOfCards, GameState game) {
         switch (player.getDifficulty()) { 
             // level 1 difficulty: random
             case 1:
@@ -197,22 +197,22 @@ public class GameAction {
             // level 2 difficulty: picks the card that gives back the lowest number of cards
             // from the parade
             case 2:
-                return chooseMediumDifficultyCard(player);
+                return chooseMediumDifficultyCard(player, game);
             case 3:
-                return chooseHardDifficultyCard(player);
+                return chooseHardDifficultyCard(player, game);
             default:
                 return player.getCardsOnHand().get((int) (Math.random() * numOfCards));
         }
     }
 
     // Chooses a card for the medium level difficulty bot to play
-    private static Card chooseMediumDifficultyCard(Player player) {
+    private static Card chooseMediumDifficultyCard(Player player, GameState game) {
         List<Card> hand = player.getCardsOnHand();
         int lowestNumCollect = Integer.MAX_VALUE;
         Card bestCard = player.getCardsOnHand().get(0);
 
         for (Card card : hand) {
-            List<Card> collectableCards = getAllCollectableCards(card);
+            List<Card> collectableCards = getAllCollectableCards(card, game);
             if (collectableCards.size() < lowestNumCollect) {
                 lowestNumCollect = collectableCards.size();
                 bestCard = card;
@@ -222,13 +222,13 @@ public class GameAction {
     }
 
     // Chooses a card for the hard level difficulty bot to play
-    private static Card chooseHardDifficultyCard(Player player) {
+    private static Card chooseHardDifficultyCard(Player player, GameState game) {
         List<Card> hand = player.getCardsOnHand();
         int lowestPoints = Integer.MAX_VALUE;
         Card bestCard = null; 
 
         for (Card card : hand) {
-            List<Card> collectableCards = getAllCollectableCards(card);
+            List<Card> collectableCards = getAllCollectableCards(card, game);
             int totalPoints = calculateTotalPoints(collectableCards);
 
             if (totalPoints < lowestPoints) {
@@ -241,7 +241,7 @@ public class GameAction {
     }
 
     // CPU version of the putTwoToCollections() method
-    private static void putTwoToCPUCollections(Player player){
+    private static void putTwoToCPUCollections(Player player, GameState game){
         System.out.println(" 📌 Currently, it is " + Display.colorString(player.getName()) + "'s turn.");
         System.out.println(Constants.DIVIDER);
         System.out.println(" 📌 Player " + Display.colorString(player.getName() 
@@ -253,7 +253,7 @@ public class GameAction {
         }
         List<Card> cardsSelected = new ArrayList<>();
         for (int i = 0; i < 2; i++){
-            Card selectedCard = chooseCPUCard(player, 4 - i);
+            Card selectedCard = chooseCPUCard(player, 4 - i, game);
             player.getCardsOnHand().remove(selectedCard);
             player.getCardsInCollection().add(selectedCard);
             cardsSelected.add(selectedCard);

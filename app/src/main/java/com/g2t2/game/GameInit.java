@@ -1,6 +1,6 @@
 package com.g2t2.game;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 

@@ -166,11 +166,11 @@ public class GameState implements Serializable { // to allow it to be sent over
         // promptForNewGame();
     }
 
-    public static void printNumOfCardsLeft() {
-        System.out.println(" 📌 Number of Cards Left in the Deck: " + game.getDeck().getCardsInDeck().size());
+    public void printNumOfCardsLeft() {
+        System.out.println(" 📌 Number of Cards Left in the Deck: " + deck.getCardsInDeck().size());
     }
 
-    public static void printPlayerTurn() {
+    public void printPlayerTurn() {
         System.out.println(" 📌 Currently, it is player " + Display.colorString(currentPlayer.getName() 
         + "(" + currentPlayer.getPlayerId() + ")" + Constants.ANSI_RESET + " turn."));
     }
