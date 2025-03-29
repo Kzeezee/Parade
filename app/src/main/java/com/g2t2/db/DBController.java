@@ -1,18 +1,17 @@
-package com.g2t2.util.db;
+package com.g2t2.db;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.g2t2.util.Constants;
 
-
-public class DBInit {
+public class DBController {
 
     public static void init() {
         try (Connection conn = DriverManager.getConnection(Constants.DB_CONNECTION)) {
             if (conn != null) {
-                DatabaseMetaData meta = conn.getMetaData();
-                System.out.println("The driver name is " + meta.getDriverName());
-                System.out.println("A new database has been created.");
                 createTables(conn);
 
                 // Create tables
@@ -24,7 +23,7 @@ public class DBInit {
         }
     }
 
-    public static void createTables(Connection connection) throws SQLException {
+    private static void createTables(Connection connection) throws SQLException {
         Statement st = connection.createStatement();
         st.execute(Query.CREATE_PROFILE_TABLE);
     }
