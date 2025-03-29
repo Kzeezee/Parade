@@ -18,6 +18,11 @@ import com.g2t2.util.Display;
  * @author Easan
  */
 public class GameProcessor {
+    
+    public static void processPlayerTurn(int index, Player currentPlayer, GameState game) {
+        processCardChosenToPutToParade(index, currentPlayer, game);
+    }
+    
     /**
      * Executes a player's turn in the game.
      *
@@ -42,8 +47,7 @@ public class GameProcessor {
         GameRenderer.displayRoundInformation(game);
         GameRenderer.displayHandCards(player);
 
-        String prompt = String.format(Constants.ANSI_RESET + " 📌 Which card do you want to place in the Parade?");
-        int cardIdx = Prompt.promptForCard(prompt, player);
+        int cardIdx = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, player);
         processCardChosenToPutToParade(cardIdx, player, game);
     }
 

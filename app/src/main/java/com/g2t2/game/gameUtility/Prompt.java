@@ -152,4 +152,9 @@ public class Prompt {
         }
         return cardIdxList;
     }
+
+    public static String[] promptForCPUDetails(int numberOfPlayersCurrently) {
+        // to implement
+        return new String[0];
+    }
 }

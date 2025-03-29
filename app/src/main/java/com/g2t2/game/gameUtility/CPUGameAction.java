@@ -30,7 +30,7 @@ public class CPUGameAction {
         Display.delayPrint(" 📌 Player " + Display.colorString(player.getName())
                 + " is choosing their cards.", 30);
         int cardIdx = chooseCPUCardIdx(player, game);
-        GameAction.processCardChosenToPutToParade(cardIdx, player, game);
+        GameProcessor.processCardChosenToPutToParade(cardIdx, player, game);
     }
 
     /**
@@ -89,7 +89,7 @@ public class CPUGameAction {
         int bestIdx = -1;
 
         for (int i = 0; i < hand.size(); i++) {
-            List<Card> collectableCards = GameAction.getCollectableCards(hand.get(i), game);
+            List<Card> collectableCards = GameProcessor.getCollectableCards(hand.get(i), game);
             if (collectableCards.size() < lowestNumCollect) {
                 lowestNumCollect = collectableCards.size();
                 bestIdx = i;
@@ -112,7 +112,7 @@ public class CPUGameAction {
         int bestIdx = -1;
 
         for (int i = 0; i < hand.size(); i++) {
-            List<Card> collectableCards = GameAction.getCollectableCards(hand.get(i), game);
+            List<Card> collectableCards = GameProcessor.getCollectableCards(hand.get(i), game);
             int totalPoints = ScoreCalculation.calculateTotalPoints(collectableCards);
 
             if (totalPoints < lowestPoints) {

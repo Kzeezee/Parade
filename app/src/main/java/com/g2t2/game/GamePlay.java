@@ -3,7 +3,7 @@ package com.g2t2.game;
 import com.g2t2.types.Player;
 import com.g2t2.types.ScoreCalculation;
 
-import com.g2t2.game.gameUtility.GameAction;
+import com.g2t2.game.gameUtility.GameProcessor;
 import com.g2t2.game.gameUtility.GameRenderer;
 import com.g2t2.game.gameUtility.Prompt;
 
@@ -45,7 +45,7 @@ public class GamePlay {
         // checks the previous player because they are the one that might have a
         // complete collection (ALL COLOURS)
         while (!ScoreCalculation.meetsGameEndCondition(players.get(previousIdx), game.getDeck())) {
-            GameAction.playTurn(players.get(currentIdx), game);
+            GameProcessor.playTurn(players.get(currentIdx), game);
             previousIdx = currentIdx;
             currentIdx = (currentIdx + 1) % players.size();
         }
@@ -71,7 +71,7 @@ public class GamePlay {
      */
     private static void lastRoundOfPlay(List<Player> players, int idx, GameState game) {
         for (int i = 0; i < players.size(); i++) {
-            GameAction.playTurn(players.get(idx), game);
+            GameProcessor.playTurn(players.get(idx), game);
             idx = (idx + 1) % players.size();
         }
     }
@@ -87,7 +87,7 @@ public class GamePlay {
      */
     private static void chooseTwoCardsToCollection(List<Player> players, int idx, GameState game) {
         for (int i = 0; i < players.size(); i++) {
-            GameAction.putTwoToCollections(players.get(idx), game);
+            GameProcessor.putTwoToCollections(players.get(idx), game);
             idx = (idx + 1) % players.size();
         }
     }

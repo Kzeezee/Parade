@@ -124,6 +124,13 @@ public class GameState implements Serializable { // to allow it to be sent over
     // public void setGameMaster(Player gameMaster) {
     // this.gameMaster = gameMaster;
     // }
+    public Player getPlayerWhoStartFinalRound() {
+        return playerWhoStartFinalRound;
+    }
+
+    public void setPlayerWhoStartFinalRound(Player playerWhoStartFinalRound) {
+        this.playerWhoStartFinalRound = playerWhoStartFinalRound;
+    }
 
     public boolean getHasStarted() {
         return hasStarted;

@@ -137,7 +137,8 @@ public class Client implements Runnable {
             if (game.isPut2CollectionRound()) {
                 // TODO
             } else {
-                int indexOfChosenCard = Prompt.promptForCard(currentPlayer);
+
+                int indexOfChosenCard = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, currentPlayer);
                 String[] messageToSendBack = {Constants.COMPLETE_TURN, indexOfChosenCard + ""};
                 sendMessage(messageToSendBack);
             }
@@ -164,7 +165,7 @@ public class Client implements Runnable {
                 if (incomingObject instanceof GameState game) {
                     System.out.println("number of player: " + game.getNumOfPlayers());
                     System.out.println("GameState received: " + game.getGameId());
-                    if (!game.gethasStarted()){ // means still in waiting room
+                    if (!game.getHasStarted()){ // means still in waiting room
                         printWaitingRoomDetails(game);
                     } else { // game started
                         renderGame(game);

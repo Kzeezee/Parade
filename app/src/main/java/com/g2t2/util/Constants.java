@@ -46,6 +46,8 @@ public class Constants {
 
     public static final List<String> EMOJIS = List.of("🌹", "💧", "☀️ ", "🪻 ", "🍀", "🕷️ ");
 
+    public static final String PROMPT_ADD_TO_PARADE = Display.colorString(" 📌 Which card do you want to place in the Parade?");
+
     // Commands
     public static final String CREATE_GAME = "c"; //"CREATE_GAME";
     public static final String JOIN_GAME = "j"; //"JOIN_GAME";
