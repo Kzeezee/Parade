@@ -14,8 +14,8 @@ import com.g2t2.util.Display;
 
 
 public class GameProcessor {
-    // remove card from player hand, adjust parade board, add cards to collection
-    public static void processCardChosenToPutToParade(int cardIndex, Player player,  GameState game) {        
+    // remove card from player hand, adjust parade board, add cards to collection, player draw card
+    public static void processPlayerTurn(int cardIndex, Player player,  GameState game) {        
         Card chosenCard = player.getCardsOnHand().get(cardIndex);
         player.getCardsOnHand().remove(chosenCard);
 

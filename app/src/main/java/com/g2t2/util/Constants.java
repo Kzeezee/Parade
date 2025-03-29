@@ -53,11 +53,13 @@ public class Constants {
     public static final String START_GAME = "w"; //"START_GAME";
     public static final String LEAVE_GAME = "y"; //"LEAVE_GAME";
 
+    // Message To Indicate Things
+    public static final String COMPLETE_TURN = "$complete_turn$";
 
     // ERRORS
     public static final String INVALID_GAME_ID = "INVALID GAME ID";
     public static final String INVALID_COMMAND = "INVALID COMMAND";
-    public static final String FULL_CAPACITY = "FULLY CAPACITY";
+    public static final String FULL_CAPACITY = "FULL CAPACITY";
 
     // Constants
     public static final List<CardColour> CARD_COLOURS = List.of(CardColour.RED, CardColour.BLUE, CardColour.YELLOW, 

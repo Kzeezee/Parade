@@ -4,13 +4,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import com.g2t2.game.GameState;
 import com.g2t2.game.StartMenu;
-import com.g2t2.game.gameUtility.GameProcessor;
 import com.g2t2.game.gameUtility.GameRenderer;
 import com.g2t2.game.gameUtility.Prompt;
 import com.g2t2.types.Player;
@@ -79,7 +76,7 @@ public class Client implements Runnable {
     private void printWaitingRoomDetails(GameState game) {
         boolean isGameMaster = game.getGameMaster().equals(currentPlayer);
         int numberOfPlayersCurrently = game.getNumOfPlayers();
-        Utility.clearConsoleScreen();
+        // Utility.clearConsoleScreen();
         System.out.println(Constants.WAITING_LOBBY_BANNER);
         printWaitingRoomCommands(isGameMaster, numberOfPlayersCurrently);
         System.out.println(Constants.DIVIDER);
@@ -132,10 +129,21 @@ public class Client implements Runnable {
     }
 
     private void renderGame(GameState game) { // TODO: show available commands on top
-        if (game.getCurrentPlayer().equals(currentPlayer)) { // my turn 
-            // GameAction.playTurn(currentPlayer, game);
-        } else {
+        GameRenderer.displayRoundInformation(game);
+        if (game.getCurrentPlayer().getCPU()) { // bots turn
+            // TODO
 
+        } else if (game.getCurrentPlayer().equals(currentPlayer)) { // my turn 
+            if (game.isPut2CollectionRound()) {
+                // TODO
+            } else {
+                int indexOfChosenCard = Prompt.promptForCard(currentPlayer);
+                String[] messageToSendBack = {Constants.COMPLETE_TURN, indexOfChosenCard + ""};
+                sendMessage(messageToSendBack);
+            }
+            
+        } else { // not the player turn
+            System.out.println("Not Your Turn.");
         }
     }
 
@@ -152,8 +160,9 @@ public class Client implements Runnable {
         while (socket.isConnected()) {
             try {
                 Object incomingObject = objectInputStream.readObject();
+                System.out.println("Received object: " + incomingObject);
                 if (incomingObject instanceof GameState game) {
-                    System.out.println("number of player: " + game.getNumOfPlayers());
+                    System.out.println("GameState received: " + game.getGameId());
                     if (!game.hasStarted()){ // means still in waiting room
                         printWaitingRoomDetails(game);
                     } else { // game started

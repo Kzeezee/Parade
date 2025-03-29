@@ -23,11 +23,13 @@ public class GameState implements Serializable { // to allow it to be sent over
     private String gameId;
     private Player gameMaster;
     private Player currentPlayer; // turn of the current Player
+    private Player playerWhoStartFinalRound;
     private List<Player> players = new ArrayList<>();
     private List<Card> paradeBoard = new ArrayList<>();
     private CardDeck deck = new CardDeck();
     private boolean hasStarted = false;
     private boolean islastRound = false;
+    private boolean isPut2CollectionRound = false;
 
     public GameState() {
         gameId = generateGameId();
@@ -44,7 +46,7 @@ public class GameState implements Serializable { // to allow it to be sent over
         return "G" + timestamp + "-" + randomPart; // Format: G<timestamp>-<random>
     }
 
-    public void addPlayer(Player player) {
+    public synchronized void addPlayer(Player player) {
         numOfPlayers++;
         players.add(player);
 
@@ -92,16 +94,32 @@ public class GameState implements Serializable { // to allow it to be sent over
     //     this.gameMaster = gameMaster;
     // }
 
+    public Player getPlayerWhoStartFinalRound() {
+        return playerWhoStartFinalRound;
+    }
+
+    public void setPlayerWhoStartFinalRound(Player playerWhoStartFinalRound) {
+        this.playerWhoStartFinalRound = playerWhoStartFinalRound;
+    }
+
     public boolean hasStarted() {
         return hasStarted;
     }
 
-    public void setIsLastRound(boolean isLastRound) {
+    public void setLastRound(boolean isLastRound) {
         this.islastRound = isLastRound;
     }
 
     public boolean isLastRound() {
         return islastRound;
+    }
+
+    public boolean isPut2CollectionRound() {
+        return isPut2CollectionRound;
+    }
+
+    public void setPut2CollectionRound(boolean isPut2CollectionRound) {
+        this.isPut2CollectionRound = isPut2CollectionRound;
     }
 
     public CardDeck getDeck() {
@@ -133,41 +151,11 @@ public class GameState implements Serializable { // to allow it to be sent over
         currentPlayer = players.get(currentPlayerIndex);
 
     }
-        // int previousPlayer = currentPlayer;
-        // // checks the previous player because they are the one that might have a
-        // // complete collection (ALL COLOURS)
-        // while (!ScoreCalculation.meetsGameEndCondition(players.get(previousPlayer), deck)) {
-        //     if (!players.get(currentPlayer).getCPU()) {
-        //         playTurn(ParadeBoard.getPlayers().get(currentPlayer), false);
-        //     } else {
-        //         CPUturn(ParadeBoard.getPlayers().get(currentPlayer), false);
-        //     } 
-        //     previousPlayer = currentPlayer;
-        //     currentPlayer = (currentPlayer + 1) % ParadeBoard.getPlayers().size();
-        // }
-        // // last round of play
-        // for (int i = 0; i < ParadeBoard.getPlayers().size(); i++) {
-        //     if (!ParadeBoard.getPlayers().get(currentPlayer).getCPU()) {
-        //         playTurn(ParadeBoard.getPlayers().get(currentPlayer), true);
-        //     } else {
-        //         CPUturn(ParadeBoard.getPlayers().get(currentPlayer), true);
-        //     } 
-        //     currentPlayer = (currentPlayer + 1) % ParadeBoard.getPlayers().size();
-        // }
 
-        // // choose 2 cards in hand to add to collection
-        // for (int i = 0; i < ParadeBoard.getPlayers().size(); i++) {
-        //     if (!ParadeBoard.getPlayers().get(currentPlayer).getCPU()) {
-        //         putTwoToCollections(ParadeBoard.getPlayers().get(currentPlayer));
-        //     } else {
-        //         putTwoToCPUCollections(ParadeBoard.getPlayers().get(currentPlayer));
-        //     } 
-        //     currentPlayer = (currentPlayer + 1) % ParadeBoard.getPlayers().size();
-        // }
-        // ScoreCalculation.computeScore(ParadeBoard.getPlayers());
-        // displayScores(ParadeBoard.getPlayers());
-
-        // promptForNewGame();
+    public void passTurnToNextPlayer() {
+        int indexOfNextPlayer = (players.indexOf(currentPlayer) + 1) % numOfPlayers;
+        currentPlayer = players.get(indexOfNextPlayer);
+    }
 
     public void printNumOfCardsLeft() {
         System.out.println(" 📌 Number of Cards Left in the Deck: " + deck.getCardsInDeck().size());
@@ -177,20 +165,6 @@ public class GameState implements Serializable { // to allow it to be sent over
         System.out.println(" 📌 Currently, it is player " + Display.colorString(currentPlayer.getName() 
         + "(" + currentPlayer.getPlayerId() + ")" + Constants.ANSI_RESET + " turn."));
     }
-
-
-    // @Override
-    // public boolean equals(Object o) {
-    //     if (o instanceof GameState gameState) {
-    //         return this.getGameId().equals(gameState.getGameId());
-    //     }
-    //     return false;
-    // }
-
-    // @Override
-    // public int hashCode() {
-    //     return Objects.hash(gameId);
-    // }
 
     public GameState deepCopy() {
         try {
@@ -206,4 +180,18 @@ public class GameState implements Serializable { // to allow it to be sent over
             throw new RuntimeException("Deep copy failed", e);
         }
     }
+
+
+    // @Override
+    // public boolean equals(Object o) {
+    //     if (o instanceof GameState gameState) {
+    //         return this.getGameId().equals(gameState.getGameId());
+    //     }
+    //     return false;
+    // }
+
+    // @Override
+    // public int hashCode() {
+    //     return Objects.hash(gameId);
+    // }
 }

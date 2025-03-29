@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.util.*;
 
 import com.g2t2.game.*;
+import com.g2t2.game.gameUtility.GameProcessor;
 import com.g2t2.util.*;
 import com.g2t2.types.*;
 
@@ -74,6 +75,27 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         sendGameState(game);
     }
 
+    private void processTurn(String indexOfChosenCard) {
+        GameState game = findGameState(gameId);
+        int index = Integer.parseInt(indexOfChosenCard);
+        GameProcessor.processPlayerTurn(index, currentPlayer, game);
+        game.passTurnToNextPlayer();
+
+        // go to score calculation
+        if (game.isPut2CollectionRound() && currentPlayer.equals(game.getPlayerWhoStartFinalRound())) { 
+            ScoreCalculation.computeScore(game.getPlayers());
+            // displayScores(ParadeBoard.getPlayers()); -> for client to display
+            // promptForNewGame(); -> client to display
+        } else if (game.isLastRound() && currentPlayer.equals(game.getPlayerWhoStartFinalRound())) { // everyone took 1 turn, go to put cards in collection phase
+            game.setPut2CollectionRound(true);
+            // add put 2 to collections command
+        } else if (ScoreCalculation.meetsGameEndCondition(currentPlayer, game.getDeck())) { // go to last round
+            game.setLastRound(true);
+            game.setPlayerWhoStartFinalRound(currentPlayer);
+        } 
+        sendGameState(game);
+    }
+
     // This method contains everything that is supposed to ran on a separate thread, such as blocking operations
     @Override
     public void run() {
@@ -104,6 +126,9 @@ public class ClientHandler implements Runnable { // allows instances to be execu
 
                     } else if (command.equals(Constants.START_GAME)) { // start game
                         startGame();
+
+                    } else if (command.equals(Constants.COMPLETE_TURN)) { // player finish his turn
+                        processTurn(messageToProcess.getMessage()[1]);
                     }
                 }
             } catch (IOException e) {
@@ -117,11 +142,13 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         }
     }
     
-    // send gameStatus to all players in the game
+    // send gameState to all players in the game
     private void broadcastGameStatus(GameState game) {
+        GameState snapshot = availableGames.get(gameId).deepCopy(); // Create a snapshot
+        System.out.println("Broadcasting GameState: " + game.getGameId());
         for (ClientHandler clientHandler : clientHandlers.get(gameId)) {
-            GameState snapshot = availableGames.get(gameId).deepCopy(); // Create a snapshot
             clientHandler.sendGameState(snapshot);
+            System.out.println("Sending GameState to client: " + clientHandler.currentPlayer.getName());
             // clientHandler.sendGameState(findGameState(gameId));
         }
     }

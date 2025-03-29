@@ -22,7 +22,7 @@ public class GameRenderer {
     }
 
     // show collections of all players
-    public static void displayCollections(GameState game) {
+    private static void displayCollections(GameState game) {
         for (Player p : game.getPlayers()) {
             System.out.println(
                     Display.colorString("「 ✦ CARDS IN " + p.getName() + "(" + p.getPlayerId() + ") COLLECTION ✦ ")
@@ -32,7 +32,7 @@ public class GameRenderer {
     }
 
     // show the parade collection
-    public static void displayParade(GameState game) {
+    private static void displayParade(GameState game) {
         System.out.println(Display.colorString("「 ✦ PARADE COLLECTION ✦ 」" + Constants.ANSI_RESET));
         System.out.println("The front of the Parade starts from the left");
         Display.displayCardsSideBySide(game.getParade());
