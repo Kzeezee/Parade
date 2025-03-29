@@ -1,42 +1,52 @@
 package com.g2t2.game;
 
-import java.util.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
 
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 import com.g2t2.util.StateFlags;
 import com.g2t2.util.Utility;
-import com.g2t2.types.*;
+
+import com.g2t2.types.ParadeBoard;
+import com.g2t2.types.Player;
+import com.g2t2.types.Card;
+
+import com.g2t2.game.gameUtility.Prompt;
 
 /**
- * Class handling all game initialization methods
+ * Class responsible for initializing the game settings, players, and parade
+ * board.
+ * 
+ * This class handles all pre-game setup, including configuring the number of
+ * players,
+ * assigning CPU players, setting difficulty levels, and distributing cards to
+ * players.
+ * It ensures that the game is properly initialized before gameplay begins.
+ * 
  * @author Oliver
+ * @author Ben
  */
 public class GameInit {
-    private static final String GAME_DIFFICULTY_OPTIONS = " 📌 Choose the difficulty level for your CPU players\n" + //
-                                                                " 📌 Easy (1)\n" + //
-                                                                " 📌 Medium (2)\n" + //
-                                                                " 📌 Difficult (3)\n" + //
-                                                                Display.colorString(" ⚜ Enter option ➢ ");
+    private static int numOfPlayers; // The total number of players in the game (including human and CPU players).
+    private static int numOfCPU; // The number of CPU-controlled players in the game.
 
-    private static final String LOCAL_MODE_OPTIONS = " 📌 Please select an option.\n" 
-                                                    + " 📌 Play with friends (1)\n"
-                                                    + " 📌 Play with CPU (2)\n" 
-                                                    + Display.colorString(" ⚜ Enter option ➢ ");
-
-    private static final String PLAYER_NO_ERROR_MESSAGE = Display.errorColour(" ❌ A minimum of 2 players and a maximum of 6 players are allowed." 
-                                                                    + "Please enter a number between 2 to 6.");
-
-    private static int numOfPlayers;
-    private static int numOfCPU;
+    /**
+     * The difficulty level for CPU players:
+     * 1 - Easy
+     * 2 - Medium
+     * 3 - Hard
+     */
     private static int difficulty;
 
     /**
-     * Display the game options in either console or GUI
-     * (depending on what isGUIMode in StateFlags is)
-     * @author Oliver
+     * Displays the game options either in console or GUI mode.
+     * 
+     * If GUI mode is enabled in {@link StateFlags}, it will display GUI options.
+     * Otherwise, it will configure the game via console prompts.
+     * 
      */
     public static void displayGameOptions() {
         if (StateFlags.isGUIMode) {
@@ -45,34 +55,40 @@ public class GameInit {
             // Console configuration
             displayConsoleGameOptions();
             giveOutTheCards();
-            GamePlay.startGame();
+            GamePlay.startGame(new GameState());
         }
     }
 
     /**
-     * Method displays the configurable game options in console
+     * Displays configurable game options in the console.
+     * 
+     * This method allows users to specify the total number of players,
+     * assign CPU players, and set the difficulty level for CPU-controlled players.
+     * It validates user input to ensure proper configuration.
+     * 
      * @author Oliver
      */
     private static void displayConsoleGameOptions() {
         // Allow user to configure players, difficulty?
 
-        /* For local option */ 
+        /* For local option */
         // - ben
         Scanner sc = new Scanner(System.in);
         numOfPlayers = 0;
-        // Number of Players
+
         Utility.clearConsoleScreen();
         System.out.println(Constants.BANNER);
         System.out.println(Constants.DIVIDER);
         while (true) {
             // prompts for total players incl cpu
-            try {        
-                System.out.println(" 📌 How many players are playing this game? (including any CPU-controlled players you want to be added)"); 
+            try {
+                System.out.println(
+                        " 📌 How many players are playing this game? (including any CPU-controlled players you want to be added)");
                 System.out.print(Display.colorString(" ⚜ Enter the total number of players (2 to 6): "));
                 numOfPlayers = sc.nextInt();
                 System.out.print(Constants.ANSI_RESET);
                 if (numOfPlayers < 2 || numOfPlayers > 6) {
-                    throw new IllegalArgumentException(PLAYER_NO_ERROR_MESSAGE);
+                    throw new IllegalArgumentException(Prompt.PLAYER_NO_ERROR_MESSAGE);
                 }
                 break;
             } catch (InputMismatchException e) {
@@ -80,19 +96,22 @@ public class GameInit {
                 System.out.println();
                 sc.nextLine();
             } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
+                System.out.println(Display.errorColour(" ❌ Please enter a number"));
                 System.out.println();
+                sc.nextLine();
             }
         }
         while (true) {
             // prompts for no. of cpu players, ensuring min 1 human player
-            try {        
-                System.out.println(" 📌 How many of these players do you want to be controlled by the CPU? "); 
+            try {
+                System.out.println(" 📌 How many of these players do you want to be controlled by the CPU? ");
                 System.out.print(Display.colorString(" ⚜ Enter the total number of CPU players: "));
                 numOfCPU = sc.nextInt();
                 System.out.print(Constants.ANSI_RESET);
                 if (numOfCPU < 0 || numOfPlayers - numOfCPU < 1) {
-                    throw new IllegalArgumentException(Display.errorColour(" ❌ You must have a minimum of one human player. Please enter a number between 0 and " + (numOfPlayers - 1)));
+                    throw new IllegalArgumentException(Display.errorColour(
+                            " ❌ You must have a minimum of one human player. Please enter a number between 0 and "
+                                    + (numOfPlayers - 1)));
                 }
                 break;
             } catch (InputMismatchException e) {
@@ -100,24 +119,26 @@ public class GameInit {
                 System.out.println();
                 sc.nextLine();
             } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
+                System.out.println(Display.errorColour(" ❌ Please enter a number"));
                 System.out.println();
             }
         }
-        // choosing difficulty level 
-        if (numOfCPU > 0){
+        // choosing difficulty level
+        if (numOfCPU > 0) {
             boolean validOptionSelected = false;
             int optionChosen = 0;
             while (!validOptionSelected) {
                 System.out.print(Constants.ANSI_RESET);
                 System.out.println(Constants.DIVIDER);
-                System.out.print(GAME_DIFFICULTY_OPTIONS);
+                System.out.print(Prompt.GAME_DIFFICULTY_OPTIONS);
                 String s = sc.nextLine();
                 System.out.print(Constants.ANSI_RESET);
                 try {
                     optionChosen = Integer.parseInt(s);
                     switch (optionChosen) {
-                        case 1: case 2: case 3:
+                        case 1:
+                        case 2:
+                        case 3:
                             validOptionSelected = true;
                             difficulty = optionChosen;
                             break;
@@ -125,34 +146,37 @@ public class GameInit {
                             throw new Exception(Display.errorColour(" ❌ Invalid input"));
                     }
                 } catch (NumberFormatException e) {
-                    Utility.clearConsoleScreen();
-                    System.out.println(Display.errorColour(Constants.INVALID_OPTION_ERROR_MSG));
+                    // Utility.clearConsoleScreen();
+                    System.out.println(e.getMessage());
                 } catch (Exception e) {
-                    Utility.clearConsoleScreen();
-                    System.out.println(Display.errorColour(Constants.INVALID_OPTION_ERROR_MSG));
+                    // Utility.clearConsoleScreen();
+                    System.out.println(e.getMessage());
                 }
             }
         }
     }
 
-
     /**
-     * Method initialises players + parade
-     * @author ben
+     * Initializes the players and parade board for the game.
+     * 
+     * This method sets up human and CPU-controlled players, assigns names,
+     * and distributes cards to create an initial parade board. It ensures that
+     * all necessary components are ready before gameplay begins.
+     *
      */
     private static void giveOutTheCards() {
         Utility.clearConsoleScreen();
         System.out.println(Constants.BANNER);
         Scanner sc = new Scanner(System.in);
         List<Player> players = new ArrayList<>();
-      
+
         for (int i = 1; i <= numOfPlayers - numOfCPU; i++) {
             while (true) {
                 try {
                     System.out.print(Display.colorString(" ➢ Enter the name of player " + i + ": "));
                     String name = sc.nextLine();
                     if (name.equals("")) {
-                        throw new InputMismatchException(" 📌 Please enter an appropriate name.");
+                        throw new InputMismatchException(Display.errorColour(" 📌 Please enter an appropriate name."));
                     }
                     players.add(new Player(name));
                     break;
@@ -162,15 +186,16 @@ public class GameInit {
                 }
             }
         }
-      
-        // Modified to get player name from player profile
-        //players.add(new Player(StateManager.getPlayerProfile().getName(), ParadeBoard.getDECK()));
 
-        for (int i = 1; i <= numOfCPU; i++){
+        // Modified to get player name from player profile
+        // players.add(new Player(StateManager.getPlayerProfile().getName(),
+        // ParadeBoard.getDECK()));
+
+        for (int i = 1; i <= numOfCPU; i++) {
             String name = "CPU " + i;
             players.add(new Player(true, 1));
         }
-        
+
         ParadeBoard.setPlayers(players);
 
         // Setting up the board
@@ -181,7 +206,15 @@ public class GameInit {
         ParadeBoard.setParade(board);
     }
 
-    public static int getDifficulty(){
+    /**
+     * Retrieves the difficulty level set for CPU-controlled players.
+     *
+     * @return The difficulty level as an integer value:
+     *         1 - Easy
+     *         2 - Medium
+     *         3 - Hard
+     */
+    public static int getDifficulty() {
         return difficulty;
     }
 }

@@ -1,42 +1,71 @@
 package com.g2t2.game.gameUtility;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
-import com.g2t2.game.GamePlay;
+import com.g2t2.game.GameState;
 import com.g2t2.game.StartMenu;
-import com.g2t2.types.Card;
+import com.g2t2.game.GamePlay;
+
 import com.g2t2.types.Player;
+
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 
+/**
+ * Utility class for handling user input prompts.
+ * 
+ * This class provides methods to interact with players during the game, such as
+ * selecting cards, confirming actions, and choosing game options. It ensures
+ * proper input validation and guides players through the game's decision-making
+ * processes.
+ * 
+ * @author Shwe
+ */
 public class Prompt {
+    /**
+     * Options for selecting the difficulty level for CPU players.
+     */
     public static final String GAME_DIFFICULTY_OPTIONS = " 📌 Choose the difficulty level for your CPU players\n" + //
-                                                                " 📌 Easy (1)\n" + //
-                                                                " 📌 Medium (2)\n" + //
-                                                                " 📌 Difficult (3)\n" + //
-                                                                Display.colorString(" ⚜ Enter option ➢ ");
+            " 📌 Easy (1)\n" + //
+            " 📌 Medium (2)\n" + //
+            " 📌 Difficult (3)\n" + //
+            Display.colorString(" ⚜ Enter option ➢ ");
 
-    public static final String LOCAL_MODE_OPTIONS = " 📌 Please select an option.\n" 
-                                                    + " 📌 Play with friends (1)\n"
-                                                    + " 📌 Play with CPU (2)\n" 
-                                                    + Display.colorString(" ⚜ Enter option ➢ ");
+    /**
+     * Options for selecting the local game mode.
+     */
+    public static final String LOCAL_MODE_OPTIONS = " 📌 Please select an option.\n"
+            + " 📌 Play with friends (1)\n"
+            + " 📌 Play with CPU (2)\n"
+            + Display.colorString(" ⚜ Enter option ➢ ");
 
-    public static final String PLAYER_NO_ERROR_MESSAGE = Display.errorColour(" ❌ A minimum of 2 players and a maximum of 6 players are allowed." 
-    + "Please enter a number between 2 to 6.");
+    /**
+     * Error message displayed when an invalid number of players is entered.
+     */
+    public static final String PLAYER_NO_ERROR_MESSAGE = Display
+            .errorColour(" ❌ A minimum of 2 players and a maximum of 6 players are allowed."
+                    + "Please enter a number between 2 to 6.");
 
-    // return the index of the card
-    public static int promptForCard(Player player) {
-        //Card chosenCard = null;
+    /**
+     * Prompts the player to select a card from their hand.
+     *
+     * @param prompt The message displayed to the player.
+     * @param player The player selecting a card.
+     * @return The index of the selected card in the player's hand.
+     */
+    public static int promptForCard(String prompt, Player player) {
+        // Card chosenCard = null;
         int chosenCardIndex = 0;
         Scanner sc = new Scanner(System.in);
         int numOfCards = player.getCardsOnHand().size();
         while (true) {
             try {
-                System.out.println(Constants.ANSI_RESET + " 📌 Which card do you want to place in the Parade?");
+                System.out.println(prompt);
                 System.out.print(
                         Display.colorString(" ⚜ Choose card number (1 to " + numOfCards + ") or 'q' to quit ➢ "));
-                // int chosenCardIndex = sc.nextInt() - 1;
                 String chosenCardString = sc.nextLine();
                 if (chosenCardString.equalsIgnoreCase("q")) {
                     Display.sayGoodBye();
@@ -55,7 +84,6 @@ public class Prompt {
                     continue;
 
                 }
-                // chosenCard = player.getCardsOnHand().get(chosenCardIndex - 1);
                 break;
             } catch (InputMismatchException e) {
                 System.out.println(Display.errorColour(" ❌ Please input a number"));
@@ -68,10 +96,13 @@ public class Prompt {
                 System.out.println();
             }
         }
-        return chosenCardIndex;
+        return chosenCardIndex - 1;
     }
 
-    // ask whether the player wants to play another round
+    /**
+     * Prompts the user to decide whether they want to start a new game after the
+     * current game ends.
+     */
     public static void promptForNewGame() {
         Scanner sc = new Scanner(System.in);
         while (true) {
@@ -82,7 +113,7 @@ public class Prompt {
 
                 if (confirmation.equalsIgnoreCase("y")) {
                     StartMenu.showStartMenu();
-                    GamePlay.startGame();
+                    GamePlay.startGame(new GameState());
                 } else if (confirmation.equalsIgnoreCase("n")) {
                     Display.sayGoodBye();
                     System.exit(0);
@@ -94,4 +125,32 @@ public class Prompt {
         }
     }
 
+    /**
+     * Prompts the player to select two cards from their hand to add to their
+     * collection.
+     *
+     * @param player The player selecting cards.
+     * @param game   The current game state.
+     * @return A list of indices representing the selected cards from the player's
+     *         hand.
+     */
+    public static List<Integer> promptToCollectTwo(Player player, GameState game) {
+        List<Integer> cardIdxList = new ArrayList<>();
+        GameRenderer.displayRoundInformation(game);
+
+        System.out.println(" ⚜ You need to select " + Display.colorString("TWO")
+                + " cards from your hand to add to the collection.");
+        System.out.println(Constants.DIVIDER);
+
+        // addSelectedCardsToParade(player);
+        for (int i = 0; i < 2; i++) {
+            String prompt = Display.colorString(" 📌 Which card do you want to place in the Collection?\n" +
+                    " 📌 You need to choose TWO cards \n" +
+                    " ⚜ Card " + (i + 1) + " :");
+            int cardIdx = Prompt.promptForCard(prompt, player);
+            cardIdxList.add(cardIdx);
+            System.out.println(Constants.DIVIDER);
+        }
+        return cardIdxList;
+    }
 }

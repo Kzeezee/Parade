@@ -8,8 +8,27 @@ import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 
+/**
+ * Utility class for rendering game information to the console.
+ * 
+ * This class provides methods to display various aspects of the game state,
+ * including round information, player collections, parade details, hand cards,
+ * and player scores. It is primarily responsible for presenting data in a
+ * user-friendly format during gameplay.
+ * 
+ * @author Ben
+ * @author Shwe
+ */
 public class GameRenderer {
-    public static void displayRoundInformation(GameState game) { // show everything that everyone can see (no player's hand)
+    /**
+     * Displays general information about the current round.
+     * Includes collections, parade details, number of cards left, and whose turn it
+     * is.
+     *
+     * @param game The current game state.
+     */
+    public static void displayRoundInformation(GameState game) { // show everything that everyone can see (no player's
+                                                                 // hand)
         Display.printGameHeader();
         displayCollections(game);
         displayParade(game);
@@ -21,7 +40,11 @@ public class GameRenderer {
         System.out.println(Constants.DIVIDER);
     }
 
-    // show collections of all players
+    /**
+     * Displays the collections of all players in the game.
+     *
+     * @param game The current game state containing player information.
+     */
     public static void displayCollections(GameState game) {
         for (Player p : game.getPlayers()) {
             System.out.println(
@@ -31,7 +54,11 @@ public class GameRenderer {
         }
     }
 
-    // show the parade collection
+    /**
+     * Displays the parade collection, showing all cards currently in the parade.
+     *
+     * @param game The current game state containing parade information.
+     */
     public static void displayParade(GameState game) {
         System.out.println(Display.colorString("「 ✦ PARADE COLLECTION ✦ 」" + Constants.ANSI_RESET));
         System.out.println("The front of the Parade starts from the left");
@@ -39,7 +66,11 @@ public class GameRenderer {
         System.out.println(Constants.DIVIDER);
     }
 
-    // show the player what card he has in their hand
+    /**
+     * Displays the cards in a player's hand.
+     *
+     * @param player The player whose hand cards are being displayed.
+     */
     public static void displayHandCards(Player player) {
         System.out.println(Display.colorString("「 ✦ CARDS IN YOUR HAND ✦ 」") + Constants.ANSI_RESET);
         System.out.println("Each card is numbered, starting from the left, 1");
@@ -47,7 +78,11 @@ public class GameRenderer {
         System.out.println(Constants.DIVIDER);
     }
 
-    // display the scores of the players and rank them in ascending order
+    /**
+     * Displays the scores of all players and ranks them in ascending order.
+     *
+     * @param players A list of players whose scores are to be displayed and ranked.
+     */
     public static void displayScores(List<Player> players) {
         System.out.println(Constants.DIVIDER);
         System.out.println(Display.colorString("「 ✦ RANKING ✦ 」") + Constants.ANSI_RESET);

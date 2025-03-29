@@ -9,8 +9,6 @@ import java.util.Scanner;
 
 import com.g2t2.game.GameState;
 import com.g2t2.game.StartMenu;
-import com.g2t2.game.gameUtility.GameAction;
-import com.g2t2.game.gameUtility.GameRenderer;
 import com.g2t2.game.gameUtility.Prompt;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
@@ -202,7 +200,7 @@ public class Client implements Runnable {
                 Object incomingObject = objectInputStream.readObject();
                 if (incomingObject instanceof GameState game) {
                     System.out.println("number of player: " + game.getNumOfPlayers());
-                    if (!game.hasStarted()){ // means still in waiting room
+                    if (!game.getHasStarted()){ // means still in waiting room
                         printWaitingRoomDetails(game);
                     } else { // game started
                         renderGame(game);

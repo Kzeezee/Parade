@@ -73,6 +73,14 @@ public class ScoreCalculation {
         return true;
     }
 
+    public static int calculateTotalPoints(List<Card> cardsCollected) {
+        int sum = 0;
+        for (Card card: cardsCollected) {
+            sum += card.getValue();
+        }
+        return sum;
+    }
+
     /**
      * Computer the score when the game ends and set the score of each player
      *
