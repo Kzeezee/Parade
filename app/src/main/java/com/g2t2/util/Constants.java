@@ -18,7 +18,7 @@ public class Constants {
     public static final String GREEN_ANSI = "\033[38;2;85;205;121m";
     public static final String BLACK_ANSI = "\033[38;2;1;1;1m";
     public static final String ANSI_RESET = "\033[0m";
-
+    public static final String INVALID_OPTION_ERROR_MSG = " ❌ Please choose a valid option!";
     public static final String WELCOMEMESSAGE_STRING = " ⚜ Welcome to G2T2 Parade! Please select an option. (1 or 3 for now)";
     public static final String DIVIDER = "\033[90m" + "───────────────────────────────────────" 
                                          + "⚜ ──────────────────────────────────────────" + ANSI_RESET;
@@ -38,23 +38,6 @@ public class Constants {
         "                              │  WAITING  LOBBY  │\n" + //
         "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
 
-    // public static final String BANNER =
-    // String.format(CardColour.BLUE.getAnsiCode() +
-    // " ▐▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▌\n" + //
-    // " ▐  P A R A D E  ▌\n" + //
-    // " ▐▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▌\n" + ANSI_RESET);
-
-    public static final String WAITING_LOBBY_BANNER = String.format(CardColour.BLUE.getAnsiCode() +
-        "                              ┌──────── ⚜ ───────┐\n" + //
-        "                              │  WAITING  LOBBY  │\n" + //
-        "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
-
-    // public static final String BANNER =
-    // String.format(CardColour.BLUE.getAnsiCode() +
-    // " ▐▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▌\n" + //
-    // " ▐  P A R A D E  ▌\n" + //
-    // " ▐▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▌\n" + ANSI_RESET);
-
     public static final String GOODBYE = BLUE_ANSI + "\n" +
             "                    ┌──────────────────── ⚜ ───────────────────────┐\n" + //
             "                    │         Thank you for playing PARADE.        │\n" + //
@@ -70,13 +53,6 @@ public class Constants {
     public static final String START_GAME = "w"; //"START_GAME";
     public static final String LEAVE_GAME = "y"; //"LEAVE_GAME";
 
-
-    // ERRORS
-    public static final String INVALID_GAME_ID = "INVALID GAME ID";
-    public static final String INVALID_COMMAND = "INVALID COMMAND";
-    public static final String FULL_CAPACITY = "FULLY CAPACITY";
-    public static final List<String> EMOJIS = List.of(
-            "🌹", "💧", "☀️ ", "🪻 ", "🍀", "🕷️ ");
 
     // ERRORS
     public static final String INVALID_GAME_ID = "INVALID GAME ID";

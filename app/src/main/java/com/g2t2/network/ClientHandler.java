@@ -1,13 +1,20 @@
 package com.g2t2.network;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.*;
+
+import com.g2t2.game.*;
+import com.g2t2.util.*;
+import com.g2t2.types.*;
+
 public class ClientHandler implements Runnable { // allows instances to be executed by a separate thread
     
     // keep track of all the clients - to send msg to all of them (broadcast to all)
-    public static ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
+    public static Map<String, List<ClientHandler>> clientHandlers = new HashMap<>();
+    public static Map<String, GameState> availableGames = new HashMap<>();
     private Socket socket;
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
@@ -20,8 +27,6 @@ public class ClientHandler implements Runnable { // allows instances to be execu
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            closeEverything(socket, objectInputStream, objectOutputStream);
-        } catch (ClassNotFoundException e) {
             closeEverything(socket, objectInputStream, objectOutputStream);
         }
     }
