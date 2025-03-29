@@ -20,8 +20,6 @@ public class StateManager {
     public static void setPlayerProfile(PlayerProfile pp) {
         // After setting player profile, we know we which player to track games with
         currentPlayerProfile = pp;
-        // Show start menu
-        StartMenu.showStartMenu();
     }
 
     /**

@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import com.g2t2.game.GameState;
 import com.g2t2.game.StartMenu;
+import com.g2t2.game.gameUtility.GameRenderer;
 import com.g2t2.game.gameUtility.Prompt;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
@@ -75,22 +75,22 @@ public class Client implements Runnable {
 
     private void printWaitingRoomDetails(GameState game) {
         boolean isGameMaster = game.getGameMaster().equals(currentPlayer);
-        int numberOfPlayers = game.getNumOfPlayers();
-        Utility.clearConsoleScreen();
+        int numberOfPlayersCurrently = game.getNumOfPlayers();
+        // Utility.clearConsoleScreen();
         System.out.println(Constants.WAITING_LOBBY_BANNER);
-        printWaitingRoomCommands(isGameMaster, numberOfPlayers);
+        printWaitingRoomCommands(isGameMaster, numberOfPlayersCurrently);
         System.out.println(Constants.DIVIDER);
         System.out.println(" 📌 GAME ID: " + game.getGameId());
         game.printPlayerList();
-        activatingUserControlCommands(isGameMaster, numberOfPlayers);
+        activatingUserControlCommands(isGameMaster, numberOfPlayersCurrently);
     }
 
-    private void printWaitingRoomCommands(boolean isGameMaster, int numberOfPlayers) {
+    private void printWaitingRoomCommands(boolean isGameMaster, int numberOfPlayersCurrently) {
         System.out.println("> Here are some available commands you can use <");
         System.out.println("> To leave room, enter '" + Constants.LEAVE_GAME + "'");
         if (isGameMaster) { // show available GameMaster Commands
             System.out.println("--GameMaster Specific Commands--");
-            if (numberOfPlayers < 6) {
+            if (numberOfPlayersCurrently < 6) {
                 System.out.println("> To add CPU, enter '" + Constants.ADD_CPU + "'");
             } 
             System.out.println("> To start game, enter '" + Constants.START_GAME + "'");
@@ -98,13 +98,16 @@ public class Client implements Runnable {
             // TODO: enable the removal of CPUs / Players
     }
 
-    private void activatingUserControlCommands(boolean isGameMaster, int numberOfPlayers) {
+    private void activatingUserControlCommands(boolean isGameMaster, int numberOfPlayersCurrently) {
         Scanner sc = new Scanner(System.in);
         while (true) {
             String input = sc.nextLine();
             if (isGameMaster) {
-                if (numberOfPlayers < 6 && input.equals(Constants.ADD_CPU)) {
-                    String[] CPUInformation = addCPU(numberOfPlayers);
+                if (numberOfPlayersCurrently < 6 && input.equals(Constants.ADD_CPU)) {
+                    String[] CPUInformation = {Constants.ADD_CPU, "", ""};
+                    String[] userInput = Prompt.promptForCPUDetails(numberOfPlayersCurrently);
+                    System.arraycopy(userInput, 0, CPUInformation, 1, 2);
+
                     if (CPUInformation == null) { // user input 0 CPU
                         System.out.println("> No CPU added");
                         continue;
@@ -125,63 +128,22 @@ public class Client implements Runnable {
         }
     }
 
-    private String[] addCPU(int numOfPlayers) {
-        Scanner sc = new Scanner(System.in);
-        int maxNumOfCPU = 6 -numOfPlayers;
-        int numOfCPU = 0;
-        while (true) {
-            try {        
-                System.out.println(" 📌 How many CPU do you want to add?"); 
-                System.out.print(Display.colorString(" ➢ Enter a number (max = " + maxNumOfCPU + "): "));
-                numOfCPU = sc.nextInt();
-                if (numOfCPU < 0 || numOfCPU > maxNumOfCPU) {
-                    throw new IllegalArgumentException(Display.errorColour(" ❌ Please enter a number between 0 to " 
-                    + maxNumOfCPU + ". Maximum number of players = 6"));
-                }
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println(Display.errorColour(" ❌ Please enter a number"));
-                System.out.println();
-                sc.nextLine();
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-                System.out.println();
-            }
-        }
-
-        if (numOfCPU == 0) {
-            return null;
-        }
-        
-        int difficulty = 0;
-        while (true) {
-            try {
-                System.out.print(Constants.ANSI_RESET);
-                System.out.println(Constants.DIVIDER);
-                System.out.println(Prompt.GAME_DIFFICULTY_OPTIONS);
-                difficulty = sc.nextInt();
-                System.out.print(Constants.ANSI_RESET);
-                if (difficulty < 1 || difficulty > 3) {
-                    throw new IllegalArgumentException(Display.errorColour(" ❌ Please enter a number between 1 to 3"));
-                }
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println(Display.errorColour(" ❌ Please enter a number"));
-                System.out.println();
-                sc.nextLine();
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-                System.out.println();
-            }
-        }
-        return new String[] {Constants.ADD_CPU, "" + numOfCPU, "" + difficulty};
-    }
-
     private void renderGame(GameState game) { // TODO: show available commands on top
-        if (game.getCurrentPlayer().equals(currentPlayer)) { // my turn 
-            // GameAction.playTurn(currentPlayer, game);
-        } else {
+        GameRenderer.displayRoundInformation(game);
+        if (game.getCurrentPlayer().getCPU()) { // bots turn
+            // TODO
 
+        } else if (game.getCurrentPlayer().equals(currentPlayer)) { // my turn 
+            if (game.isPut2CollectionRound()) {
+                // TODO
+            } else {
+                int indexOfChosenCard = Prompt.promptForCard(currentPlayer);
+                String[] messageToSendBack = {Constants.COMPLETE_TURN, indexOfChosenCard + ""};
+                sendMessage(messageToSendBack);
+            }
+            
+        } else { // not the player turn
+            System.out.println("Not Your Turn.");
         }
     }
 
@@ -198,9 +160,11 @@ public class Client implements Runnable {
         while (socket.isConnected()) {
             try {
                 Object incomingObject = objectInputStream.readObject();
+                System.out.println("Received object: " + incomingObject);
                 if (incomingObject instanceof GameState game) {
                     System.out.println("number of player: " + game.getNumOfPlayers());
-                    if (!game.getHasStarted()){ // means still in waiting room
+                    System.out.println("GameState received: " + game.getGameId());
+                    if (!game.gethasStarted()){ // means still in waiting room
                         printWaitingRoomDetails(game);
                     } else { // game started
                         renderGame(game);

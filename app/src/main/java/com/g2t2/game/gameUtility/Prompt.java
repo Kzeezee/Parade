@@ -55,9 +55,8 @@ public class Prompt {
      * @param prompt The message displayed to the player.
      * @param player The player selecting a card.
      * @return The index of the selected card in the player's hand.
-     */
+     */ 
     public static int promptForCard(String prompt, Player player) {
-        // Card chosenCard = null;
         int chosenCardIndex = 0;
         Scanner sc = new Scanner(System.in);
         int numOfCards = player.getCardsOnHand().size();

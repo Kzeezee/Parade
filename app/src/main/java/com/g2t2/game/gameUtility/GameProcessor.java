@@ -6,7 +6,6 @@ import java.util.List;
 import com.g2t2.game.GameState;
 import com.g2t2.types.Card;
 import com.g2t2.types.Player;
-import com.g2t2.types.ScoreCalculation;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 
@@ -18,7 +17,7 @@ import com.g2t2.util.Display;
  * @author Shwe
  * @author Easan
  */
-public class GameAction {
+public class GameProcessor {
     /**
      * Executes a player's turn in the game.
      *
