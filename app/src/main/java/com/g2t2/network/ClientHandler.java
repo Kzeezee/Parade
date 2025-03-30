@@ -47,7 +47,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         game.addPlayer(player);
         clientHandlers.get(gameId).add(this);
         sendPlayer(player);
-        broadcastGameStatus(game); // to put to waiting lobby
+        sendGameState(game);
     }
 
     private void createCPU(int numOfCPU, int difficulty) {
@@ -56,14 +56,13 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         Player cpu = new Player(true, difficulty);
         game.addPlayer(cpu);
         }
-        broadcastGameStatus(game); // update waiting lobby
+        sendGameState(game);
     }
 
     private GameState findGameState(String gameId) {
-        for (String id : availableGames.keySet()) {
-            if (id.equals(gameId)) {
-                return availableGames.get(gameId);
-            }
+        GameState game = availableGames.get(gameId);
+        if (game != null) {
+            return game;
         }
         return null;
     }
@@ -72,7 +71,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         GameState game = findGameState(gameId);
         game.giveOutInitialCards();
         game.startGame();
-        sendGameState(game);
+        broadcastGameStatus(game);
     }
 
     private void processTurn(String indexOfChosenCard) {
@@ -93,7 +92,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
             game.setLastRound(true);
             game.setPlayerWhoStartFinalRound(currentPlayer);
         } 
-        sendGameState(game);
+        broadcastGameStatus(game);
     }
 
     // This method contains everything that is supposed to ran on a separate thread, such as blocking operations
@@ -129,33 +128,33 @@ public class ClientHandler implements Runnable { // allows instances to be execu
 
                     } else if (command.equals(Constants.COMPLETE_TURN)) { // player finish his turn
                         processTurn(messageToProcess.getMessage()[1]);
+
+                    } else if (command.equals(Constants.ENTER_KEY)) { // refresh page for that player only
+                        sendGameState(findGameState(gameId)); 
                     }
                 }
             } catch (IOException e) {
                 System.out.println("Something happened----");
                 closeEverything(socket, objectInputStream, objectOutputStream);
-                break; // break out from the while loop
             } catch (ClassNotFoundException e) {
                 closeEverything(socket, objectInputStream, objectOutputStream);
-                break;
             }
         }
     }
     
     // send gameState to all players in the game
     private void broadcastGameStatus(GameState game) {
-        GameState snapshot = availableGames.get(gameId).deepCopy(); // Create a snapshot
         System.out.println("Broadcasting GameState: " + game.getGameId());
         for (ClientHandler clientHandler : clientHandlers.get(gameId)) {
-            clientHandler.sendGameState(snapshot);
+            clientHandler.sendGameState(game);
             System.out.println("Sending GameState to client: " + clientHandler.currentPlayer.getName());
-            // clientHandler.sendGameState(findGameState(gameId));
         }
     }
 
     private void sendGameState(GameState game) {
+        GameState snapshot = findGameState(gameId).deepCopy(); // Create a snapshot
         try {
-            objectOutputStream.writeObject(game);
+            objectOutputStream.writeObject(snapshot);
             objectOutputStream.flush();
         } catch (IOException e) {
             closeEverything(socket, objectInputStream, objectOutputStream);

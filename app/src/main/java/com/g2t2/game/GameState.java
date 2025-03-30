@@ -68,7 +68,7 @@ public class GameState implements Serializable { // to allow it to be sent over
      *
      * @param player The player to add to the game.
      */
-    public synchronized void addPlayer(Player player) {
+    public void addPlayer(Player player) {
         numOfPlayers++;
         players.add(player);
 
@@ -95,11 +95,11 @@ public class GameState implements Serializable { // to allow it to be sent over
             Player player = players.get(i);
             // printing depending on role
             if (player.getCPU()) {
-                System.out.println(i + 1 + ") " + player.getName() + " (id=" + player.getPlayerId()
+                System.out.println(" " + (i + 1) + ") " + player.getName() + " (id=" + player.getPlayerId()
                         + ") (CPU, difficulty = " + player.getDifficulty() + ")");
             } else {
                 String playerRole = gameMaster.equals(player) ? "GameMaster" : "Player";
-                System.out.println(i + 1 + ") " + player.getName() + " (id=" + player.getPlayerId()
+                System.out.println(" " + (i + 1) + ") " + player.getName() + " (id=" + player.getPlayerId()
                         + ") (" + playerRole + ")");
             }
         }

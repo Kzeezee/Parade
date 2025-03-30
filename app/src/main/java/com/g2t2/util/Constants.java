@@ -54,6 +54,7 @@ public class Constants {
     public static final String ADD_CPU = "x"; //"ADD_CPU";
     public static final String START_GAME = "w"; //"START_GAME";
     public static final String LEAVE_GAME = "y"; //"LEAVE_GAME";
+    public static final String ENTER_KEY = "";
 
     // Message To Indicate Things
     public static final String COMPLETE_TURN = "$complete_turn$";

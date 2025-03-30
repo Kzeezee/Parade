@@ -14,8 +14,8 @@ public class Player implements Serializable {
     private static int counter = 1;  // autoincrement
     private int playerId;
     private String name;
-    private List<Card> cardsOnHand;
-    private List<Card> cardsInCollection;
+    private List<Card> cardsOnHand = new ArrayList<>();
+    private List<Card> cardsInCollection = new ArrayList<>();;
     private int score;
     private boolean isCPU = false;
     private int difficulty;
@@ -23,7 +23,6 @@ public class Player implements Serializable {
     public Player(String name) {
         playerId = counter++;
         this.name = name;
-        cardsInCollection = new ArrayList<>();    
     }
 
     public Player(boolean isCPU, int difficulty) {
@@ -31,12 +30,10 @@ public class Player implements Serializable {
         name = "CPU" + playerId;
         this.isCPU = isCPU;
         this.difficulty = difficulty;
-        cardsInCollection = new ArrayList<>();  
     }
 
     public void drawStartingCards(CardDeck deck) {
         // draw 5 cards from the deck
-        cardsOnHand = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             cardsOnHand.add(deck.drawCard());
         }
