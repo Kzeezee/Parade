@@ -42,7 +42,7 @@ public class StartMenu {
     /**
      * Allows the player to select a profile to play on, enabling progress tracking.
      * 
-     * @param players List of available player profiles.
+     * @param players list of available player profiles
      */
     public static void selectPlayerProfile(List<PlayerProfile> players) {
         System.out.println(Constants.DIVIDER);

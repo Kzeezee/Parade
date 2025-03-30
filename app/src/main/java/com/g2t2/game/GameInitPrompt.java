@@ -21,8 +21,8 @@ public class GameInitPrompt {
      * Prompts the user to select a difficulty level for CPU-controlled players.
      * Ensures that the chosen difficulty is within the allowed range.
      * 
-     * @param game The {@link GameState} object to which the CPU player will be
-     *             added.
+     * @param game the {@link GameState} object to which the CPU player will be
+     *             added
      */
     public static void promptForCPUDifficulty(GameState game) {
         Scanner sc = new Scanner(System.in);
@@ -53,7 +53,7 @@ public class GameInitPrompt {
      * Prompts the user to specify the total number of players for the game.
      * Ensures that the number of players is between 2 and 6.
      * 
-     * @return The total number of players as an integer.
+     * @return the total number of players as an integer
      */
     public static int promptForNumberofPlayers() {
         int numOfPlayers = 0;
@@ -84,8 +84,8 @@ public class GameInitPrompt {
      * CPU-controlled.
      * Ensures that there is at least one human player in the game.
      * 
-     * @param numOfPlayers The total number of players in the game.
-     * @return The number of CPU-controlled players as an integer.
+     * @param numOfPlayers the total number of players in the game
+     * @return the number of CPU-controlled players as an integer
      */
     public static int promptForCPUPlayerNumber(int numOfPlayers) {
         int numOfCPU = 0;
@@ -117,8 +117,8 @@ public class GameInitPrompt {
      * Prompts the user to enter a name for a specific player.
      * Ensures that the name is not empty and adds the player to the game state.
      * 
-     * @param game The {@link GameState} object to which the player will be added.
-     * @param idx  The index of the player being named, used for display purposes.
+     * @param game the {@link GameState} object to which the player will be added
+     * @param idx  the index of the player being named, used for display purposes
      */
     public static void promptForPlayerName(GameState game, int idx) {
         Scanner sc = new Scanner(System.in);

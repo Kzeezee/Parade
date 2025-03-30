@@ -32,7 +32,7 @@ public class GamePlay {
      * two cards to add to their collections, calculates scores, and displays the
      * results.
      *
-     * @param game The current game state.
+     * @param game the current game state
      */
     public static void startGame(GameState game) {
         game.setHasStarted(true);
@@ -66,9 +66,9 @@ public class GamePlay {
      * 
      * Each player takes one final turn in order starting from the current player.
      *
-     * @param players The list of all players in the game.
-     * @param idx     The index of the player who starts the last round.
-     * @param game    The current game state.
+     * @param players the list of all players in the game
+     * @param idx     the index of the player who starts the last round
+     * @param game    the current game state
      */
     private static void lastRoundOfPlay(List<Player> players, int idx, GameState game) {
         game.setIsLastRound(true);
@@ -83,9 +83,9 @@ public class GamePlay {
      *
      * This phase occurs after the last round of play and before final scoring.
      *
-     * @param players The list of all players in the game.
-     * @param idx     The index of the player who starts this phase.
-     * @param game    The current game state.
+     * @param players the list of all players in the game
+     * @param idx     the index of the player who starts this phase
+     * @param game    the current game state
      */
     private static void chooseTwoCardsToCollection(List<Player> players, int idx, GameState game) {
         for (int i = 0; i < players.size(); i++) {
@@ -93,5 +93,4 @@ public class GamePlay {
             idx = (idx + 1) % players.size();
         }
     }
-
 }

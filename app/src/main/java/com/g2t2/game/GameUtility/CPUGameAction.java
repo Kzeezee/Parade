@@ -19,13 +19,14 @@ import com.g2t2.util.Display;
  * to simulate the behavior of CPU players in the game.
  * 
  * @author Shwe
+ * @author Nathan
  */
 public class CPUGameAction {
     /**
      * Handles a CPU player's turn.
      *
-     * @param player The CPU player.
-     * @param game   The current game state.
+     * @param player the CPU player
+     * @param game   the current game state
      */
     protected static void CPUplayTurn(Player player, GameState game) {
         System.out.println(Constants.DIVIDER);
@@ -39,9 +40,9 @@ public class CPUGameAction {
      * Allows a CPU player to select two cards from their hand for collection
      * purposes.
      *
-     * @param player The CPU player selecting cards.
-     * @param game   The current game state.
-     * @return A list of indices representing selected cards from the hand.
+     * @param player the CPU player selecting cards
+     * @param game   the current game state
+     * @return a list of indices representing selected cards from the hand
      */
     protected static List<Integer> CPUSelectTwoToCollections(Player player, GameState game) {
         List<Integer> cardIdxList = new ArrayList<>();
@@ -55,9 +56,9 @@ public class CPUGameAction {
     /**
      * Processes a list of selected cards and adds them to a player's collection.
      *
-     * @param cardIdxList A list of indices representing selected cards from the
-     *                    hand.
-     * @param player      The player whose collection is being updated.
+     * @param cardIdxList a list of indices representing selected cards from the
+     *                    hand
+     * @param player      the player whose collection is being updated
      */
     private static int chooseCPUCardIdx(Player player, GameState game) {
         int numOfCards = player.getCardsOnHand().size();
@@ -69,6 +70,8 @@ public class CPUGameAction {
             // from the parade
             case 2:
                 return chooseMediumDifficultyCard(player, game);
+            // level 3 difficulty: picks the card that gives back the lowest sum of values of
+            // the cards from the parade
             case 3:
                 return chooseHardDifficultyCard(player, game);
             default:
@@ -80,9 +83,9 @@ public class CPUGameAction {
      * Chooses a card for medium-level difficulty based on minimizing collectible
      * cards count.
      *
-     * @param player The CPU player choosing a card.
-     * @param game   The current game state.
-     * @return An index representing the chosen card from the hand.
+     * @param player the CPU player choosing a card
+     * @param game   the current game state
+     * @return an index representing the chosen card from the hand
      */
     private static int chooseMediumDifficultyCard(Player player, GameState game) {
         List<Card> hand = player.getCardsOnHand();
@@ -104,9 +107,9 @@ public class CPUGameAction {
      * Chooses a card for hard-level difficulty based on minimizing total points of
      * collectible cards.
      *
-     * @param player The CPU player choosing a card.
-     * @param game   The current game state.
-     * @return An index representing the chosen card from the hand.
+     * @param player the CPU player choosing a card
+     * @param game   the current game state
+     * @return an index representing the chosen card from the hand
      */
     private static int chooseHardDifficultyCard(Player player, GameState game) {
         List<Card> hand = player.getCardsOnHand();

@@ -47,7 +47,7 @@ public class GameState implements Serializable { // to allow it to be sent over
      * Generates a unique ID for this game instance based on the current timestamp
      * and random characters.
      *
-     * @return A string representing the unique game ID.
+     * @return a string representing the unique game ID
      */
     private String generateGameId() {
         long timestamp = Instant.now().getEpochSecond();
@@ -63,7 +63,7 @@ public class GameState implements Serializable { // to allow it to be sent over
     /**
      * Adds a player to the game. The first player added becomes the game master.
      *
-     * @param player The player to add to the game.
+     * @param player the player to add to the game
      */
     public void addPlayer(Player player) {
         numOfPlayers++;
@@ -77,7 +77,7 @@ public class GameState implements Serializable { // to allow it to be sent over
     /**
      * Retrieves a list of all players in the game.
      *
-     * @return A list of players participating in the game.
+     * @return a list of players participating in the game
      */
     public List<Player> getPlayers() {
         return players;

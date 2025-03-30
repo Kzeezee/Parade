@@ -52,9 +52,9 @@ public class Prompt {
     /**
      * Prompts the player to select a card from their hand.
      *
-     * @param prompt The message displayed to the player.
-     * @param player The player selecting a card.
-     * @return The index of the selected card in the player's hand.
+     * @param prompt the message displayed to the player
+     * @param player the player selecting a card
+     * @return the index of the selected card in the player's hand
      */
     public static int promptForCard(String prompt, Player player) {
         // Card chosenCard = null;
@@ -129,10 +129,10 @@ public class Prompt {
      * Prompts the player to select two cards from their hand to add to their
      * collection.
      *
-     * @param player The player selecting cards.
-     * @param game   The current game state.
-     * @return A list of indices representing the selected cards from the player's
-     *         hand.
+     * @param player the player selecting cards
+     * @param game   the current game state
+     * @return a list of indices representing the selected cards from the player's
+     *         hand
      */
     public static List<Integer> promptToCollectTwo(Player player, GameState game) {
         List<Integer> cardIdxList = new ArrayList<>();

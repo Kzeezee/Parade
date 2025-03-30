@@ -15,6 +15,9 @@ public class CardDeck implements Serializable {
     private static final long serialVersionUID = 1L;
     private ArrayList<Card> deck;
 
+    /**
+     * Creates a new CardDeck.
+     */
     public CardDeck() {
         deck = new ArrayList<>();
         // initalising all the cards in the deck
@@ -25,10 +28,20 @@ public class CardDeck implements Serializable {
         }
     }
 
+    /**
+     * Returns an ArrayList of Cards in the deck.
+     * 
+     * @return the cards in the deck
+     */
     public ArrayList<Card> getCardsInDeck() {
         return deck;
     }
 
+     /**
+     * Returns a random Card from the deck to be drawn.
+     * 
+     * @return a random card from the deck
+     */
     public Card drawCard() {
         // Math.random() generates a random double between 0.0 (inclusive) and 1.0
         // (exclusive)
@@ -38,8 +51,12 @@ public class CardDeck implements Serializable {
         return drawnCard;
     }
 
+     /**
+     * Checks if the deck contains 0 cards.
+     * 
+     * @return {@code true} if the deck is empty, else {@code false}
+     */
     public boolean isEmpty() {
         return deck.size() == 0;
     }
-
 }

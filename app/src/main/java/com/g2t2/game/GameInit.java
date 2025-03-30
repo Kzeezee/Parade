@@ -83,6 +83,7 @@ public class GameInit {
      * and distributes cards to create an initial parade board. It ensures that
      * all necessary components are ready before gameplay begins.
      *
+     * @param game the current game state
      */
     private static void giveOutTheCards(GameState game) {
         Utility.clearConsoleScreen();

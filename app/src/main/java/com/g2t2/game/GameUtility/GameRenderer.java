@@ -25,7 +25,7 @@ public class GameRenderer {
      * Includes collections, parade details, number of cards left, and whose turn it
      * is.
      *
-     * @param game The current game state.
+     * @param game the current game state
      */
     public static void displayRoundInformation(GameState game) { // show everything that everyone can see (no player's
                                                                  // hand)
@@ -43,7 +43,7 @@ public class GameRenderer {
     /**
      * Displays the collections of all players in the game.
      *
-     * @param game The current game state containing player information.
+     * @param game the current game state containing player information
      */
     public static void displayCollections(GameState game) {
         for (Player p : game.getPlayers()) {
@@ -57,7 +57,7 @@ public class GameRenderer {
     /**
      * Displays the parade collection, showing all cards currently in the parade.
      *
-     * @param game The current game state containing parade information.
+     * @param game the current game state containing parade information
      */
     public static void displayParade(GameState game) {
         System.out.println(Display.colorString("「 ✦ PARADE COLLECTION ✦ 」" + Constants.ANSI_RESET));
@@ -69,7 +69,7 @@ public class GameRenderer {
     /**
      * Displays the cards in a player's hand.
      *
-     * @param player The player whose hand cards are being displayed.
+     * @param player the player whose hand cards are being displayed
      */
     public static void displayHandCards(Player player) {
         System.out.println(Display.colorString("「 ✦ CARDS IN YOUR HAND ✦ 」") + Constants.ANSI_RESET);
@@ -81,7 +81,7 @@ public class GameRenderer {
     /**
      * Displays the scores of all players and ranks them in ascending order.
      *
-     * @param players A list of players whose scores are to be displayed and ranked.
+     * @param players a list of players whose scores are to be displayed and ranked
      */
     public static void displayScores(List<Player> players) {
         System.out.println(Constants.DIVIDER);

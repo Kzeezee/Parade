@@ -12,20 +12,19 @@ import com.g2t2.enums.CardColour;
 import com.g2t2.util.Constants;
 
 /**
- * Score Calculation class to check for end game condition after every
- * moveplayed
- * as well as to compute score for the players after the game ends
+ * Score Calculation class to check for end game condition after every moveplayed,
+ * as well as to compute score for the players after the game ends.
  * 
  * @author Shwe
  */
 public class ScoreCalculation {
 
     /**
-     * check whether at least one of the end game conditions
+     * Checks whether at least one of the end game conditions
      * (no cards in the deck / collected six colours) are met
      *
-     * @param player The player who made the last move
-     * @param deck   The deck of card being currently played
+     * @param player the player who made the last move
+     * @param deck   the deck of card being currently played
      * @return {@code true} if a condition is met, else {@code false}
      */
     public static boolean meetsGameEndCondition(Player player, CardDeck deck) {
@@ -51,11 +50,11 @@ public class ScoreCalculation {
 
     /**
      * Check whether the player possess all six colours now based on the parameter
-     * cardColourMap
+     * cardColourMap.
      *
-     * @param cardColourMap The hashmap that has CardColour as its key and
+     * @param cardColourMap the hashmap that has CardColour as its key and
      *                      Integer which is the count of each card as value
-     * @param deck          The deck of card being currently played
+     * @param deck          the deck of card being currently played
      * @return {@code true} if the hashMap has at least a card each for all six
      *         colours, else {@code false}
      */
@@ -73,6 +72,12 @@ public class ScoreCalculation {
         return true;
     }
 
+    /**
+     * Calculates the total amount of points gained from a player's collection.
+     *
+     * @param cardsCollected the player's collection
+     * @return the total amount of points gained from a player's collection
+     */
     public static int calculateTotalPoints(List<Card> cardsCollected) {
         int sum = 0;
         for (Card card: cardsCollected) {
@@ -82,9 +87,9 @@ public class ScoreCalculation {
     }
 
     /**
-     * Computer the score when the game ends and set the score of each player
+     * Computer the score when the game ends and set the score of each player.
      *
-     * @param players The list of players in the current game
+     * @param players the list of players in the current game
      */
     public static void computeScore(List<Player> players) {
         Map<Player, Integer> scoreMap = new HashMap<>();
@@ -112,12 +117,12 @@ public class ScoreCalculation {
     }
 
     /**
-     * discard the cards of player(s) whose pile with highest number of card
-     * collected
+     * Discard the cards of player(s) whose pile with highest number of card
+     * collected.
      *
-     * @param players    The list of players in the current game
-     * @param scoreMap   The HashMap of Player as key and Score (Integer) as value
-     * @param cardColour The colour of the cards we want to deal with
+     * @param players    the list of players in the current game
+     * @param scoreMap   the HashMap of Player as key and Score (Integer) as value
+     * @param cardColour the colour of the cards we want to deal with
      * 
      */
     private static void discardMajorityPiles(List<Player> players, Map<Player, Integer> scoreMap,
@@ -157,10 +162,10 @@ public class ScoreCalculation {
     }
 
     /**
-     * Count the number of cards with the specified colour
+     * Count the number of cards with the specified colour.
      *
      * @param cards      the List of the cards
-     * @param cardColour The colour of the cards we want to count
+     * @param cardColour the colour of the cards we want to count
      * @return the number of cards
      * 
      */
@@ -179,9 +184,9 @@ public class ScoreCalculation {
      * if the key exists, simply add the new score to the original value
      * if the key does not exists, create a new entry into the score Map
      *
-     * @param ScoreMap The HashMap of Player as key and Score (Integer) as value
-     * @param player   The player whose scores we are trying to update
-     * @param score    The score to be updated
+     * @param ScoreMap the HashMap of Player as key and Score (Integer) as value
+     * @param player   the player whose scores we are trying to update
+     * @param score    the score to be updated
      * 
      */
     private static void updateScore(Map<Player, Integer> scoreMap, Player player, int score) {
