@@ -122,6 +122,7 @@ public class Client implements Runnable {
 
             if (input.equals(Constants.LEAVE_GAME)) {
                 sendMessage(new String[] {Constants.LEAVE_GAME}); // haven't implement
+                sc.nextLine();
                 break;
             }
             System.out.println(Constants.INVALID_COMMAND);
