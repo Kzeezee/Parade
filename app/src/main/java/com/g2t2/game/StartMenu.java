@@ -82,7 +82,6 @@ public class StartMenu {
      * Displays the console-based start menu and handles user input.
      */
     private static void consoleStartMenu() {
-        // Utility.clearConsoleScreen();
         Scanner sc = new Scanner(System.in);
         int optionChosen = 0;
 

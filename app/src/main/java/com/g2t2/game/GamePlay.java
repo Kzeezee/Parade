@@ -71,6 +71,7 @@ public class GamePlay {
      * @param game    The current game state.
      */
     private static void lastRoundOfPlay(List<Player> players, int idx, GameState game) {
+        game.setIsLastRound(true);
         for (int i = 0; i < players.size(); i++) {
             GameProcessor.playTurn(players.get(idx), game);
             idx = (idx + 1) % players.size();

@@ -32,13 +32,6 @@ import com.g2t2.game.GameUtility.Prompt;
 public class GameInit {
     private static int numOfPlayers = 0;
     private static int numOfCPUPlayers = 0;
-    /**
-     * The difficulty level for CPU players:
-     * 1 - Easy
-     * 2 - Medium
-     * 3 - Hard
-     */
-    private static int difficulty;
 
     /**
      * Displays the game options either in console or GUI mode.
