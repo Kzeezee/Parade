@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
-import com.g2t2.util.StateFlags;
 import com.g2t2.util.Utility;
 
 import com.g2t2.types.ParadeBoard;
@@ -42,21 +41,16 @@ public class GameInit {
     private static int difficulty;
 
     /**
-     * Displays the game options either in console or GUI mode.
+     * Displays the game options either in console
      * 
-     * If GUI mode is enabled in {@link StateFlags}, it will display GUI options.
-     * Otherwise, it will configure the game via console prompts.
+     * It will configure the game via console prompts.
      * 
      */
     public static void displayGameOptions() {
-        if (StateFlags.isGUIMode) {
-            // GUI display options
-        } else {
-            // Console configuration
-            displayConsoleGameOptions();
-            giveOutTheCards();
-            GamePlay.startGame(new GameState());
-        }
+        // Console configuration
+        displayConsoleGameOptions();
+        giveOutTheCards();
+        GamePlay.startGame(new GameState());
     }
 
     /**

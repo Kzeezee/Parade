@@ -10,7 +10,6 @@ import com.g2t2.enums.PlayerProfileOptionInput;
 import com.g2t2.types.PlayerProfile;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
-import com.g2t2.util.StateFlags;
 import com.g2t2.util.Utility;
 
 /**
@@ -31,14 +30,10 @@ public class StartMenu {
      * console).
      */
     public static void showStartMenu() {
-        if (StateFlags.isGUIMode) {
-            GUIStartMenu();
+        if (StateManager.getPlayerProfile() == null) {
+            checkForPlayerProfiles();
         } else {
-            if (StateManager.getPlayerProfile() == null) {
-                checkForPlayerProfiles();
-            } else {
-                consoleStartMenu();
-            }
+            consoleStartMenu();
         }
     }
 
@@ -231,12 +226,5 @@ public class StartMenu {
             default:
                 return PlayerProfileOptionInput.SELECT_PROFILE;
         }
-    }
-
-    /**
-     * Displays the start menu for the GUI application. Currently not implemented.
-     */
-    private static void GUIStartMenu() {
-
     }
 }
