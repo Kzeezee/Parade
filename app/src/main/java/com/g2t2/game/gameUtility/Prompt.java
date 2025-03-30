@@ -155,6 +155,7 @@ public class Prompt {
     /**
      * Prompts the player for the details of the CPUs that they want to add.
      * Details contains: "number of CPUs" and "Difficulty Level"
+     * 
      * @param numOfPlayers Number of players currently playing the game
      * @return A String array that represents user's selection of the CPU information.
      *         Index 0 -> Number of CPU to add

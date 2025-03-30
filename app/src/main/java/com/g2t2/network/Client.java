@@ -10,6 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.g2t2.game.GameState;
 import com.g2t2.game.StartMenu;
+import com.g2t2.game.gameUtility.CPUGameAction;
 import com.g2t2.game.gameUtility.GameRenderer;
 import com.g2t2.game.gameUtility.Prompt;
 import com.g2t2.types.Player;
@@ -144,33 +145,49 @@ public class Client implements Runnable {
     private void renderGame(GameState game) { // TODO: show available commands on top (only can use during your turn)
         Player currentPlayer = game.getCurrentPlayer();
         GameRenderer.displayRoundInformation(game);  
-        String[] messageToSendBack = {Constants.CPU_COMPLETE_TURN};  
+        String[] messageToSendBack = {Constants.COMPLETE_TURN, "", ""};
         // System.out.println("Number of players: " + game.getNumOfPlayers());
         // System.out.println("Number of cards left: " + game.getDeck().getCardsInDeck().size());
         // System.out.println("Player Turn: " + game.getCurrentPlayer().getName());
 
-        if (currentPlayer.getCPU()) { // bots turn
-            // TODO
+        if (game.isEndOfGame()) {
+            // displayScores(ParadeBoard.getPlayers()); -> for client to display
+            // promptForNewGame(); -> client to display
 
-        } else if (currentPlayer.getPlayerId() == myPlayerId) { // my turn 
-            GameRenderer.displayHandCards(currentPlayer);
-            if (game.isPut2CollectionRound()) {
-                int[] indexOfChosenCard = Prompt.promptToCollectTwo(currentPlayer);
-                messageToSendBack = new String[] {Constants.COMPLETE_TURN, indexOfChosenCard[0] + "", indexOfChosenCard[1] + ""};
-
-            } else if (game.isEndOfGame()) {
-                // displayScores(ParadeBoard.getPlayers()); -> for client to display
-                // promptForNewGame(); -> client to display
-
-            } else {
-                int indexOfChosenCard = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, currentPlayer);
-                messageToSendBack = new String[] {Constants.COMPLETE_TURN, indexOfChosenCard + ""};
-            }
-        } else { // not the player turn
-            System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
             return;
         }
-        sendMessage(messageToSendBack);
+
+        if (currentPlayer.getCPU()) { // CPU turn
+            CPUGameAction.displayCPUTurnAction(currentPlayer);
+
+            if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
+                if (game.isPut2CollectionRound()) {
+                    int[] indexOfChosenCard = CPUGameAction.CPUSelectTwoToCollections(currentPlayer, game);
+                    System.arraycopy(indexOfChosenCard, 0, messageToSendBack, 1, 2);
+                } else {
+                    int indexOfChosenCard = CPUGameAction.chooseCPUCardIdx(currentPlayer, game);
+                    messageToSendBack[1] = indexOfChosenCard + "";
+                }
+                sendMessage(messageToSendBack);
+            }
+            return;
+        }
+            
+        if (currentPlayer.getPlayerId() == myPlayerId) { // my turn 
+            GameRenderer.displayHandCards(currentPlayer);
+
+            if (game.isPut2CollectionRound()) {
+                int[] indexOfChosenCard = Prompt.promptToCollectTwo(currentPlayer);
+                System.arraycopy(indexOfChosenCard, 0, messageToSendBack, 1, 2);              
+            } else {
+                int indexOfChosenCard = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, currentPlayer);
+                messageToSendBack[1] = indexOfChosenCard + "";
+            }
+            sendMessage(messageToSendBack);
+
+        } else { // not the player turn
+            System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
+        }
     }
 
     private void sendMessage(String msg[]) {

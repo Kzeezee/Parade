@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.util.*;
 
 import com.g2t2.game.*;
+import com.g2t2.game.gameUtility.CPUGameAction;
 import com.g2t2.game.gameUtility.GameProcessor;
 import com.g2t2.util.*;
 import com.g2t2.types.*;
@@ -76,9 +77,11 @@ public class ClientHandler implements Runnable { // allows instances to be execu
 
     private void processTurn(String[] indexOfChosenCard) {
         GameState game = findGameState(gameId);
-        for (int i = 1; i < indexOfChosenCard.length; i++) {
-            int index = Integer.parseInt(indexOfChosenCard[i]);
-            GameProcessor.processPlayerTurn(index, currentPlayer, game);
+        int idx = 1; // because index 0 is the command
+        while (!indexOfChosenCard[idx].equals("")) { // go through all available indices (blanks are pre-filled with "")
+            int cardIndex = Integer.parseInt(indexOfChosenCard[idx]);
+            GameProcessor.processPlayerTurn(cardIndex, currentPlayer, game);
+            idx++;
         }
         game.passTurnToNextPlayer();
 
@@ -131,8 +134,6 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                     } else if (command.equals(Constants.COMPLETE_TURN)) { // player finish his turn
                         processTurn(messageToProcess.getMessage());
 
-                    } else if (command.equals(Constants.CPU_COMPLETE_TURN)) { // cpu finish his turn
-                        // TODO
                     }else if (command.equals(Constants.ENTER_KEY)) { // refresh page for that player only
                         sendGameState(findGameState(gameId)); 
                     }

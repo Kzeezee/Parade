@@ -41,7 +41,7 @@ public class CPUGameAction {
      * @param game   The current game state.
      * @return An int[2] of indices representing selected cards from the hand.
      */
-    protected static int[] CPUSelectTwoToCollections(Player player, GameState game) {
+    public static int[] CPUSelectTwoToCollections(Player player, GameState game) {
         int[] cardIdxList = new int[2];
         for (int i = 0; i < 2; i++) {
             cardIdxList[i] = chooseCPUCardIdx(player, game);
@@ -56,7 +56,7 @@ public class CPUGameAction {
      *                    hand.
      * @param player      The player whose collection is being updated.
      */
-    private static int chooseCPUCardIdx(Player player, GameState game) {
+    public static int chooseCPUCardIdx(Player player, GameState game) {
         int numOfCards = player.getCardsOnHand().size();
         switch (player.getDifficulty()) {
             // level 1 difficulty: random
@@ -85,9 +85,9 @@ public class CPUGameAction {
         List<Card> hand = player.getCardsOnHand();
         int lowestNumCollect = Integer.MAX_VALUE;
         // Card bestCard = player.getCardsOnHand().get(0);
-        int bestIdx = -1;
+        int bestIdx = 0;
 
-        for (int i = 0; i < hand.size(); i++) {
+        for (int i = 1; i < hand.size(); i++) {
             List<Card> collectableCards = GameProcessor.getCollectableCards(hand.get(i), game);
             if (collectableCards.size() < lowestNumCollect) {
                 lowestNumCollect = collectableCards.size();
@@ -108,9 +108,9 @@ public class CPUGameAction {
     private static int chooseHardDifficultyCard(Player player, GameState game) {
         List<Card> hand = player.getCardsOnHand();
         int lowestPoints = Integer.MAX_VALUE;
-        int bestIdx = -1;
+        int bestIdx = 0;
 
-        for (int i = 0; i < hand.size(); i++) {
+        for (int i = 1; i < hand.size(); i++) {
             List<Card> collectableCards = GameProcessor.getCollectableCards(hand.get(i), game);
             int totalPoints = ScoreCalculation.calculateTotalPoints(collectableCards);
 
@@ -120,5 +120,11 @@ public class CPUGameAction {
             }
         }
         return bestIdx;
+    }
+
+    // temp things for networking
+    public static void displayCPUTurnAction(Player player) {
+        Display.delayPrint(" 📌 Player " + Display.colorString(player.getName())
+                + " is choosing their cards.", 30);
     }
 }
