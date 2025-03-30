@@ -148,10 +148,10 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     
     // send gameState to all players in the game
     private void broadcastGameStatus(GameState game) {
-        System.out.println("Broadcasting GameState: " + game.getGameId());
+        // System.out.println("Broadcasting GameState: " + game.getGameId());
         for (ClientHandler clientHandler : clientHandlers.get(gameId)) {
             clientHandler.sendGameState(game);
-            System.out.println("Sending GameState to client: " + clientHandler.currentPlayer.getName());
+            // System.out.println("Sending GameState to client: " + clientHandler.currentPlayer.getName());
         }
     }
 

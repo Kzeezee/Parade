@@ -145,6 +145,9 @@ public class Client implements Runnable {
         Player currentPlayer = game.getCurrentPlayer();
         GameRenderer.displayRoundInformation(game);  
         String[] messageToSendBack = {Constants.CPU_COMPLETE_TURN};  
+        System.out.println("Number of players: " + game.getNumOfPlayers());
+        System.out.println("Number of cards left: " + game.getDeck().getCardsInDeck().size());
+        System.out.println("Player Turn: " + game.getCurrentPlayer().getName());
 
         if (currentPlayer.getCPU()) { // bots turn
             // TODO
@@ -194,7 +197,6 @@ public class Client implements Runnable {
                         Utility.clearConsoleScreen();
                         System.out.print(Display.colorString(" ➢ Press ENTER KEY to show game!"));
                         isInGame = true;
-                        mainThreadTasks.add(() -> renderGame(game));
                     } else {
                         mainThreadTasks.add(() -> renderGame(game));
                     }

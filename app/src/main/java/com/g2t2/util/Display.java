@@ -214,7 +214,7 @@ public class Display {
     }
 
     public static void printGameHeader() {
-        Utility.clearConsoleScreen();
+        // Utility.clearConsoleScreen();
         System.out.println(Constants.BANNER);
         System.out.println(Constants.DIVIDER);
     }
