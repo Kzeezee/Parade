@@ -2,6 +2,7 @@ package com.g2t2.game.gameUtility;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
 import com.g2t2.game.GameState;
 import com.g2t2.types.Card;
@@ -18,10 +19,6 @@ import com.g2t2.util.Display;
  * @author Easan
  */
 public class GameProcessor {
-    
-    public static void processPlayerTurn(int index, Player currentPlayer, GameState game) {
-        processCardChosenToPutToParade(index, currentPlayer, game);
-    }
     
     /**
      * Executes a player's turn in the game.
@@ -48,16 +45,17 @@ public class GameProcessor {
         GameRenderer.displayHandCards(player);
 
         int cardIdx = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, player);
-        processCardChosenToPutToParade(cardIdx, player, game);
+        processPlayerTurn(cardIdx, player, game);
     }
 
     /**
-     * Handles a CPU player's turn.
+     * Update the game based on what the user have done
      *
-     * @param player The CPU player.
+     * @param cardIdx The index of the chosen card
+     * @param player The player that completed the turn
      * @param game   The current game state.
      */
-    protected static void processCardChosenToPutToParade(int cardIdx, Player player, GameState game) {
+    public static void processPlayerTurn(int cardIdx, Player player, GameState game) {
         Card chosenCard = player.getCardsOnHand().get(cardIdx);
         player.getCardsOnHand().remove(chosenCard);
 
@@ -144,7 +142,7 @@ public class GameProcessor {
     public static void putTwoToCollections(Player player, GameState game) {
         GameRenderer.displayRoundInformation(game);
 
-        List<Integer> cardIdxList = null;
+        int[] cardIdxList = null;
         if (player.getCPU()) {
             Display.delayPrint(" 📌 Player " + Display.colorString(player.getName())
                     + " is choosing their cards.", 30);
@@ -153,11 +151,16 @@ public class GameProcessor {
             System.out.println(" ⚜ You need to select " + Display.colorString("TWO")
                     + " cards from your hand to add to the collection.");
 
-            cardIdxList = Prompt.promptToCollectTwo(player, game);
+            cardIdxList = Prompt.promptToCollectTwo(player);
         }
         System.out.println(Constants.DIVIDER);
-
-        processCardChosenToCollection(cardIdxList, player);
+        
+        // temporary fix
+        List<Integer> tempArrayList = new ArrayList<>();
+        for (int i = 0; i < cardIdxList.length; i++) {
+            tempArrayList.add(cardIdxList[i]);
+        }
+        processCardChosenToCollection(tempArrayList, player);
     }
 
     /**

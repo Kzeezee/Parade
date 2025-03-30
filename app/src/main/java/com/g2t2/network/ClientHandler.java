@@ -74,10 +74,12 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         broadcastGameStatus(game);
     }
 
-    private void processTurn(String indexOfChosenCard) {
+    private void processTurn(String[] indexOfChosenCard) {
         GameState game = findGameState(gameId);
-        int index = Integer.parseInt(indexOfChosenCard);
-        GameProcessor.processPlayerTurn(index, currentPlayer, game);
+        for (int i = 1; i < indexOfChosenCard.length; i++) {
+            int index = Integer.parseInt(indexOfChosenCard[i]);
+            GameProcessor.processPlayerTurn(index, currentPlayer, game);
+        }
         game.passTurnToNextPlayer();
 
         // go to score calculation
@@ -127,7 +129,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         startGame();
 
                     } else if (command.equals(Constants.COMPLETE_TURN)) { // player finish his turn
-                        processTurn(messageToProcess.getMessage()[1]);
+                        processTurn(messageToProcess.getMessage());
 
                     } else if (command.equals(Constants.CPU_COMPLETE_TURN)) { // cpu finish his turn
                         // TODO

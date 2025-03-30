@@ -129,13 +129,11 @@ public class Prompt {
      * collection.
      *
      * @param player The player selecting cards.
-     * @param game   The current game state.
-     * @return A list of indices representing the selected cards from the player's
-     *         hand.
+     * @return An int[2] representing indices the selected cards from the player's hand.
+     *         int[0] -> 1st card || int[1] -> 2nd card
      */
-    public static List<Integer> promptToCollectTwo(Player player, GameState game) {
-        List<Integer> cardIdxList = new ArrayList<>();
-        GameRenderer.displayRoundInformation(game);
+    public static int[] promptToCollectTwo(Player player) {
+        int[] choosenCardsIdx = new int[2];
 
         System.out.println(" ⚜ You need to select " + Display.colorString("TWO")
                 + " cards from your hand to add to the collection.");
@@ -145,12 +143,12 @@ public class Prompt {
         for (int i = 0; i < 2; i++) {
             String prompt = Display.colorString(" 📌 Which card do you want to place in the Collection?\n" +
                     " 📌 You need to choose TWO cards \n" +
-                    " ⚜ Card " + (i + 1) + " :");
+                    " ⚜ Card " + (i + 1) + ": ");
             int cardIdx = Prompt.promptForCard(prompt, player);
-            cardIdxList.add(cardIdx);
+            choosenCardsIdx[i] = cardIdx;
             System.out.println(Constants.DIVIDER);
         }
-        return cardIdxList;
+        return choosenCardsIdx;
     }
 
 

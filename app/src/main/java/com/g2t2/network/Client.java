@@ -145,28 +145,29 @@ public class Client implements Runnable {
         Player currentPlayer = game.getCurrentPlayer();
         GameRenderer.displayRoundInformation(game);  
         String[] messageToSendBack = {Constants.CPU_COMPLETE_TURN};  
-        System.out.println("Number of players: " + game.getNumOfPlayers());
-        System.out.println("Number of cards left: " + game.getDeck().getCardsInDeck().size());
-        System.out.println("Player Turn: " + game.getCurrentPlayer().getName());
+        // System.out.println("Number of players: " + game.getNumOfPlayers());
+        // System.out.println("Number of cards left: " + game.getDeck().getCardsInDeck().size());
+        // System.out.println("Player Turn: " + game.getCurrentPlayer().getName());
 
         if (currentPlayer.getCPU()) { // bots turn
             // TODO
 
         } else if (currentPlayer.getPlayerId() == myPlayerId) { // my turn 
+            GameRenderer.displayHandCards(currentPlayer);
             if (game.isPut2CollectionRound()) {
-                // TODO
+                int[] indexOfChosenCard = Prompt.promptToCollectTwo(currentPlayer);
+                messageToSendBack = new String[] {Constants.COMPLETE_TURN, indexOfChosenCard[0] + "", indexOfChosenCard[1] + ""};
 
             } else if (game.isEndOfGame()) {
                 // displayScores(ParadeBoard.getPlayers()); -> for client to display
                 // promptForNewGame(); -> client to display
 
             } else {
-                GameRenderer.displayHandCards(currentPlayer);
                 int indexOfChosenCard = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, currentPlayer);
                 messageToSendBack = new String[] {Constants.COMPLETE_TURN, indexOfChosenCard + ""};
             }
         } else { // not the player turn
-            System.out.println("Not Your Turn.");
+            System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
             return;
         }
         sendMessage(messageToSendBack);

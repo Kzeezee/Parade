@@ -30,7 +30,7 @@ public class CPUGameAction {
         Display.delayPrint(" 📌 Player " + Display.colorString(player.getName())
                 + " is choosing their cards.", 30);
         int cardIdx = chooseCPUCardIdx(player, game);
-        GameProcessor.processCardChosenToPutToParade(cardIdx, player, game);
+        GameProcessor.processPlayerTurn(cardIdx, player, game);
     }
 
     /**
@@ -39,13 +39,12 @@ public class CPUGameAction {
      *
      * @param player The CPU player selecting cards.
      * @param game   The current game state.
-     * @return A list of indices representing selected cards from the hand.
+     * @return An int[2] of indices representing selected cards from the hand.
      */
-    protected static List<Integer> CPUSelectTwoToCollections(Player player, GameState game) {
-        List<Integer> cardIdxList = new ArrayList<>();
+    protected static int[] CPUSelectTwoToCollections(Player player, GameState game) {
+        int[] cardIdxList = new int[2];
         for (int i = 0; i < 2; i++) {
-            int idx = chooseCPUCardIdx(player, game);
-            cardIdxList.add(idx);
+            cardIdxList[i] = chooseCPUCardIdx(player, game);
         }
         return cardIdxList;
     }
