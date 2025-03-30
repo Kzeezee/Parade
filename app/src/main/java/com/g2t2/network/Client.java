@@ -141,21 +141,9 @@ public class Client implements Runnable {
         }
     }
 
-    private void renderGame(GameState game) throws IOException { // TODO: show available commands on top (only can use during your turn)
+    private void renderGame(GameState game) { // TODO: show available commands on top (only can use during your turn)
         Player currentPlayer = game.getCurrentPlayer();
-        GameRenderer.displayRoundInformation(game);
-
-        // this is deal with the problem that the Scanner from activatingUserControlCommands is blocking the main thread
-        if (!isInGame && !(game.getGameMaster().getPlayerId() == myPlayerId)) {
-            System.out.print(Display.colorString(" ➢ PRESS ENTER KEY!"));
-            try {
-                Thread.sleep(2000); // allow time for user to press enter
-            } catch (InterruptedException e) {
-                throw new IOException();
-            }
-        }
-        isInGame = true;
-        
+        GameRenderer.displayRoundInformation(game);    
 
         if (currentPlayer.getCPU()) { // bots turn
             // TODO
@@ -172,9 +160,7 @@ public class Client implements Runnable {
             
         } else { // not the player turn
             System.out.println("Not Your Turn.");
-        }
-
-        
+        }        
     }
 
     private void sendMessage(String msg[]) {
@@ -196,8 +182,15 @@ public class Client implements Runnable {
                     // System.out.println("GameState received: " + game.getGameId());
                     if (!game.getHasStarted()) {
                         mainThreadTasks.add(() -> printWaitingRoomDetails(game));
+
+                    // this is deal with the problem that the Scanner from activatingUserControlCommands is blocking the main thread
+                    } else if (!isInGame && game.getGameMaster().getPlayerId() != myPlayerId) {
+                        Utility.clearConsoleScreen();
+                        System.out.print(Display.colorString(" ➢ Press ENTER KEY to show game!"));
+                        isInGame = true;
+                        mainThreadTasks.add(() -> renderGame(game));
                     } else {
-                        renderGame(game);
+                        mainThreadTasks.add(() -> renderGame(game));
                     }
 
                 } else if (incomingObject instanceof Message incomingMessage) {

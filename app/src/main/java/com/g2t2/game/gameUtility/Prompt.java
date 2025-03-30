@@ -60,7 +60,6 @@ public class Prompt {
         int chosenCardIndex = 0;
         Scanner sc = new Scanner(System.in);
         int numOfCards = player.getCardsOnHand().size();
-        System.out.println("NUMBER OF CARDS IN HAND: " + numOfCards);
         while (true) {
             try {
                 System.out.println(prompt);
