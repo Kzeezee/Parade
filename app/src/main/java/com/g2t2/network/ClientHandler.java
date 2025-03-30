@@ -19,7 +19,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     private Socket socket;
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
-    private Player currentPlayer; // to know the message is from who
+    private Player currentPlayer; // to know which player sent back the message
     private String gameId;  // used to check what game the player is playing
 
     public ClientHandler(Socket socket) {
@@ -136,8 +136,10 @@ public class ClientHandler implements Runnable { // allows instances to be execu
             } catch (IOException e) {
                 System.out.println("Something happened----");
                 closeEverything(socket, objectInputStream, objectOutputStream);
+                break; // break out from the while loop, because client socket is still connected
             } catch (ClassNotFoundException e) {
                 closeEverything(socket, objectInputStream, objectOutputStream);
+                break;
             }
         }
     }

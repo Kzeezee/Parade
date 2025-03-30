@@ -1,6 +1,5 @@
 package com.g2t2.network;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -26,7 +25,7 @@ public class Client implements Runnable {
     private static final Runnable CLOSE_MAIN_THREAD = () -> {}; // Empty task to signal termination
     private boolean isInGame = false;
     private String username;
-    private Player currentPlayer; // track player
+    private int myPlayerId; // track player
 
     public Client(Socket socket, String username) {
         try {
@@ -80,7 +79,7 @@ public class Client implements Runnable {
     }
 
     private void printWaitingRoomDetails(GameState game) {
-        boolean isGameMaster = game.getGameMaster().equals(currentPlayer);
+        boolean isGameMaster = game.getGameMaster().getPlayerId() == myPlayerId;
         int numberOfPlayersCurrently = game.getNumOfPlayers();
         Utility.clearConsoleScreen();
         System.out.println(Constants.WAITING_LOBBY_BANNER);
@@ -142,16 +141,30 @@ public class Client implements Runnable {
         }
     }
 
-    private void renderGame(GameState game) { // TODO: show available commands on top (only can use during your turn)
+    private void renderGame(GameState game) throws IOException { // TODO: show available commands on top (only can use during your turn)
+        Player currentPlayer = game.getCurrentPlayer();
         GameRenderer.displayRoundInformation(game);
-        if (game.getCurrentPlayer().getCPU()) { // bots turn
+
+        // this is deal with the problem that the Scanner from activatingUserControlCommands is blocking the main thread
+        if (!isInGame && !(game.getGameMaster().getPlayerId() == myPlayerId)) {
+            System.out.print(Display.colorString(" ➢ PRESS ENTER KEY!"));
+            try {
+                Thread.sleep(2000); // allow time for user to press enter
+            } catch (InterruptedException e) {
+                throw new IOException();
+            }
+        }
+        isInGame = true;
+        
+
+        if (currentPlayer.getCPU()) { // bots turn
             // TODO
 
-        } else if (game.getCurrentPlayer().equals(currentPlayer)) { // my turn 
+        } else if (currentPlayer.getPlayerId() == myPlayerId) { // my turn 
             if (game.isPut2CollectionRound()) {
                 // TODO
             } else {
-
+                GameRenderer.displayHandCards(currentPlayer);
                 int indexOfChosenCard = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, currentPlayer);
                 String[] messageToSendBack = {Constants.COMPLETE_TURN, indexOfChosenCard + ""};
                 sendMessage(messageToSendBack);
@@ -160,6 +173,8 @@ public class Client implements Runnable {
         } else { // not the player turn
             System.out.println("Not Your Turn.");
         }
+
+        
     }
 
     private void sendMessage(String msg[]) {
@@ -170,26 +185,17 @@ public class Client implements Runnable {
             closeEverything(socket, objectInputStream, objectOutputStream);
         } 
     }
-
+    
     private void listenForMessage() {
         while (socket.isConnected()) {
             try {
                 Object incomingObject = objectInputStream.readObject();
-                System.out.println("Received object: " + incomingObject);
+                // System.out.println("Received object: " + incomingObject);
                 if (incomingObject instanceof GameState game) {
-                    System.out.println("number of player: " + game.getNumOfPlayers());
-                    System.out.println("GameState received: " + game.getGameId());
+                    // System.out.println("Number of player: " + game.getNumOfPlayers());
+                    // System.out.println("GameState received: " + game.getGameId());
                     if (!game.getHasStarted()) {
                         mainThreadTasks.add(() -> printWaitingRoomDetails(game));
-                        // String simulatedInput = "\n";
-                        // System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
-
-                    } else if (!isInGame) { // just before everyone join the game
-                        // This is to ensure that everyone is out of activatingUserControlCommands()
-                        isInGame = true;
-                        String simulatedInput = "\n";
-                        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
-
                     } else {
                         renderGame(game);
                     }
@@ -204,7 +210,7 @@ public class Client implements Runnable {
                         mainThreadTasks.add(() -> joinGamePrompt());
                     } 
                 } else if (incomingObject instanceof Player player) {
-                    currentPlayer = player;
+                    myPlayerId = player.getPlayerId();
                 }
             } catch (IOException e) {
                 closeEverything(socket, objectInputStream, objectOutputStream);
@@ -259,7 +265,36 @@ public class Client implements Runnable {
                 task.run();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
+                break;
             }
         }
     }
 }
+
+
+// private InputStream originalIn; // To restore original System.in later
+// private PipedInputStream simulatedInput;
+// private PipedOutputStream simulatedOutput;
+
+//  // artificially insert the ENTER_KEY into client's system.in
+//  private void simulateEnterKey() {
+//     try {
+//         simulatedOutput.write((Constants.ENTER_KEY + "\n").getBytes());
+//         simulatedOutput.flush();
+//     } catch (IOException e) {
+//         e.printStackTrace();
+//     }
+// }
+
+// private void overrideSystemIn() throws IOException {
+//     originalIn = System.in; // Save original System.in
+//     simulatedInput = new PipedInputStream();
+//     simulatedOutput = new PipedOutputStream(simulatedInput);
+//     System.setIn(simulatedInput); // Override System.in
+// }
+
+// private void restoreSystemIn() throws IOException {
+//     System.setIn(originalIn); // Restore original System.in
+//     simulatedIn.close();
+//     simulatedOut.close();
+// }
