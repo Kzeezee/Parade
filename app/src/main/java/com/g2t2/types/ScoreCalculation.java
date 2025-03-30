@@ -92,6 +92,10 @@ public class ScoreCalculation {
      * @param players the list of players in the current game
      */
     public static void computeScore(List<Player> players) {
+        // updating the collection size for all players
+        for (Player player: players) {
+            player.updateCollectionSize();
+        }
         Map<Player, Integer> scoreMap = new HashMap<>();
 
         List<CardColour> cardColourList = Constants.CARD_COLOURS;

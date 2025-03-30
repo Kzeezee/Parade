@@ -62,6 +62,7 @@ public class GameProcessor {
         if (!game.isLastRound()) {
             player.drawCard(game.getDeck());
         }
+        player.updateCollectionSize();
     }
 
     /**

@@ -11,11 +11,12 @@ import java.util.*;
 
 public class Player implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static int counter = 1;  // autoincrement
+    private static int counter = 1; // autoincrement
     private int playerId;
     private String name;
     private List<Card> cardsOnHand;
     private List<Card> cardsInCollection;
+    private int collectionSize;
     private int score;
     private boolean isCPU = false;
     private int difficulty;
@@ -28,11 +29,12 @@ public class Player implements Serializable {
     public Player(String name) {
         playerId = counter++;
         this.name = name;
-        cardsInCollection = new ArrayList<>();    
+        cardsInCollection = new ArrayList<>();
     }
 
     /**
-     * Creates a new Player, specifying if they are a CPU and their CPU difficulty level.
+     * Creates a new Player, specifying if they are a CPU and their CPU difficulty
+     * level.
      * 
      * @param isCPU      boolean value describing if the player is a CPU
      * @param difficulty difficulty level of the CPU
@@ -43,14 +45,14 @@ public class Player implements Serializable {
         name = "CPU" + playerId;
         this.isCPU = isCPU;
         this.difficulty = difficulty;
-        cardsInCollection = new ArrayList<>();  
+        cardsInCollection = new ArrayList<>();
     }
 
     /**
      * Creates a starting hand of 5 random cards for the Player.
      * 
      * @param deck the deck of cards to be drawn from
-     */  
+     */
     public void drawStartingCards(CardDeck deck) {
         // draw 5 cards from the deck
         cardsOnHand = new ArrayList<>();
@@ -63,7 +65,7 @@ public class Player implements Serializable {
      * Adds a random card from the deck to the Player's hand.
      * 
      * @param deck the deck of cards to be drawn from
-     */  
+     */
     public void drawCard(CardDeck deck) {
         cardsOnHand.add(deck.drawCard());
     }
@@ -72,7 +74,7 @@ public class Player implements Serializable {
      * Returns the player's ID as an integer.
      * 
      * @return the player's ID
-     */  
+     */
     public int getPlayerId() {
         return playerId;
     }
@@ -81,7 +83,7 @@ public class Player implements Serializable {
      * Returns the player's name as a String.
      * 
      * @return the player's name
-     */      
+     */
     public String getName() {
         return name;
     }
@@ -136,8 +138,25 @@ public class Player implements Serializable {
      * 
      * @return {@code true} if the player is CPu, else {@code false}
      */
-    public boolean getCPU(){
+    public boolean getCPU() {
         return isCPU;
+    }
+
+    /**
+     * Returns the size of player's cardsInCollection
+     * 
+     * @return the collection size
+     */
+    public int getCollectionSize() {
+        return collectionSize;
+    }
+
+    /**
+     * Update the collection size based on player's cardsInCollection
+     * 
+     */
+    public void updateCollectionSize() {
+        collectionSize = cardsInCollection.size();
     }
 
     /**

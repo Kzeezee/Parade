@@ -10,7 +10,8 @@ import java.util.Comparator;
 public class PlayerComparator implements Comparator<Player>{
     /**
      * Compares two players in the order of:
-     * 1. sort by descending score
+     * 1. sort by ascending score
+     * 2. sort by ascending no of cards
      * 2. sort by ascending name
      * 
      * @param p1 first player to be compared
@@ -20,6 +21,10 @@ public class PlayerComparator implements Comparator<Player>{
      */
     public int compare(Player p1, Player p2) {
         int cmp = p1.getScore() - p2.getScore();
+        if (cmp != 0) {
+            return cmp;
+        }
+        cmp = p1.getCollectionSize() - p2.getCollectionSize();
         if (cmp != 0) {
             return cmp;
         }
