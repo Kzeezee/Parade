@@ -38,6 +38,7 @@ public class GameState implements Serializable { // to allow it to be sent over
     private boolean hasStarted = false; // Flag indicating whether the game has started.
     private boolean islastRound = false;
     private boolean isPut2CollectionRound = false;
+    private boolean isEndOfGame = false;
 
     /**
      * Constructs a new `GameState` instance and generates a unique game ID.
@@ -154,6 +155,14 @@ public class GameState implements Serializable { // to allow it to be sent over
 
     public void setPut2CollectionRound(boolean isPut2CollectionRound) {
         this.isPut2CollectionRound = isPut2CollectionRound;
+    }
+
+    public boolean isEndOfGame() {
+        return isEndOfGame;
+    }
+
+    public void setEndOfGame(boolean isEndOfGame) {
+        this.isEndOfGame = isEndOfGame;
     }
 
     public CardDeck getDeck() {

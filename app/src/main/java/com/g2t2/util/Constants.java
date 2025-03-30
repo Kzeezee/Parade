@@ -58,6 +58,7 @@ public class Constants {
 
     // Message To Indicate Things
     public static final String COMPLETE_TURN = "$complete_turn$";
+    public static final String CPU_COMPLETE_TURN = "$cpu_complete_turn$";
 
     // ERRORS
     public static final String INVALID_GAME_ID = "INVALID GAME ID";

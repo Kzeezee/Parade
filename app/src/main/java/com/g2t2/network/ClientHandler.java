@@ -82,12 +82,12 @@ public class ClientHandler implements Runnable { // allows instances to be execu
 
         // go to score calculation
         if (game.isPut2CollectionRound() && currentPlayer.equals(game.getPlayerWhoStartFinalRound())) { 
+            game.setEndOfGame(true);
             ScoreCalculation.computeScore(game.getPlayers());
-            // displayScores(ParadeBoard.getPlayers()); -> for client to display
-            // promptForNewGame(); -> client to display
+
         } else if (game.isLastRound() && currentPlayer.equals(game.getPlayerWhoStartFinalRound())) { // everyone took 1 turn, go to put cards in collection phase
             game.setPut2CollectionRound(true);
-            // add put 2 to collections command
+
         } else if (ScoreCalculation.meetsGameEndCondition(currentPlayer, game.getDeck())) { // go to last round
             game.setLastRound(true);
             game.setPlayerWhoStartFinalRound(currentPlayer);
@@ -129,7 +129,9 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                     } else if (command.equals(Constants.COMPLETE_TURN)) { // player finish his turn
                         processTurn(messageToProcess.getMessage()[1]);
 
-                    } else if (command.equals(Constants.ENTER_KEY)) { // refresh page for that player only
+                    } else if (command.equals(Constants.CPU_COMPLETE_TURN)) { // cpu finish his turn
+                        // TODO
+                    }else if (command.equals(Constants.ENTER_KEY)) { // refresh page for that player only
                         sendGameState(findGameState(gameId)); 
                     }
                 }

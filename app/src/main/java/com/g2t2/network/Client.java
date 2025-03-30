@@ -143,7 +143,8 @@ public class Client implements Runnable {
 
     private void renderGame(GameState game) { // TODO: show available commands on top (only can use during your turn)
         Player currentPlayer = game.getCurrentPlayer();
-        GameRenderer.displayRoundInformation(game);    
+        GameRenderer.displayRoundInformation(game);  
+        String[] messageToSendBack = {Constants.CPU_COMPLETE_TURN};  
 
         if (currentPlayer.getCPU()) { // bots turn
             // TODO
@@ -151,16 +152,21 @@ public class Client implements Runnable {
         } else if (currentPlayer.getPlayerId() == myPlayerId) { // my turn 
             if (game.isPut2CollectionRound()) {
                 // TODO
+
+            } else if (game.isEndOfGame()) {
+                // displayScores(ParadeBoard.getPlayers()); -> for client to display
+                // promptForNewGame(); -> client to display
+
             } else {
                 GameRenderer.displayHandCards(currentPlayer);
                 int indexOfChosenCard = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, currentPlayer);
-                String[] messageToSendBack = {Constants.COMPLETE_TURN, indexOfChosenCard + ""};
-                sendMessage(messageToSendBack);
+                messageToSendBack = new String[] {Constants.COMPLETE_TURN, indexOfChosenCard + ""};
             }
-            
         } else { // not the player turn
             System.out.println("Not Your Turn.");
-        }        
+            return;
+        }
+        sendMessage(messageToSendBack);
     }
 
     private void sendMessage(String msg[]) {
