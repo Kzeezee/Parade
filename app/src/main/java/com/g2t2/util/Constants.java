@@ -59,6 +59,7 @@ public class Constants {
     // Message To Indicate Things
     public static final String COMPLETE_TURN = "$complete_turn$";
     public static final String PUT_TO_COLLECTION = "$put_to_collection$";
+    public static final String REFRESH_PAGE = "$refresh_page$";
 
     // ERRORS
     public static final String INVALID_GAME_ID = "INVALID GAME ID";

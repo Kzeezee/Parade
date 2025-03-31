@@ -21,6 +21,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
     private String gameId;  // used to check what game the player is playing
+    private int myPlayerId; // identify the clientHandler
 
     public ClientHandler(Socket socket) {
         try {
@@ -45,8 +46,10 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         Player player = new Player(name);
         game.addPlayer(player);
         clientHandlers.get(gameId).add(this);
+        myPlayerId = player.getPlayerId();
         sendPlayer(player);
         sendGameState(game);
+        broadcastMessage(new String[] {Constants.REFRESH_PAGE});
     }
 
     private void createCPU(int numOfCPU, int difficulty) {
@@ -56,6 +59,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         game.addPlayer(cpu);
         }
         sendGameState(game);
+        // broadcastMessage(new String[] {Constants.REFRESH_PAGE});
     }
 
     private GameState findGameState(String gameId) {
@@ -175,9 +179,19 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         // System.out.println("Broadcasting GameState: " + game.getGameId());
         for (ClientHandler clientHandler : clientHandlers.get(gameId)) {
             clientHandler.sendGameState(game);
-            // System.out.println("Sending GameState to client: " + clientHandler.currentPlayer.getName());
         }
     }
+
+    // broadcoast a message to all players less the sender
+    private void broadcastMessage(String[] message) {
+        // System.out.println("Broadcasting Message");
+        for (ClientHandler clientHandler : clientHandlers.get(gameId)) {
+            if (clientHandler.myPlayerId != this.myPlayerId) {
+                // System.out.println("Sending to clientHandler: " + clientHandler.myPlayerId);
+                clientHandler.sendMessage(message);
+            }
+        }
+    } 
 
     private void sendGameState(GameState game) {
         GameState snapshot = findGameState(gameId).deepCopy(); // Create a snapshot
