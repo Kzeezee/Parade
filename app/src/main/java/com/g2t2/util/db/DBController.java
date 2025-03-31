@@ -14,6 +14,12 @@ import com.g2t2.types.PlayerProfile;
 import com.g2t2.util.Constants;
 
 public class DBController {
+    /**
+     * Retrieves all player profiles from the database and returns them as a List of
+     * PlayerProfile objects.
+     * 
+     * @return a List of PlayerProfile objects from the database
+     */
     public static List<PlayerProfile> getPlayerProfiles() {
         List<PlayerProfile> result = new ArrayList<>();
         try (Connection conn = getConnection(); Statement st = conn.createStatement();) {
@@ -31,6 +37,13 @@ public class DBController {
         return result;
     }
 
+    /**
+     * Inserts a new player profile into the database with the provided name and
+     * initializes the wins count to 0.
+     * 
+     * @param name the name of the player profile
+     * @return {@code true} if the insertion is successful, else {@code false}
+     */
     public static boolean createPlayerProfile(String name) {
         final String SQL = "INSERT INTO profile VALUES(NULL,?,?)";
         try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(SQL);) {
@@ -44,6 +57,12 @@ public class DBController {
         return false;
     }
 
+    /**
+     * Establishes and returns a connection to the database.
+     * 
+     * @return a connection to the database
+     * @throws SQLException
+     */
     private static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(Constants.DB_CONNECTION);
     }

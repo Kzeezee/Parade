@@ -17,7 +17,11 @@ import com.g2t2.types.Card;
  */
 public class Display {
 
-    // Display all stacks grouped by CardColour with two stacks per row
+    /**
+     * Displays all stacks grouped by CardColour, with two stacks per row.
+     * 
+     * @param cards the List of Card containing the stacks to be printed
+     */
     public static void displayAllStacks(List<Card> cards) {
         // Group cards by colour
         Collections.sort(cards);
@@ -36,7 +40,13 @@ public class Display {
         System.out.println(Constants.DIVIDER);
     }
 
-    // Get a single stack as a string representation (multi-line)
+    /**
+     * Returns a single stack of cards as a string representation.
+     * 
+     * @param cards             the List of Card containing the stack to be printed
+     * @param currentCardColour the colour of the stack
+     * @return a single stack of cards as a string representation
+     */
     private static String getStackAsString(List<Card> cards, CardColour currentCardColour) {
         StringBuilder stackBuilder = new StringBuilder();
         String ansiCodeString = currentCardColour.getAnsiCode();
@@ -55,7 +65,12 @@ public class Display {
         return stackBuilder.toString();
     }
 
-    // Print stacks in groups (three per row)
+    /**
+     * Prints stacks in groups (three stacks per row).
+     * 
+     * @param stackLines List of String, with each element being a string 
+     *                   representation of a single stack
+     */
     private static void printStacksInGroups(List<String> stackLines) {
         String[] emptyLines = new String[6]; // Each stack has 6 lines
         Arrays.fill(emptyLines, ""); // Initialize empty lines for padding
@@ -71,7 +86,12 @@ public class Display {
         }
     }
 
-    // get the first line of card stack
+    /**
+     * Returns the first line of a string representation of a card stack.
+     * 
+     * @param size the number of cards in the stack
+     * @return a String representing the first line of a card stack
+     */
     private static String getCardStackLine1(int size) {
         StringBuilder line = new StringBuilder(" ");
         for (int i = 0; i < size; i++) {
@@ -81,7 +101,12 @@ public class Display {
         return line.toString();
     }
 
-    // get the second line of card stack
+    /**
+     * Returns the second line of a string representation of a card stack.
+     * 
+     * @param cards the List of Card in the stack to get the second line from
+     * @return a String representing the second line of a card stack
+     */
     private static String getCardStackLine2(List<Card> cards) {
         StringBuilder line = new StringBuilder();
         for (Card card : cards) {
@@ -94,7 +119,12 @@ public class Display {
         return line.toString();
     }
 
-    // get the default line of card stack
+    /**
+     * Returns the default (third) line of a string representation of a card stack.
+     * 
+     * @param size the number of cards in the stack
+     * @return a String representing the default line of a card stack
+     */
     private static String getCardStackDefault(int size) {
         StringBuilder line = new StringBuilder();
         for (int i = 0; i < size; i++) {
@@ -104,7 +134,13 @@ public class Display {
         return line.toString();
     }
 
-    // get line 4 of card stack
+    /**
+     * Returns the fourth line of a string representation of a card stack.
+     * 
+     * @param size the number of cards in the stack
+     * @param currentCardColour the colour of the stack
+     * @return a String representing the fourth line of a card stack
+     */
     private static String getCardStackLine4(int size, CardColour currentCardColour) {
         StringBuilder line = new StringBuilder();
         for (int i = 0; i < size; i++) {
@@ -114,7 +150,13 @@ public class Display {
         return line.toString();
     }
 
-    // get line 5 of card stack
+    /**
+     * Returns the fifth line of a string representation of a card stack.
+     * 
+     * @param size the number of cards in the stack
+     * @param lastCardValue the value of the topmost card in the stack
+     * @return a String representing the fifth line of a card stack
+     */
     private static String getCardStackLine5(int size, int lastCardValue) {
         StringBuilder line = new StringBuilder();
         for (int i = 0; i < size; i++) {
@@ -129,7 +171,11 @@ public class Display {
         return line.toString();
     }
 
-    // Display all cards side by side in a compact format
+    /**
+     * Displays all cards side by side in a compact format.
+     * 
+     * @param cards the List of Card to be displayed as a string representation
+     */
     public static void displayCardsSideBySide(List<Card> cards) {
         // Generate each card as a string representation
         List<String[]> cardLines = cards.stream()
@@ -150,7 +196,14 @@ public class Display {
         System.out.println();
     }
 
-    // Generate a single card as a string array (multi-line representation)
+    /**
+     * Returns a String array representing a singular card.
+     * Index 0 = top of card
+     * Index 5 = bottom of card
+     * 
+     * @param card the card to be made into a String array
+     * @return a String array representing a singular card
+     */
     private static String[] getCardAsStringArray(Card card) {
         String[] cardLines = new String[6];
         int value = card.getValue();
@@ -176,22 +229,39 @@ public class Display {
         return cardLines;
     }
 
-    // returns colored string
+    /**
+     * Wraps the given String in blue ANSI escape codes.
+     * 
+     * @param s the String to be wrapped
+     * @return the given String in blue ANSI escape codes
+     */
     public static String colorString(String s) {
         return Constants.BLUE_ANSI + s + Constants.ANSI_RESET;
     }
 
-    // returns red colour error string
+    /**
+     * Wraps the given String in red ANSI escape codes, representing an error.
+     * 
+     * @param s the String to be wrapped
+     * @return the given String in red ANSI escape codes
+     */
     public static String errorColour(String s) {
         return Constants.RED_ANSI + s + Constants.ANSI_RESET;
     }
 
-    // print goodbye banner
+    /**
+     * Prints the goodbye banner
+     */
     public static void sayGoodBye() {
         System.out.println(Constants.GOODBYE);
     }
 
-    // prints the string character by character to mimic animation
+    /**
+     * Delays the print of the specified text by a specified number of milliseconds.
+     * 
+     * @param text the text to be printed
+     * @param delayMillis the duration of the delay in milliseconds
+     */
     public static void delayPrint(String text, long delayMillis) {
         boolean wasInterrupted = false;
     
@@ -213,6 +283,9 @@ public class Display {
         System.out.println();
     }
 
+    /**
+     * Prints the game header.
+     */    
     public static void printGameHeader() {
         Utility.clearConsoleScreen();
         System.out.println(Constants.BANNER);

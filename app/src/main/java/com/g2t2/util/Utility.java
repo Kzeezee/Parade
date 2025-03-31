@@ -18,6 +18,9 @@ public class Utility {
     //     System.out.flush();
     // }
 
+    /**
+     * Clears the console screen.
+     */
     public static void clearConsoleScreen() {
         try {
             if (System.getProperty("os.name").contains("Windows")) {
