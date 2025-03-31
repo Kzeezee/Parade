@@ -1,8 +1,9 @@
 package com.g2t2.game;
 
 import com.g2t2.types.Player;
+import com.g2t2.types.PlayerProfile;
 import com.g2t2.types.ScoreCalculation;
-
+import com.g2t2.db.dao.impl.PlayerProfileDaoImpl;
 import com.g2t2.game.gameUtility.GameProcessor;
 import com.g2t2.game.gameUtility.GameRenderer;
 import com.g2t2.game.gameUtility.Prompt;
@@ -37,6 +38,7 @@ public class GamePlay {
     public static void startGame(GameState game) {
         game.setHasStarted(true);
         List<Player> players = game.getPlayers();
+        System.out.println(players);
 
         // finding a random person to start the game
         int currentIdx = (int) (Math.random() * players.size());
@@ -56,6 +58,11 @@ public class GamePlay {
 
         ScoreCalculation.computeScore(players);
         GameRenderer.displayScores(players);
+        // Update wins in DB for player
+        PlayerProfile pp = players.get(0).getPlayerProfile();
+        if (pp != null) {
+            new PlayerProfileDaoImpl().updatePlayerProfile(pp);
+        }
 
         Prompt.promptForNewGame();
     }

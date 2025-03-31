@@ -11,6 +11,7 @@ import com.g2t2.util.Utility;
 
 import com.g2t2.types.ParadeBoard;
 import com.g2t2.types.Player;
+import com.g2t2.types.PlayerProfile;
 import com.g2t2.types.Card;
 
 import com.g2t2.game.gameUtility.Prompt;
@@ -111,10 +112,11 @@ public class GameInit {
             } catch (InputMismatchException e) {
                 System.out.println(Display.errorColour(" ❌ Please enter a number"));
                 System.out.println();
-                sc.nextLine();
             } catch (IllegalArgumentException e) {
                 System.out.println(Display.errorColour(" ❌ Please enter a number"));
-                System.out.println();
+            } finally {
+                // Skips the enter key from nextInt();
+                sc.nextLine();
             }
         }
         // choosing difficulty level
@@ -163,8 +165,13 @@ public class GameInit {
         System.out.println(Constants.BANNER);
         Scanner sc = new Scanner(System.in);
         List<Player> players = new ArrayList<>();
-
-        for (int i = 1; i <= numOfPlayers - numOfCPU; i++) {
+        // Get first player name from player profile
+        PlayerProfile pp = StateManager.getPlayerProfile();
+        Player player = new Player(pp.getName());
+        player.setPlayerProfile(pp);
+        players.add(player); // User's player
+        // Handle rest of the local players name input
+        for (int i = 2; i <= numOfPlayers - numOfCPU; i++) {
             while (true) {
                 try {
                     System.out.print(Display.colorString(" ➢ Enter the name of player " + i + ": "));
@@ -190,6 +197,8 @@ public class GameInit {
             players.add(new Player(true, 1));
         }
 
+        System.out.println(players);
+        sc.nextLine();
         ParadeBoard.setPlayers(players);
 
         // Setting up the board

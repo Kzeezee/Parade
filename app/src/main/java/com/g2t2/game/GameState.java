@@ -72,6 +72,7 @@ public class GameState implements Serializable { // to allow it to be sent over
     public void addPlayer(Player player) {
         numOfPlayers++;
         players.add(player);
+        System.out.println(player.getPlayerProfile());
 
         if (numOfPlayers == 1) { // first person becomes gameMaster
             gameMaster = players.get(0);

@@ -19,6 +19,7 @@ public class Player implements Serializable {
     private int score;
     private boolean isCPU = false;
     private int difficulty;
+    private PlayerProfile playerProfile;
 
     public Player(String name) {
         playerId = counter++;
@@ -77,6 +78,14 @@ public class Player implements Serializable {
     
     public int getDifficulty() {
         return difficulty;
+    }
+
+    public PlayerProfile getPlayerProfile() {
+        return playerProfile;
+    }
+
+    public void setPlayerProfile(PlayerProfile playerProfile) {
+        this.playerProfile = playerProfile;
     }
 
     @Override

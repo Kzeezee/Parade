@@ -13,6 +13,6 @@ public interface Query {
     public static final String UPDATE_PLAYER_PROFILE = "UPDATE profile SET"
                 + " name = ?,"
                 + " wins = ?"
-                + " WHERE id = ?";
+                + " WHERE uuid = ?";
     public static final String DELETE_PLAYER_PROFILE = "DELETE FROM profile WHERE id = ?";
 }

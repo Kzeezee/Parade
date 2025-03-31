@@ -116,6 +116,7 @@ public class StartMenu {
             System.out.print(GAMEPLAY_OPTIONS);
             String s = sc.nextLine();
             System.out.print(Constants.ANSI_RESET);
+            System.out.println("Triggered here");
             try {
                 optionChosen = Integer.parseInt(s);
                 switch (optionChosen) {
@@ -137,13 +138,16 @@ public class StartMenu {
                         System.out.println(Constants.GOODBYE);
                         System.exit(0);
                     default:
-                        throw new Exception(Display.errorColour(" ❌ Invalid input"));
+                        System.out.println("Entered : " + s);
+                        throw new IllegalArgumentException(Display.errorColour(" ❌ Invalid input"));
                 }
             } catch (NumberFormatException e) {
                 Utility.clearConsoleScreen();
+                System.out.println("Number format here");
                 System.out.println(Display.errorColour(Constants.INVALID_OPTION_ERROR_MSG));
-            } catch (Exception e) {
+            } catch (IllegalArgumentException e) {
                 Utility.clearConsoleScreen();
+                System.out.println("Illegal argument here");
                 System.out.println(Display.errorColour(Constants.INVALID_OPTION_ERROR_MSG));
             }
         }

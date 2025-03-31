@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.g2t2.game.GameState;
 import com.g2t2.types.Player;
+import com.g2t2.types.PlayerProfile;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 
@@ -101,5 +102,9 @@ public class GameRenderer {
                     player.getScore());
             rank++;
         }
+
+        // Update wins on rank 1 player
+        PlayerProfile pp = sortedPlayers.get(0).getPlayerProfile();
+        pp.setWins(pp.getWins() + 1);
     }
 }

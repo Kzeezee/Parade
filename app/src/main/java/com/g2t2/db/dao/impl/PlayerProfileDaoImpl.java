@@ -37,7 +37,7 @@ public class PlayerProfileDaoImpl implements PlayerProfileDao {
         try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(Query.CREATE_PLAYER_PROFILE);) {
             String uuid = UUID.randomUUID().toString();
             ps.setString(1, uuid);
-            ps.setString(2, name); // ID first, null due to auto-increment
+            ps.setString(2, name);
             ps.setInt(3, 0); // Default to 0 wins
             ps.executeUpdate();
             return uuid;
@@ -49,9 +49,9 @@ public class PlayerProfileDaoImpl implements PlayerProfileDao {
 
     public void updatePlayerProfile(PlayerProfile pp) {
         try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(Query.UPDATE_PLAYER_PROFILE);) {
-            ps.setLong(3, pp.getID());
-            ps.setString(1, pp.getName()); // ID first, null due to auto-increment
-            ps.setInt(2, pp.getWins()); // Default to 0 wins
+            ps.setString(3, pp.getUuid());
+            ps.setString(1, pp.getName());
+            ps.setInt(2, pp.getWins());
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

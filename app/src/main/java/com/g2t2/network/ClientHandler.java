@@ -43,6 +43,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     private void createPlayer(String name) {
         GameState game = findGameState(gameId);
         Player player = new Player(name);
+        player.setPlayerProfile(StateManager.getPlayerProfile());
         game.addPlayer(player);
         clientHandlers.get(gameId).add(this);
         sendPlayer(player);
