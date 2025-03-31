@@ -72,6 +72,10 @@ public class Prompt {
                 }
                 chosenCardIndex = Integer.parseInt(chosenCardString);
 
+                if (chosenCardIndex < 1 || chosenCardIndex > 5) {
+                    throw new IndexOutOfBoundsException();
+                }
+
                 // Confirmation on card choice
                 System.out.println(Constants.ANSI_RESET + " 📌 Chosen Card Number: " + (chosenCardIndex));
                 System.out.print(Display.colorString(" ⚜ Enter 'y' to confirm or 'q' to quit ➢ "));
@@ -99,6 +103,41 @@ public class Prompt {
     }
 
     /**
+     * Prompts the player to select two cards from their hand to add to their
+     * collection.
+     *
+     * @param player The player selecting cards.
+     * @return An int[2] representing indices the selected cards from the player's hand.
+     *         int[0] -> 1st card || int[1] -> 2nd card
+     */
+    public static int[] promptToCollectTwo(Player player) {
+        int[] choosenCardsIdx = {-1 , -1};
+
+        System.out.println(" ⚜ You need to select " + Display.colorString("TWO")
+                + " cards from your hand to add to the collection.");
+        System.out.println(Constants.DIVIDER);
+
+        // addSelectedCardsToParade(player);
+        boolean isReprompting = false;
+        while (choosenCardsIdx[0] != choosenCardsIdx[1]) {
+            if (isReprompting) {
+                System.out.println(Display.errorColour(" ❌ Please choose 2 different cards!"));
+            }
+            for (int i = 0; i < 2; i++) {
+                String prompt = Display.colorString(" 📌 Which card do you want to place in the Collection?\n" +
+                        " 📌 You need to choose TWO different cards \n" +
+                        " ⚜ Card " + (i + 1) + ": ");
+                int cardIdx = Prompt.promptForCard(prompt, player);
+                choosenCardsIdx[i] = cardIdx;
+                System.out.println(Constants.DIVIDER);
+                isReprompting = true;
+            }
+        }
+        
+        return choosenCardsIdx;
+    }
+
+    /**
      * Prompts the user to decide whether they want to start a new game after the
      * current game ends.
      */
@@ -123,34 +162,6 @@ public class Prompt {
             }
         }
     }
-
-    /**
-     * Prompts the player to select two cards from their hand to add to their
-     * collection.
-     *
-     * @param player The player selecting cards.
-     * @return An int[2] representing indices the selected cards from the player's hand.
-     *         int[0] -> 1st card || int[1] -> 2nd card
-     */
-    public static int[] promptToCollectTwo(Player player) {
-        int[] choosenCardsIdx = new int[2];
-
-        System.out.println(" ⚜ You need to select " + Display.colorString("TWO")
-                + " cards from your hand to add to the collection.");
-        System.out.println(Constants.DIVIDER);
-
-        // addSelectedCardsToParade(player);
-        for (int i = 0; i < 2; i++) {
-            String prompt = Display.colorString(" 📌 Which card do you want to place in the Collection?\n" +
-                    " 📌 You need to choose TWO cards \n" +
-                    " ⚜ Card " + (i + 1) + ": ");
-            int cardIdx = Prompt.promptForCard(prompt, player);
-            choosenCardsIdx[i] = cardIdx;
-            System.out.println(Constants.DIVIDER);
-        }
-        return choosenCardsIdx;
-    }
-
 
     /**
      * Prompts the player for the details of the CPUs that they want to add.
