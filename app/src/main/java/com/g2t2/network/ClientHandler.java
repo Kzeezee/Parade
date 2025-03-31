@@ -60,7 +60,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         game.addPlayer(cpu);
         }
         sendGameState(game);
-        // broadcastMessage(new String[] {Constants.REFRESH_PAGE});
+        broadcastMessage(new String[] {Constants.REFRESH_PAGE});
     }
 
     private GameState findGameState(String gameId) {
