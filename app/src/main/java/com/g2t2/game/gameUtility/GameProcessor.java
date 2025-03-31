@@ -142,37 +142,32 @@ public class GameProcessor {
     public static void putTwoToCollections(Player player, GameState game) {
         GameRenderer.displayRoundInformation(game);
 
-        int[] cardIdxList = null;
+        int[] cardIdxToAddToCollection = null;
         if (player.getCPU()) {
             Display.delayPrint(" 📌 Player " + Display.colorString(player.getName())
                     + " is choosing their cards.", 30);
-            cardIdxList = CPUGameAction.CPUSelectTwoToCollections(player, game);
+            cardIdxToAddToCollection = CPUGameAction.CPUSelectTwoToCollections(player, game);
         } else {
             System.out.println(" ⚜ You need to select " + Display.colorString("TWO")
                     + " cards from your hand to add to the collection.");
 
-            cardIdxList = Prompt.promptToCollectTwo(player);
+            cardIdxToAddToCollection = Prompt.promptToCollectTwo(player);
         }
         System.out.println(Constants.DIVIDER);
-        
-        // temporary fix
-        List<Integer> tempArrayList = new ArrayList<>();
-        for (int i = 0; i < cardIdxList.length; i++) {
-            tempArrayList.add(cardIdxList[i]);
-        }
-        processCardChosenToCollection(tempArrayList, player);
+        processCardChosenToCollection(cardIdxToAddToCollection, player);
     }
 
     /**
-     * Processes a list of selected cards and adds them to a player's collection.
+     * Processes the 2 cards selected by the player in the put 2 cards to collection phase
+     * and adds them to a player's collection.
      *
-     * @param cardIdxList A list of indices representing selected cards from the
-     *                    hand.
+     * @param cardIdxList An int[] containting of indices representing selected cards from the hand.
+     *                    
      * @param player      The player whose collection is being updated.
      */
-    private static void processCardChosenToCollection(List<Integer> cardIdxList, Player player) {
-        for (Integer idx : cardIdxList) {
-            Card card = player.getCardsOnHand().get(idx);
+    public static void processCardChosenToCollection(int[] cardIdxToAddToCollection, Player player) {
+        Card[] cards = {player.getCardsOnHand().get(cardIdxToAddToCollection[0]), player.getCardsOnHand().get(cardIdxToAddToCollection[1])};
+        for (Card card : cards) {
             player.getCardsOnHand().remove(card);
             player.getCardsInCollection().add(card);
         }

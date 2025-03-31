@@ -160,38 +160,45 @@ public class Client implements Runnable {
 
         GameRenderer.displayRoundInformation(game);
         GameRenderer.displayHandCards(findMyPlayer(game));
-        if (currentPlayer.getCPU()) { // CPU turn
-            CPUGameAction.displayCPUTurnAction(currentPlayer);
-
-            if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
-                if (game.isPut2CollectionRound()) {
+        if (game.isPut2CollectionRound()) { // put 2 to collection round
+            messageToSendBack[0] = Constants.PUT_TO_COLLECTION;
+            if (currentPlayer.getCPU()) { // CPU turn
+                CPUGameAction.displayCPUTurnAction(currentPlayer);
+                if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
                     int[] indexOfChosenCard = CPUGameAction.CPUSelectTwoToCollections(currentPlayer, game);
                     messageToSendBack[1] = indexOfChosenCard[0] + "";
                     messageToSendBack[2] = indexOfChosenCard[1] + "";
-                } else {
-                    int indexOfChosenCard = CPUGameAction.chooseCPUCardIdx(currentPlayer, game);
-                    messageToSendBack[1] = indexOfChosenCard + "";
+                } else { // the rest don't do anything
+                    return; 
                 }
-                sendMessage(messageToSendBack);
+            } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
+                    int[] indexOfChosenCard = Prompt.promptToCollectTwo(currentPlayer);
+                    messageToSendBack[1] = indexOfChosenCard[0] + "";
+                    messageToSendBack[2] = indexOfChosenCard[1] + ""; 
+            } else { // not your turn
+                System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
+                return;
             }
-            return;
-        }
-            
-        if (currentPlayer.getPlayerId() == myPlayerId) { // my turn 
 
-            if (game.isPut2CollectionRound()) {
-                int[] indexOfChosenCard = Prompt.promptToCollectTwo(currentPlayer);
-                messageToSendBack[1] = indexOfChosenCard[0] + "";
-                messageToSendBack[2] = indexOfChosenCard[1] + "";           
-            } else {
+        } else { // normal rounds
+            if (currentPlayer.getCPU()) { // CPU turn
+                CPUGameAction.displayCPUTurnAction(currentPlayer);
+                if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
+                    int indexOfChosenCard = CPUGameAction.chooseCPUCardIdx(currentPlayer, game, -1);
+                    messageToSendBack[1] = indexOfChosenCard + "";
+                } else { // the rest don't do anything
+                    return;
+                }
+            } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
                 int indexOfChosenCard = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, currentPlayer);
-                messageToSendBack[1] = indexOfChosenCard + "";
+                messageToSendBack[1] = indexOfChosenCard + ""; 
+            } else { // not your turn
+                System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
+                return;
             }
-            sendMessage(messageToSendBack);
-
-        } else { // not the player turn
-            System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
         }
+
+        sendMessage(messageToSendBack);
     }
 
     private void sendMessage(String msg[]) {
