@@ -63,7 +63,7 @@ public class CPUGameAction {
     private static int chooseCPUCardIdx(Player player, GameState game) {
         int numOfCards = player.getCardsOnHand().size();
         switch (player.getDifficulty()) {
-            // level 1 difficulty: random
+            // level 1 difficulty: picks a random card from its hand
             case 1:
                 return (int) (Math.random() * numOfCards);
             // level 2 difficulty: picks the card that gives back the lowest number of cards
@@ -81,7 +81,7 @@ public class CPUGameAction {
 
     /**
      * Chooses a card for medium-level difficulty based on minimizing collectible
-     * cards count.
+     * cards count. If it is the last round, it picks a random card from its hand.
      *
      * @param player the CPU player choosing a card
      * @param game   the current game state
@@ -89,6 +89,11 @@ public class CPUGameAction {
      */
     private static int chooseMediumDifficultyCard(Player player, GameState game) {
         List<Card> hand = player.getCardsOnHand();
+        
+        if (game.isLastRound()) {
+            return (int) (Math.random() * hand.size());
+        }
+
         int lowestNumCollect = Integer.MAX_VALUE;
         // Card bestCard = player.getCardsOnHand().get(0);
         int bestIdx = -1;
@@ -105,7 +110,8 @@ public class CPUGameAction {
 
     /**
      * Chooses a card for hard-level difficulty based on minimizing total points of
-     * collectible cards.
+     * collectible cards. If it is the last round, it picks the card with the lowest
+     * value from its hand.
      *
      * @param player the CPU player choosing a card
      * @param game   the current game state
@@ -113,6 +119,21 @@ public class CPUGameAction {
      */
     private static int chooseHardDifficultyCard(Player player, GameState game) {
         List<Card> hand = player.getCardsOnHand();
+
+        if (game.isLastRound()) {
+            int lowestValue = Integer.MAX_VALUE;
+            int bestIdx = -1;
+            
+            for (int i = 0; i < hand.size(); i++) {
+                int cardValue = hand.get(i).getValue();
+                if (cardValue < lowestValue) {
+                    lowestValue = cardValue;
+                    bestIdx = i;
+                }
+            }
+            return bestIdx;
+        }
+
         int lowestPoints = Integer.MAX_VALUE;
         int bestIdx = -1;
 
