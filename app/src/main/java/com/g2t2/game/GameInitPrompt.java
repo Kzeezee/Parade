@@ -41,6 +41,7 @@ public class GameInitPrompt {
                 break;
             } catch (InputMismatchException e) {
                 System.out.println(Display.errorColour(" ❌ Invalid CPU difficulty level chosen."));
+                sc.nextLine();
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
@@ -71,6 +72,7 @@ public class GameInitPrompt {
                 break;
             } catch (InputMismatchException e) {
                 System.out.println(Display.errorColour(" ❌ Please enter a valid number"));
+                sc.nextLine();
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
@@ -106,6 +108,7 @@ public class GameInitPrompt {
                 break;
             } catch (InputMismatchException e) {
                 System.out.println(Display.errorColour(" ❌ Please enter a valid number"));
+                sc.nextLine();
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
