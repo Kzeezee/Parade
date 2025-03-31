@@ -106,6 +106,7 @@ public class Client implements Runnable {
             // TODO: enable the removal of CPUs / Players
     }
 
+    // CHANGE ALL TO RENDER PAGE FIRST
     private void activatingUserControlCommands(boolean isGameMaster, int numberOfPlayersCurrently) {
         Scanner sc = new Scanner(System.in);
         while (true) {
@@ -143,27 +144,30 @@ public class Client implements Runnable {
     }
 
     private void renderGame(GameState game) { // TODO: show available commands on top (only can use during your turn)
+        Display.printGameHeader();
         Player currentPlayer = game.getCurrentPlayer();
-        GameRenderer.displayRoundInformation(game);  
         String[] messageToSendBack = {Constants.COMPLETE_TURN, "", ""};
         // System.out.println("Number of players: " + game.getNumOfPlayers());
         // System.out.println("Number of cards left: " + game.getDeck().getCardsInDeck().size());
         // System.out.println("Player Turn: " + game.getCurrentPlayer().getName());
 
         if (game.isEndOfGame()) {
-            // displayScores(ParadeBoard.getPlayers()); -> for client to display
-            // promptForNewGame(); -> client to display
-
+            GameRenderer.displayScores(game.getPlayers());
             return;
+
+            // TODO: prompt user if they want to play again
         }
 
+        GameRenderer.displayRoundInformation(game);
+        GameRenderer.displayHandCards(findMyPlayer(game));
         if (currentPlayer.getCPU()) { // CPU turn
             CPUGameAction.displayCPUTurnAction(currentPlayer);
 
             if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
                 if (game.isPut2CollectionRound()) {
                     int[] indexOfChosenCard = CPUGameAction.CPUSelectTwoToCollections(currentPlayer, game);
-                    System.arraycopy(indexOfChosenCard, 0, messageToSendBack, 1, 2);
+                    messageToSendBack[1] = indexOfChosenCard[0] + "";
+                    messageToSendBack[2] = indexOfChosenCard[1] + "";
                 } else {
                     int indexOfChosenCard = CPUGameAction.chooseCPUCardIdx(currentPlayer, game);
                     messageToSendBack[1] = indexOfChosenCard + "";
@@ -174,11 +178,11 @@ public class Client implements Runnable {
         }
             
         if (currentPlayer.getPlayerId() == myPlayerId) { // my turn 
-            GameRenderer.displayHandCards(currentPlayer);
 
             if (game.isPut2CollectionRound()) {
                 int[] indexOfChosenCard = Prompt.promptToCollectTwo(currentPlayer);
-                System.arraycopy(indexOfChosenCard, 0, messageToSendBack, 1, 2);              
+                messageToSendBack[1] = indexOfChosenCard[0] + "";
+                messageToSendBack[2] = indexOfChosenCard[1] + "";           
             } else {
                 int indexOfChosenCard = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, currentPlayer);
                 messageToSendBack[1] = indexOfChosenCard + "";
@@ -198,7 +202,16 @@ public class Client implements Runnable {
             closeEverything(socket, objectInputStream, objectOutputStream);
         } 
     }
-    
+
+    private Player findMyPlayer(GameState game) {
+        for (Player player : game.getPlayers()) {
+            if (player.getPlayerId() == myPlayerId) {
+                return player;
+            }
+        }
+        return null;
+    }
+     
     private void listenForMessage() {
         while (socket.isConnected()) {
             try {

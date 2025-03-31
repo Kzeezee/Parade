@@ -125,6 +125,6 @@ public class CPUGameAction {
     // temp things for networking
     public static void displayCPUTurnAction(Player player) {
         Display.delayPrint(" 📌 Player " + Display.colorString(player.getName())
-                + " is choosing their cards.", 30);
+                + " is choosing their cards.", 5);
     }
 }

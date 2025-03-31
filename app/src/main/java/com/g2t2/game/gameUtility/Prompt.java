@@ -72,7 +72,7 @@ public class Prompt {
                 }
                 chosenCardIndex = Integer.parseInt(chosenCardString);
 
-                if (chosenCardIndex < 1 || chosenCardIndex > 5) {
+                if (chosenCardIndex < 1 || chosenCardIndex > numOfCards) {
                     throw new IndexOutOfBoundsException();
                 }
 
@@ -119,9 +119,10 @@ public class Prompt {
 
         // addSelectedCardsToParade(player);
         boolean isReprompting = false;
-        while (choosenCardsIdx[0] != choosenCardsIdx[1]) {
+        while (choosenCardsIdx[0] == choosenCardsIdx[1]) {
             if (isReprompting) {
                 System.out.println(Display.errorColour(" ❌ Please choose 2 different cards!"));
+                System.out.println();
             }
             for (int i = 0; i < 2; i++) {
                 String prompt = Display.colorString(" 📌 Which card do you want to place in the Collection?\n" +
@@ -130,8 +131,8 @@ public class Prompt {
                 int cardIdx = Prompt.promptForCard(prompt, player);
                 choosenCardsIdx[i] = cardIdx;
                 System.out.println(Constants.DIVIDER);
-                isReprompting = true;
             }
+            isReprompting = true;
         }
         
         return choosenCardsIdx;

@@ -20,7 +20,6 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     private Socket socket;
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
-    private Player currentPlayer; // to know which player sent back the message
     private String gameId;  // used to check what game the player is playing
 
     public ClientHandler(Socket socket) {
@@ -44,7 +43,6 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     private void createPlayer(String name) {
         GameState game = findGameState(gameId);
         Player player = new Player(name);
-        currentPlayer = player;
         game.addPlayer(player);
         clientHandlers.get(gameId).add(this);
         sendPlayer(player);
@@ -77,25 +75,34 @@ public class ClientHandler implements Runnable { // allows instances to be execu
 
     private void processTurn(String[] indexOfChosenCard) {
         GameState game = findGameState(gameId);
+        Player playerThatJustPlayed = game.getCurrentPlayer();
+        System.out.println("current player: " + playerThatJustPlayed.getName());
         int idx = 1; // because index 0 is the command
-        while (!indexOfChosenCard[idx].equals("")) { // go through all available indices (blanks are pre-filled with "")
+        while (idx < indexOfChosenCard.length && !indexOfChosenCard[idx].equals("")) { // go through all available indices (blanks are pre-filled with "")
             int cardIndex = Integer.parseInt(indexOfChosenCard[idx]);
-            GameProcessor.processPlayerTurn(cardIndex, currentPlayer, game);
+            GameProcessor.processPlayerTurn(cardIndex, playerThatJustPlayed, game);
             idx++;
         }
-        game.passTurnToNextPlayer();
 
-        // go to score calculation
-        if (game.isPut2CollectionRound() && currentPlayer.equals(game.getPlayerWhoStartFinalRound())) { 
+        game.passTurnToNextPlayer();
+        Player nextPlayer = game.getCurrentPlayer();
+        System.out.println("next player: " + nextPlayer.getName());
+        
+        if (game.isPut2CollectionRound() && nextPlayer.equals(game.getPlayerWhoStartFinalRound())) { // go to score calculation
             game.setEndOfGame(true);
             ScoreCalculation.computeScore(game.getPlayers());
+            System.out.println();
 
-        } else if (game.isLastRound() && currentPlayer.equals(game.getPlayerWhoStartFinalRound())) { // everyone took 1 turn, go to put cards in collection phase
+        } else if (game.isLastRound() && nextPlayer.equals(game.getPlayerWhoStartFinalRound())) { // everyone took 1 turn, go to put cards in collection phase
             game.setPut2CollectionRound(true);
+            System.out.println("Go to put 2 collection round");
+            System.out.println();
 
-        } else if (ScoreCalculation.meetsGameEndCondition(currentPlayer, game.getDeck())) { // go to last round
+        } else if (!game.isLastRound() && ScoreCalculation.meetsGameEndCondition(playerThatJustPlayed, game.getDeck())) { // go to last round
             game.setLastRound(true);
-            game.setPlayerWhoStartFinalRound(currentPlayer);
+            game.setPlayerWhoStartFinalRound(nextPlayer);
+            System.out.println("person that started final round: " + game.getPlayerWhoStartFinalRound().getName());
+            System.out.println();
         } 
         broadcastGameStatus(game);
     }

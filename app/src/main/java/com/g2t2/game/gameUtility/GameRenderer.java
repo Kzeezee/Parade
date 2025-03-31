@@ -29,12 +29,14 @@ public class GameRenderer {
      */
     public static void displayRoundInformation(GameState game) { // show everything that everyone can see (no player's
                                                                  // hand)
-        Display.printGameHeader();
         displayCollections(game);
         displayParade(game);
         game.printNumOfCardsLeft();
         game.printPlayerTurn();
-        if (game.isLastRound()) {
+
+        if (game.isPut2CollectionRound()) { // to rename HAHAHA game prompt
+            System.out.println(" ⚜ " + Display.colorString(" 📌 Put 2 To Collection Round 📌 ") + Constants.ANSI_RESET);
+        } else if (game.isLastRound()) {
             System.out.println(" ⚜ " + Display.colorString(" 📌 LAST ROUND 📌 ") + Constants.ANSI_RESET);
         }
         System.out.println(Constants.DIVIDER);
