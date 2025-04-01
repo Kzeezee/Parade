@@ -188,7 +188,11 @@ public class Client implements Runnable {
                     return; 
                 }
             } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
-                    int[] indexOfChosenCard = Prompt.promptToCollectTwo(currentPlayer);
+                    String[] indexOfChosenCard = Prompt.promptToCollectTwo(currentPlayer);
+                    if (indexOfChosenCard[0].equals(Constants.LEAVE_GAME)) {
+                        sendMessage(Constants.LEAVE_GAME);
+                        return;
+                    }
                     messageToSendBack[1] = indexOfChosenCard[0] + "";
                     messageToSendBack[2] = indexOfChosenCard[1] + ""; 
             } else { // not your turn
@@ -207,6 +211,10 @@ public class Client implements Runnable {
                 }
             } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
                 int indexOfChosenCard = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, currentPlayer);
+                if (indexOfChosenCard.equals(Constants.LEAVE_GAME)) {
+                    sendMessage(Constants.LEAVE_GAME);
+                    return;
+                }
                 messageToSendBack[1] = indexOfChosenCard + ""; 
             } else { // not your turn
                 System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
