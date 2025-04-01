@@ -1,4 +1,4 @@
-package com.g2t2.game.GameUtility;
+package com.g2t2.game.gameutility;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -52,12 +52,11 @@ public class Prompt {
     /**
      * Prompts the player to select a card from their hand.
      *
-     * @param prompt the message displayed to the player
-     * @param player the player selecting a card
-     * @return the index of the selected card in the player's hand
-     */
+     * @param prompt The message displayed to the player.
+     * @param player The player selecting a card.
+     * @return The index of the selected card in the player's hand.
+     */ 
     public static int promptForCard(String prompt, Player player) {
-        // Card chosenCard = null;
         int chosenCardIndex = 0;
         Scanner sc = new Scanner(System.in);
         int numOfCards = player.getCardsOnHand().size();
@@ -72,6 +71,10 @@ public class Prompt {
                     System.exit(0);
                 }
                 chosenCardIndex = Integer.parseInt(chosenCardString);
+
+                if (chosenCardIndex < 1 || chosenCardIndex > numOfCards) {
+                    throw new IndexOutOfBoundsException();
+                }
 
                 // Confirmation on card choice
                 System.out.println(Constants.ANSI_RESET + " 📌 Chosen Card Number: " + (chosenCardIndex));
@@ -97,6 +100,42 @@ public class Prompt {
             }
         }
         return chosenCardIndex - 1;
+    }
+
+    /**
+     * Prompts the player to select two cards from their hand to add to their
+     * collection.
+     *
+     * @param player The player selecting cards.
+     * @return An int[2] representing indices the selected cards from the player's hand.
+     *         int[0] -> 1st card || int[1] -> 2nd card
+     */
+    public static int[] promptToCollectTwo(Player player) {
+        int[] choosenCardsIdx = {-1 , -1};
+
+        System.out.println(" ⚜ You need to select " + Display.colorString("TWO")
+                + " cards from your hand to add to the collection.");
+        System.out.println(Constants.DIVIDER);
+
+        // addSelectedCardsToParade(player);
+        boolean isReprompting = false;
+        while (choosenCardsIdx[0] == choosenCardsIdx[1]) {
+            if (isReprompting) {
+                System.out.println(Display.errorColour(" ❌ Please choose 2 different cards!"));
+                System.out.println();
+            }
+            for (int i = 0; i < 2; i++) {
+                String prompt = Display.colorString(" 📌 Which card do you want to place in the Collection?\n" +
+                        " 📌 You need to choose TWO different cards \n" +
+                        " ⚜ Card " + (i + 1) + ": ");
+                int cardIdx = Prompt.promptForCard(prompt, player);
+                choosenCardsIdx[i] = cardIdx;
+                System.out.println(Constants.DIVIDER);
+            }
+            isReprompting = true;
+        }
+        
+        return choosenCardsIdx;
     }
 
     /**
@@ -126,31 +165,63 @@ public class Prompt {
     }
 
     /**
-     * Prompts the player to select two cards from their hand to add to their
-     * collection.
-     *
-     * @param player the player selecting cards
-     * @param game   the current game state
-     * @return a list of indices representing the selected cards from the player's
-     *         hand
-     */
-    public static List<Integer> promptToCollectTwo(Player player, GameState game) {
-        List<Integer> cardIdxList = new ArrayList<>();
-        GameRenderer.displayRoundInformation(game);
-
-        System.out.println(" ⚜ You need to select " + Display.colorString("TWO")
-                + " cards from your hand to add to the collection.");
-        System.out.println(Constants.DIVIDER);
-
-        // addSelectedCardsToParade(player);
-        for (int i = 0; i < 2; i++) {
-            String prompt = Display.colorString(" 📌 Which card do you want to place in the Collection?\n" +
-                    " 📌 You need to choose TWO cards \n" +
-                    " ⚜ Card " + (i + 1) + " :");
-            int cardIdx = Prompt.promptForCard(prompt, player);
-            cardIdxList.add(cardIdx);
-            System.out.println(Constants.DIVIDER);
+     * Prompts the player for the details of the CPUs that they want to add.
+     * Details contains: "number of CPUs" and "Difficulty Level"
+     * 
+     * @param numOfPlayers Number of players currently playing the game
+     * @return A String array that represents user's selection of the CPU information.
+     *         Index 0 -> Number of CPU to add
+     *         Index 1 -> Difficulty Level
+     */ // MAY CONVERT TO INT[]
+    public static String[] promptForCPUDetails(int numOfPlayers) {
+        Scanner sc = new Scanner(System.in);
+        int maxNumOfCPU = 6 -numOfPlayers;
+        int numOfCPU = 0;
+        while (true) {
+            try {        
+                System.out.println(" 📌 How many CPU do you want to add?"); 
+                System.out.print(Display.colorString(" ➢ Enter a number (max = " + maxNumOfCPU + "): "));
+                numOfCPU = sc.nextInt();
+                if (numOfCPU < 0 || numOfCPU > maxNumOfCPU) {
+                    throw new IllegalArgumentException(Display.errorColour(" ❌ Please enter a number between 0 to " 
+                    + maxNumOfCPU + ". Maximum number of players = 6"));
+                }
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println(Display.errorColour(" ❌ Please enter a number"));
+                System.out.println();
+                sc.nextLine();
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                System.out.println();
+            }
         }
-        return cardIdxList;
+
+        if (numOfCPU == 0) {
+            return null;
+        }
+        
+        int difficulty = 0;
+        while (true) {
+            try {
+                System.out.print(Constants.ANSI_RESET);
+                System.out.println(Constants.DIVIDER);
+                System.out.println(Prompt.GAME_DIFFICULTY_OPTIONS);
+                difficulty = sc.nextInt();
+                System.out.print(Constants.ANSI_RESET);
+                if (difficulty < 1 || difficulty > 3) {
+                    throw new IllegalArgumentException(Display.errorColour(" ❌ Please enter a number between 1 to 3"));
+                }
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println(Display.errorColour(" ❌ Please enter a number"));
+                System.out.println();
+                sc.nextLine();
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                System.out.println();
+            }
+        }
+        return new String[] {"" + numOfCPU, "" + difficulty};
     }
 }

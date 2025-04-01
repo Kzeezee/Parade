@@ -4,9 +4,9 @@ import com.g2t2.types.Player;
 import com.g2t2.types.PlayerProfile;
 import com.g2t2.types.ScoreCalculation;
 import com.g2t2.db.dao.impl.PlayerProfileDaoImpl;
-import com.g2t2.game.gameUtility.GameProcessor;
-import com.g2t2.game.gameUtility.GameRenderer;
-import com.g2t2.game.gameUtility.Prompt;
+import com.g2t2.game.gameutility.GameProcessor;
+import com.g2t2.game.gameutility.GameRenderer;
+import com.g2t2.game.gameutility.Prompt;
 
 import java.util.List;
 

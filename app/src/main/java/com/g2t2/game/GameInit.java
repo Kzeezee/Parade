@@ -12,9 +12,8 @@ import com.g2t2.util.Utility;
 import com.g2t2.types.ParadeBoard;
 import com.g2t2.types.Player;
 import com.g2t2.types.PlayerProfile;
+import com.g2t2.game.gameutility.Prompt;
 import com.g2t2.types.Card;
-
-import com.g2t2.game.gameUtility.Prompt;
 
 /**
  * Class responsible for initializing the game settings, players, and parade

@@ -10,9 +10,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.g2t2.game.GameState;
 import com.g2t2.game.StartMenu;
-import com.g2t2.game.gameUtility.CPUGameAction;
-import com.g2t2.game.gameUtility.GameRenderer;
-import com.g2t2.game.gameUtility.Prompt;
+import com.g2t2.game.gameutility.CPUGameAction;
+import com.g2t2.game.gameutility.GameRenderer;
+import com.g2t2.game.gameutility.Prompt;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
