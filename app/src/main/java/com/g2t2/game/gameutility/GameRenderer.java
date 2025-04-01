@@ -1,4 +1,4 @@
-package com.g2t2.game.GameUtility;
+package com.g2t2.game.gameutility;
 
 import java.util.Comparator;
 import java.util.List;

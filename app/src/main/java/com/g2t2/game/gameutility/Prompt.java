@@ -1,4 +1,4 @@
-package com.g2t2.game.gameUtility;
+package com.g2t2.game.gameutility;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
