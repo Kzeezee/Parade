@@ -175,7 +175,7 @@ public class Prompt {
      */ // MAY CONVERT TO INT[]
     public static String[] promptForCPUDetails(int numOfPlayers) {
         Scanner sc = new Scanner(System.in);
-        int maxNumOfCPU = 6 -numOfPlayers;
+        int maxNumOfCPU = 6 - numOfPlayers;
         int numOfCPU = 0;
         while (true) {
             try {        
