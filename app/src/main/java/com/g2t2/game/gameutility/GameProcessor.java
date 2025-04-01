@@ -47,13 +47,14 @@ public class GameProcessor {
         processCardChosenToPutToParade(cardIdx, player, game);
     }
 
-    /**
-     * Handles a CPU player's turn.
+       /**
+     * Update the game based on what the user have done
      *
-     * @param player the CPU player
-     * @param game   the current game state
+     * @param cardIdx The index of the chosen card
+     * @param player The player that completed the turn
+     * @param game   The current game state.
      */
-    protected static void processCardChosenToPutToParade(int cardIdx, Player player, GameState game) {
+    public static void processPlayerTurn(int cardIdx, Player player, GameState game) {
         Card chosenCard = player.getCardsOnHand().get(cardIdx);
         player.getCardsOnHand().remove(chosenCard);
 
