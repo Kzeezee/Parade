@@ -56,21 +56,22 @@ public class Prompt {
      * @param player The player selecting a card.
      * @return The index of the selected card in the player's hand.
      */ 
-    public static int promptForCard(String prompt, Player player) {
-        int chosenCardIndex = 0;
+    public static String promptForCard(String prompt, Player player) {
+        String chosenCardString = 0;
         Scanner sc = new Scanner(System.in);
         int numOfCards = player.getCardsOnHand().size();
         while (true) {
             try {
                 System.out.println(prompt);
                 System.out.print(
-                        Display.colorString(" ⚜ Choose card number (1 to " + numOfCards + ") or 'q' to quit ➢ "));
-                String chosenCardString = sc.nextLine();
-                if (chosenCardString.equalsIgnoreCase("q")) {
-                    Display.sayGoodBye();
-                    System.exit(0);
+                        Display.colorString(" ⚜ Choose card number (1 to " + numOfCards + ") ➢ "));
+                chosenCardString = sc.nextLine();
+
+                if (chosenCardString.equals(Constant.LEAVE_GAME)) {
+                    break;
                 }
-                chosenCardIndex = Integer.parseInt(chosenCardString);
+
+                int chosenCardIndex = Integer.parseInt(chosenCardString);
 
                 if (chosenCardIndex < 1 || chosenCardIndex > numOfCards) {
                     throw new IndexOutOfBoundsException();
@@ -78,7 +79,7 @@ public class Prompt {
 
                 // Confirmation on card choice
                 System.out.println(Constants.ANSI_RESET + " 📌 Chosen Card Number: " + (chosenCardIndex));
-                System.out.print(Display.colorString(" ⚜ Enter 'y' to confirm or 'q' to quit ➢ "));
+                System.out.print(Display.colorString(" ⚜ Enter 'y' to confirm ➢ "));
 
                 String confirmation = sc.nextLine();
                 if (confirmation.length() > 1 || !Character.isLetter(confirmation.charAt(0))
@@ -87,6 +88,7 @@ public class Prompt {
                     continue;
 
                 }
+                chosenCardString = chosenCardString - 1 + "";
                 break;
             } catch (InputMismatchException e) {
                 System.out.println(Display.errorColour(" ❌ Please input a number"));
@@ -99,7 +101,7 @@ public class Prompt {
                 System.out.println();
             }
         }
-        return chosenCardIndex - 1;
+        return chosenCardString;
     }
 
     /**
@@ -110,16 +112,15 @@ public class Prompt {
      * @return An int[2] representing indices the selected cards from the player's hand.
      *         int[0] -> 1st card || int[1] -> 2nd card
      */
-    public static int[] promptToCollectTwo(Player player) {
-        int[] choosenCardsIdx = {-1 , -1};
+    public static String[] promptToCollectTwo(Player player) {
+        String[] choosenCardsIdx = {"-1" , "-1"};
 
         System.out.println(" ⚜ You need to select " + Display.colorString("TWO")
                 + " cards from your hand to add to the collection.");
         System.out.println(Constants.DIVIDER);
 
-        // addSelectedCardsToParade(player);
         boolean isReprompting = false;
-        while (choosenCardsIdx[0] == choosenCardsIdx[1]) {
+        while (choosenCardsIdx[0].equals(choosenCardsIdx[1])) {
             if (isReprompting) {
                 System.out.println(Display.errorColour(" ❌ Please choose 2 different cards!"));
                 System.out.println();
@@ -128,7 +129,11 @@ public class Prompt {
                 String prompt = Display.colorString(" 📌 Which card do you want to place in the Collection?\n" +
                         " 📌 You need to choose TWO different cards \n" +
                         " ⚜ Card " + (i + 1) + ": ");
-                int cardIdx = Prompt.promptForCard(prompt, player);
+                String cardIdx = Prompt.promptForCard(prompt, player);
+                if (cardIdx.equals(Constant.LEAVE_GAME)) {
+                    choosenCardsIdx = new String[] {Constants.LEAVE_GAME};
+                    break;
+                }
                 choosenCardsIdx[i] = cardIdx;
                 System.out.println(Constants.DIVIDER);
             }
