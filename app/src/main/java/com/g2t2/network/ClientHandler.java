@@ -73,6 +73,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     
     private void processPlayerLeaveGame(GameState game) {
         NetworkUtility.findMyPlayer(game, myPlayerId).setCPU(true);
+        NetworkUtility.findMyPlayer(game, myPlayerId).
         removeClientHandler();
         if (!game.setNewGameMaster()) {
             availableGames.remove(gameId);

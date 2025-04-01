@@ -50,7 +50,7 @@ public class Client implements Runnable {
             System.out.print(Display.colorString(" ➢ Enter your choice: "));
 
             String[] userChoice = {username, "", ""};
-            userChoice[0] = sc.nextLine();
+            userChoice[userChoice.length-1] = sc.nextLine();
 
             if (userChoice[userChoice.length-1].equals(Constants.CREATE_GAME)) {
                 sendMessage(userChoice); // create game
@@ -71,7 +71,7 @@ public class Client implements Runnable {
 
     private void joinGamePrompt() {
         Scanner sc = new Scanner(System.in);
-        String[] userChoice = {Constants.JOIN_GAME, "", username};
+        String[] userChoice = {username, "", Constants.JOIN_GAME};
 
         System.out.println();
         System.out.println(" 📌 To join a game, enter the gameId");
@@ -96,8 +96,7 @@ public class Client implements Runnable {
     private void printWaitingRoomCommands(boolean isGameMaster, int numberOfPlayersCurrently) {
         System.out.println("> Here are some available commands you can use <");
         // System.out.println("> To refresh the page, press the ENTER KEY");
-        // TODO: Implement LEAVE GAME
-        // System.out.println("> To leave the room, enter '" + Constants.LEAVE_GAME + "'");
+        System.out.println("> To leave the room, enter '" + Constants.LEAVE_GAME + "'");
         if (isGameMaster) { // show available GameMaster Commands
             System.out.println("--GameMaster Specific Commands--");
             if (numberOfPlayersCurrently < 6) {
@@ -147,15 +146,10 @@ public class Client implements Runnable {
                 }
             }
             // commands available to everyone
-           // if (input.equals(Constants.ENTER_KEY)) { // refresh page
-             //   sendMessage(new String[] {Constants.ENTER_KEY});
-               // break;
-                // TODO: Implement LEAVE GAME
-            // } else if (input.equals(Constants.LEAVE_GAME)) {
-            //     System.out.println("LEFT GAME");
-            //     sendMessage(new String[] {Constants.LEAVE_GAME}); 
-            //     break;
-            //} 
+            if (input.equals(Constants.LEAVE_GAME)) {
+                sendMessage(new String[] {Constants.LEAVE_GAME}); 
+                break;
+            } 
             System.out.println(Constants.INVALID_COMMAND);
         }
     }
@@ -277,7 +271,9 @@ public class Client implements Runnable {
                         needToRefreshPage = true;
 
                     } else if (command.equals(Constants.NEW_GAME)) {
+                        // temp fix
                         StartMenu.showStartMenu();
+                        gameJoiningLobby();
 
                     }
                 } else if (incomingObject instanceof Player player) {
@@ -349,31 +345,3 @@ public class Client implements Runnable {
         }
     }
 }
-
-
-// private InputStream originalIn; // To restore original System.in later
-// private PipedInputStream simulatedInput;
-// private PipedOutputStream simulatedOutput;
-
-//  // artificially insert the ENTER_KEY into client's system.in
-//  private void simulateEnterKey() {
-//     try {
-//         simulatedOutput.write((Constants.ENTER_KEY + "\n").getBytes());
-//         simulatedOutput.flush();
-//     } catch (IOException e) {
-//         e.printStackTrace();
-//     }
-// }
-
-// private void overrideSystemIn() throws IOException {
-//     originalIn = System.in; // Save original System.in
-//     simulatedInput = new PipedInputStream();
-//     simulatedOutput = new PipedOutputStream(simulatedInput);
-//     System.setIn(simulatedInput); // Override System.in
-// }
-
-// private void restoreSystemIn() throws IOException {
-//     System.setIn(originalIn); // Restore original System.in
-//     simulatedIn.close();
-//     simulatedOut.close();
-// }

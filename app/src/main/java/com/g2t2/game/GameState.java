@@ -58,7 +58,7 @@ public class GameState implements Serializable { // to allow it to be sent over
         Random random = new Random();
         String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         StringBuilder randomPart = new StringBuilder();
-        for (int i = 0; i < 4; i++) { // Generate 4 random characters
+        for (int i = 0; i < 2; i++) { // Generate 2 random characters
             randomPart.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
         }
         return "G" + timestamp + "-" + randomPart; // Format: G<timestamp>-<random>
