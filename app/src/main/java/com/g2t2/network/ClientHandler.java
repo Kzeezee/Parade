@@ -8,6 +8,7 @@ import java.util.*;
 
 import com.g2t2.game.*;
 import com.g2t2.game.gameutility.*;
+import com.g2t2.network.networkUtility.NetworkUtility;
 import com.g2t2.util.*;
 import com.g2t2.types.*;
 
@@ -69,7 +70,25 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         }
         return null;
     }
+
+    private void processPlayerLeaveLobby() {
+        GameState game = NetworkUtility.findGameState(gameId, availableGames);
+        game.removePlayer(NetworkUtility.findMyPlayer(game, myPlayerId));
+        removeClientHandler();
+        if (game.getNumOfPlayers() == 1 || !game.setNewGameMaster()) {
+            availableGames.remove(gameId);
+        }
+    }
     
+    private void processPlayerLeaveGame() {
+        GameState game = NetworkUtility.findGameState(gameId, availableGames);
+        NetworkUtility.findMyPlayer(game, myPlayerId).setCPU(true);
+        removeClientHandler();
+        if (!game.setNewGameMaster()) {
+            availableGames.remove(gameId);
+        }
+    }
+
     private void startGame() {
         GameState game = findGameState(gameId);
         game.giveOutInitialCards();
@@ -152,6 +171,15 @@ public class ClientHandler implements Runnable { // allows instances to be execu
 
                     } else if (command.equals(Constants.START_GAME)) { // start game
                         startGame();
+
+                    } else if (command.equals(Constants.LEAVE_GAME)) { // leave game
+                        GameState game = NetworkUtility.findGameState(gameId, availableGames);
+                        if (game.getHasStarted()) {
+
+                        } else { // leave from lobby
+                            processPlayerLeaveLobby();
+                        }
+                        sendMessage(new String[] {Constants.NEW_GAME});
 
                     } else if (command.equals(Constants.COMPLETE_TURN)) { // player finish his turn
                         processTurn(messageToProcess.getMessage());

@@ -274,6 +274,10 @@ public class Client implements Runnable {
 
                     } else if (command.equals(Constants.REFRESH_PAGE)) {
                         needToRefreshPage = true;
+
+                    } else if (command.equals(Constants.NEW_GAME)) {
+                        StartMenu.showStartMenu();
+                        
                     }
                 } else if (incomingObject instanceof Player player) {
                     myPlayerId = player.getPlayerId();

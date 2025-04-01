@@ -79,6 +79,11 @@ public class GameState implements Serializable { // to allow it to be sent over
         }
     }
 
+    public void removePlayer(Player player) {
+        players.remove(player);
+        numOfPlayers--;
+    }
+
     /**
      * Retrieves a list of all players in the game.
      *
@@ -123,9 +128,17 @@ public class GameState implements Serializable { // to allow it to be sent over
         return gameMaster;
     }
 
-    // public void setGameMaster(Player gameMaster) {
-    // this.gameMaster = gameMaster;
-    // }
+    // make sure the old gameMaster is out from playerList
+    public boolean setNewGameMaster() {
+        for (Player player : players) {
+            if (!player.getCPU()) {
+                gameMaster = player;
+                return true;
+            }
+        }
+        return false
+    }
+
     public Player getPlayerWhoStartFinalRound() {
         return playerWhoStartFinalRound;
     }

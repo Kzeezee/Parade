@@ -141,6 +141,10 @@ public class Player implements Serializable {
         return isCPU;
     }
 
+    public void setCPU(isCPU) {
+        this.isCPU = isCPU;
+    }
+
     public PlayerProfile getPlayerProfile() {
         return playerProfile;
     }
