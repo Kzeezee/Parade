@@ -24,6 +24,7 @@ public class Client implements Runnable {
     private ObjectInputStream objectInputStream;
     private final BlockingQueue<Runnable> mainThreadTasks = new LinkedBlockingQueue<>();
     private static final Runnable CLOSE_MAIN_THREAD = () -> {}; // Empty task to signal termination
+    private volatile boolean needToRefreshPage = false;
     private boolean isInGame = false;
     private String username;
     private int myPlayerId; // track player
@@ -112,19 +113,35 @@ public class Client implements Runnable {
         while (true) {
             System.out.print(Display.colorString(" ➢ Enter command: "));
             String input = sc.nextLine();
-            if (isGameMaster) { // commands available to gameMaster
-                if (numberOfPlayersCurrently < 6 && input.equals(Constants.ADD_CPU)) {
-                    String[] CPUInformation = {Constants.ADD_CPU, "", ""};
-                    String[] userInput = Prompt.promptForCPUDetails(numberOfPlayersCurrently);
-                    System.arraycopy(userInput, 0, CPUInformation, 1, 2);
 
-                    if (CPUInformation == null) { // user input 0 CPU
-                        System.out.println("> No CPU added");
+            if (needToRefreshPage) { // someone joins
+                needToRefreshPage = false;
+                sendMessage(new String[] {Constants.ENTER_KEY});
+                System.out.println("📌 There is an update, refreshing page");
+                threadSleep(1000);
+                break;
+            }
+
+            if (isGameMaster) { // commands available to gameMaster
+                if (input.equals(Constants.ADD_CPU)) {
+                    if (numberOfPlayersCurrently < 6) {
+                        String[] CPUInformation = {Constants.ADD_CPU, "", ""};
+                        String[] userInput = Prompt.promptForCPUDetails(numberOfPlayersCurrently);
+                        System.arraycopy(userInput, 0, CPUInformation, 1, 2);
+
+                        if (CPUInformation == null) { // user input 0 CPU
+                            System.out.println("> No CPU added");
+                            continue;
+                        }
+                        sendMessage(CPUInformation);
+                        break;
+                    }
+                    
+                } else if (input.equals(Constants.START_GAME)) {
+                    if (numberOfPlayersCurrently < 2) {
+                        System.out.println(Display.errorColour("❌ Insufficient Number of Players"));
                         continue;
                     }
-                    sendMessage(CPUInformation);
-                    break;
-                } else if (input.equals(Constants.START_GAME)) {
                     sendMessage(new String[] {Constants.START_GAME});
                     break;
                 }
@@ -222,11 +239,11 @@ public class Client implements Runnable {
     private void listenForMessage() {
         while (socket.isConnected()) {
             try {
+                // System.out.println("needToRefreshGame: " + needToRefreshPage);
                 Object incomingObject = objectInputStream.readObject();
                 // System.out.println("Received object: " + incomingObject);
                 if (incomingObject instanceof GameState game) {
                     // System.out.println("Number of player: " + game.getNumOfPlayers());
-                    // System.out.println("GameState received: " + game.getGameId());
                     if (!game.getHasStarted()) {
                         mainThreadTasks.add(() -> printWaitingRoomDetails(game));
 
@@ -247,7 +264,10 @@ public class Client implements Runnable {
                     } else if (command.equals(Constants.FULL_CAPACITY)) { // full capacity
                         System.out.println(Constants.FULL_CAPACITY);
                         mainThreadTasks.add(() -> joinGamePrompt());
-                    } 
+
+                    } else if (command.equals(Constants.REFRESH_PAGE)) {
+                        needToRefreshPage = true;
+                    }
                 } else if (incomingObject instanceof Player player) {
                     myPlayerId = player.getPlayerId();
                 }
@@ -264,6 +284,14 @@ public class Client implements Runnable {
     @Override
     public void run() {
         listenForMessage();
+    }
+
+    private void threadSleep(int duration) {
+        try {
+            Thread.sleep(duration);
+        } catch (InterruptedException e) {
+            closeEverything(socket, objectInputStream, objectOutputStream);
+        }
     }
 
     private void closeEverything(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOuputStream) {
