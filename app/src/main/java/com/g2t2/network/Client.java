@@ -157,18 +157,15 @@ public class Client implements Runnable {
         }
     }
 
-    private void renderGame(GameState game) { // TODO: show available commands on top (only can use during your turn)
+    private void renderGame(GameState game) {
         Display.printGameHeader();
         Player currentPlayer = game.getCurrentPlayer();
         String[] messageToSendBack = {"", "", Constants.COMPLETE_TURN};
-        // System.out.println("Number of players: " + game.getNumOfPlayers());
-        // System.out.println("Number of cards left: " + game.getDeck().getCardsInDeck().size());
-        // System.out.println("Player Turn: " + game.getCurrentPlayer().getName());
 
         if (game.isEndOfGame()) {
             GameRenderer.displayScores(game.getPlayers());
-            game.resetGame();
-            String gameId = game.getGameId();
+            sendMessage(new String[] {Constants.GAME_ENDED}); // signal to clienthandler to reset server side things
+            isInGame = false;
 
             String userChoice = Prompt.promptForNewGame();
             if (userChoice.equals("y")) {
@@ -177,8 +174,6 @@ public class Client implements Runnable {
                 sendMessage(new String[] {Constants.LEAVE_GAME});
             }
             return;
-
-            // TODO: prompt user if they want to play again
         }
 
         GameRenderer.displayRoundInformation(game);
@@ -197,7 +192,7 @@ public class Client implements Runnable {
             } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
                     String[] indexOfChosenCard = Prompt.promptToCollectTwo(currentPlayer);
                     if (indexOfChosenCard[0].equals(Constants.LEAVE_GAME)) {
-                        sendMessage(new String[] {Constants.LEAVE_GAME});
+                        leaveGame();
                         // bot to take over the turn
                         int[] temp = CPUGameAction.CPUSelectTwoToCollections(currentPlayer, game);
                         indexOfChosenCard[0] = temp[0] + "";
@@ -222,7 +217,7 @@ public class Client implements Runnable {
             } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
                 String indexOfChosenCard = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, currentPlayer);
                 if (indexOfChosenCard.equals(Constants.LEAVE_GAME)) {
-                    sendMessage(new String[] {Constants.LEAVE_GAME});
+                    leaveGame();
                     // bot to take over the turn
                     indexOfChosenCard = CPUGameAction.chooseCPUCardIdx(currentPlayer, game, -1) + "";
                 }
@@ -232,7 +227,6 @@ public class Client implements Runnable {
                 return;
             }
         }
-
         sendMessage(messageToSendBack);
     }
 
@@ -243,6 +237,11 @@ public class Client implements Runnable {
         } catch (IOException e) {
             closeEverything(socket, objectInputStream, objectOutputStream);
         } 
+    }
+
+    private void leaveGame() {
+        isInGame = false;
+        sendMessage(new String[] {Constants.LEAVE_GAME});
     }
      
     private void listenForMessage() {

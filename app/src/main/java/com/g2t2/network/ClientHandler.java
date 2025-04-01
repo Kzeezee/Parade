@@ -65,19 +65,18 @@ public class ClientHandler implements Runnable { // allows instances to be execu
 
     private void processPlayerLeaveLobby(GameState game) {
         game.removePlayer(NetworkUtility.findMyPlayer(game, myPlayerId));
-        removeClientHandler();
         if (game.getNumOfPlayers() == 1 || !game.setNewGameMaster()) {
             availableGames.remove(gameId);
         }
+        removePlayerFromGame();
     }
     
     private void processPlayerLeaveGame(GameState game) {
         NetworkUtility.findMyPlayer(game, myPlayerId).setCPU(true);
-        NetworkUtility.findMyPlayer(game, myPlayerId).
-        removeClientHandler();
         if (!game.setNewGameMaster()) {
             availableGames.remove(gameId);
         }
+        removePlayerFromGame();
     }
 
     private void startGame() {
@@ -85,6 +84,12 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         game.giveOutInitialCards();
         game.startGame();
         broadcastGameStatus(game);
+    }
+
+    private void resetGame() {
+        GameState game = NetworkUtility.findGameState(gameId, availableGames);
+        game.resetGame();
+        clientHandlers.get(gameId).clear();
     }
 
     // This method contains everything that is supposed to ran on a separate thread, such as blocking operations
@@ -144,6 +149,9 @@ public class ClientHandler implements Runnable { // allows instances to be execu
 
                     } else if (command.equals(Constants.ENTER_KEY)) { // refresh page for that player only
                         sendGameState(NetworkUtility.findGameState(gameId, availableGames)); 
+                        
+                    } else if (command.equals(Constants.GAME_ENDED)) { // reset game setting
+                        resetGame();
                     }
                 }
             } catch (IOException e) {
@@ -204,12 +212,14 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         }
     }
 
-    private void removeClientHandler() {
+    private void removePlayerFromGame() {
         clientHandlers.get(gameId).remove(this);
+        myPlayerId = 0;
+        gameId = null;
     }
 
     private void closeEverything(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOuputStream) {
-        removeClientHandler();
+        removePlayerFromGame();
         try {
             if (objectInputStream != null) {
                 objectInputStream.close(); // closing the outer wrapper will close all inner wrapers

@@ -71,7 +71,7 @@ public class Prompt {
                 }
 
                 // Confirmation on card choice
-                System.out.println(Constants.ANSI_RESET + " 📌 Chosen Card Number: " + (chosenCardIndex));
+                System.out.println(Constants.ANSI_RESET + "      Chosen Card Number: " + (chosenCardIndex));
                 System.out.print(Display.colorString(" ⚜ Enter 'y' to confirm ➢ "));
 
                 String confirmation = sc.nextLine();

@@ -34,9 +34,11 @@ public class GameRenderer {
         displayParade(game);
         game.printNumOfCardsLeft();
         game.printPlayerTurn();
-        if (game.isLastRound()) {
+        if (game.isPut2CollectionRound()) {
+            System.out.println(" ⚜ " + Display.colorString(" 📌 PUT 2 COLLECTION ROUND 📌 ") + Constants.ANSI_RESET);
+        } else if (game.isLastRound()) {
             System.out.println(" ⚜ " + Display.colorString(" 📌 LAST ROUND 📌 ") + Constants.ANSI_RESET);
-        }
+        } 
         System.out.println(Constants.DIVIDER);
     }
 

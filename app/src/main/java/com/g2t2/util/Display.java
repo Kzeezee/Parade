@@ -289,6 +289,7 @@ public class Display {
     public static void printGameHeader() {
         Utility.clearConsoleScreen();
         System.out.println(Constants.BANNER);
+        System.out.println(" 📌 To leave the game, enter '" + Constants.LEAVE_GAME + "'");
         System.out.println(Constants.DIVIDER);
     }
 }

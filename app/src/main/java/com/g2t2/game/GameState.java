@@ -221,6 +221,8 @@ public class GameState implements Serializable { // to allow it to be sent over
         islastRound = false;
         isPut2CollectionRound = false;
         isEndOfGame = false;
+        numOfPlayers = 0;
+        players = new ArrayList<>();
         paradeBoard = new ArrayList<>();
         deck = new CardDeck();
 
