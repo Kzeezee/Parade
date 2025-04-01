@@ -1,7 +1,5 @@
 package com.g2t2.game.gameutility;
 
-import javax.swing.text.Utilities;
-
 import com.g2t2.game.GameState;
 import com.g2t2.network.networkUtility.NetworkUtility;
 import com.g2t2.types.Player;
@@ -31,7 +29,6 @@ public class GameFlow {
             // System.out.println("person that started final round: " + game.getPlayerWhoStartFinalRound().getName());
             // System.out.println();
         } 
-        broadcastGameStatus(game);
     }
 
     private void processPut2Collection(String[] indexOfChosenCard, GameState game) {
@@ -49,6 +46,5 @@ public class GameFlow {
             game.setEndOfGame(true);
             ScoreCalculation.computeScore(game.getPlayers());
         }
-        broadcastGameStatus(game);
     }
 }
