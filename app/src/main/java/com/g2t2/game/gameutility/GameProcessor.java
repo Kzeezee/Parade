@@ -44,7 +44,7 @@ public class GameProcessor {
 
         String prompt = String.format(Constants.ANSI_RESET + " 📌 Which card do you want to place in the Parade?");
         int cardIdx = Prompt.promptForCard(prompt, player);
-        processCardChosenToPutToParade(cardIdx, player, game);
+        processPlayerTurn(cardIdx, player, game);
     }
 
        /**
