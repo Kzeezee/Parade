@@ -28,19 +28,12 @@ public class Prompt {
     /**
      * Options for selecting the difficulty level for CPU players.
      */
-    public static final String GAME_DIFFICULTY_OPTIONS = " 📌 Choose the difficulty level for your CPU players\n" + //
+    public static final String GAME_DIFFICULTY_OPTIONS = " 📌 Choose the difficulty level for each of your CPU players\n" + //
             " 📌 Easy (1)\n" + //
             " 📌 Medium (2)\n" + //
             " 📌 Difficult (3)\n" + //
             Display.colorString(" ⚜ Enter option ➢ ");
 
-    /**
-     * Options for selecting the local game mode.
-     */
-    public static final String LOCAL_MODE_OPTIONS = " 📌 Please select an option.\n"
-            + " 📌 Play with friends (1)\n"
-            + " 📌 Play with CPU (2)\n"
-            + Display.colorString(" ⚜ Enter option ➢ ");
 
     /**
      * Error message displayed when an invalid number of players is entered.

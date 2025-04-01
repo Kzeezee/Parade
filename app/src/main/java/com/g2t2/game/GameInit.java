@@ -32,12 +32,6 @@ public class GameInit {
     private static int numOfPlayers; // The total number of players in the game (including human and CPU players).
     private static int numOfCPU; // The number of CPU-controlled players in the game.
 
-    /**
-     * The difficulty level for CPU players:
-     * 1 - Easy
-     * 2 - Medium
-     * 3 - Hard
-     */
 
 
     /**
