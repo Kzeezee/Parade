@@ -49,14 +49,14 @@ public class Client implements Runnable {
             System.out.println(" 📌 To join a game, enter: '" + Constants.JOIN_GAME + "'");
             System.out.print(Display.colorString(" ➢ Enter your choice: "));
 
-            String[] userChoice = {"", "", username};
+            String[] userChoice = {username, "", ""};
             userChoice[0] = sc.nextLine();
 
-            if (userChoice[0].equals(Constants.CREATE_GAME)) {
+            if (userChoice[userChoice.length-1].equals(Constants.CREATE_GAME)) {
                 sendMessage(userChoice); // create game
                 hasCorrectInput = true;
 
-            } else if (userChoice[0].equals(Constants.JOIN_GAME)) {
+            } else if (userChoice[userChoice.length-1].equals(Constants.JOIN_GAME)) {
                 joinGamePrompt();
                 hasCorrectInput = true;
 
@@ -125,9 +125,9 @@ public class Client implements Runnable {
             if (isGameMaster) { // commands available to gameMaster
                 if (input.equals(Constants.ADD_CPU)) {
                     if (numberOfPlayersCurrently < 6) {
-                        String[] CPUInformation = {Constants.ADD_CPU, "", ""};
+                        String[] CPUInformation = {"", "", Constants.ADD_CPU};
                         String[] userInput = Prompt.promptForCPUDetails(numberOfPlayersCurrently);
-                        System.arraycopy(userInput, 0, CPUInformation, 1, 2);
+                        System.arraycopy(userInput, 0, CPUInformation, 0, 2);
 
                         if (CPUInformation == null) { // user input 0 CPU
                             System.out.println("> No CPU added");
@@ -163,7 +163,7 @@ public class Client implements Runnable {
     private void renderGame(GameState game) { // TODO: show available commands on top (only can use during your turn)
         Display.printGameHeader();
         Player currentPlayer = game.getCurrentPlayer();
-        String[] messageToSendBack = {Constants.COMPLETE_TURN, "", ""};
+        String[] messageToSendBack = {"", "", Constants.COMPLETE_TURN};
         // System.out.println("Number of players: " + game.getNumOfPlayers());
         // System.out.println("Number of cards left: " + game.getDeck().getCardsInDeck().size());
         // System.out.println("Player Turn: " + game.getCurrentPlayer().getName());
@@ -175,7 +175,7 @@ public class Client implements Runnable {
 
             String userChoice = Prompt.promptForNewGame();
             if (userChoice.equals("y")) {
-                sendMessage(new String[] {Constants.NEW_GAME, username});
+                sendMessage(new String[] {username, Constants.NEW_GAME});
             } else {
                 sendMessage(new String[] {Constants.LEAVE_GAME});
             }
@@ -187,24 +187,24 @@ public class Client implements Runnable {
         GameRenderer.displayRoundInformation(game);
         GameRenderer.displayHandCards(NetworkUtility.findMyPlayer(game, myPlayerId));
         if (game.isPut2CollectionRound()) { // put 2 to collection round
-            messageToSendBack[0] = Constants.PUT_TO_COLLECTION;
+            messageToSendBack[2] = Constants.PUT_TO_COLLECTION;
             if (currentPlayer.getCPU()) { // CPU turn
                 CPUGameAction.displayCPUTurnAction(currentPlayer);
                 if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
                     int[] indexOfChosenCard = CPUGameAction.CPUSelectTwoToCollections(currentPlayer, game);
-                    messageToSendBack[1] = indexOfChosenCard[0] + "";
-                    messageToSendBack[2] = indexOfChosenCard[1] + "";
+                    messageToSendBack[0] = indexOfChosenCard[0] + "";
+                    messageToSendBack[1] = indexOfChosenCard[1] + "";
                 } else { // the rest don't do anything
                     return; 
                 }
             } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
                     String[] indexOfChosenCard = Prompt.promptToCollectTwo(currentPlayer);
                     if (indexOfChosenCard[0].equals(Constants.LEAVE_GAME)) {
-                        sendMessage(Constants.LEAVE_GAME);
+                        sendMessage(new String[] {Constants.LEAVE_GAME});
                         return;
                     }
-                    messageToSendBack[1] = indexOfChosenCard[0] + "";
-                    messageToSendBack[2] = indexOfChosenCard[1] + ""; 
+                    messageToSendBack[0] = indexOfChosenCard[0] + "";
+                    messageToSendBack[1] = indexOfChosenCard[1] + ""; 
             } else { // not your turn
                 System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
                 return;
@@ -215,17 +215,17 @@ public class Client implements Runnable {
                 CPUGameAction.displayCPUTurnAction(currentPlayer);
                 if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
                     int indexOfChosenCard = CPUGameAction.chooseCPUCardIdx(currentPlayer, game, -1);
-                    messageToSendBack[1] = indexOfChosenCard + "";
+                    messageToSendBack[0] = indexOfChosenCard + "";
                 } else { // the rest don't do anything
                     return;
                 }
             } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
-                int indexOfChosenCard = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, currentPlayer);
+                String indexOfChosenCard = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, currentPlayer);
                 if (indexOfChosenCard.equals(Constants.LEAVE_GAME)) {
-                    sendMessage(Constants.LEAVE_GAME);
+                    sendMessage(new String[] {Constants.LEAVE_GAME});
                     return;
                 }
-                messageToSendBack[1] = indexOfChosenCard + ""; 
+                messageToSendBack[0] = indexOfChosenCard + ""; 
             } else { // not your turn
                 System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
                 return;
@@ -265,7 +265,7 @@ public class Client implements Runnable {
                     }
 
                 } else if (incomingObject instanceof Message incomingMessage) {
-                    String command = incomingMessage.getMessage()[0];
+                    String command = incomingMessage.getMessage()[incomingMessage.getMessage().length-1];
                     if (command.equals(Constants.INVALID_GAME_ID)) { // wrong gameId
                         System.out.println(Constants.INVALID_GAME_ID);
                         mainThreadTasks.add(() -> joinGamePrompt());

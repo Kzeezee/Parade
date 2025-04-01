@@ -138,14 +138,14 @@ public class ClientHandler implements Runnable { // allows instances to be execu
             try {
                 Object incomingObject = objectInputStream.readObject();
                 if (incomingObject instanceof Message messageToProcess) {
-                    String command = messageToProcess.getMessage()[0];
+                    String command = messageToProcess.getMessage()[messageToProcess.getMessage().length - 1];
 
                     if (command.equals(Constants.CREATE_GAME)) { // create game
-                        createGame(messageToProcess.getMessage()[2]);
+                        createGame(messageToProcess.getMessage()[0]);
                     
                     } else if (command.equals(Constants.JOIN_GAME)) { // join game
                         // checking if gameId sent in is valid
-                        GameState game = NetworkUtility.findGameState(gameId, messageToProcess.getMessage()[1], availableGames);
+                        GameState game = NetworkUtility.findGameState(messageToProcess.getMessage()[1], availableGames);
                         if (game == null) {
                             sendMessage(new String[] {Constants.INVALID_GAME_ID});
                         } else if (game.getNumOfPlayers() >= 6) {
@@ -153,11 +153,11 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         }
                         else {
                             gameId = messageToProcess.getMessage()[1];
-                            createPlayer(messageToProcess.getMessage()[2]);
+                            createPlayer(messageToProcess.getMessage()[0]);
                         }
 
                     } else if (command.equals(Constants.ADD_CPU)) { // add cpu
-                        createCPU(Integer.parseInt(messageToProcess.getMessage()[1]), Integer.parseInt(messageToProcess.getMessage()[2]));
+                        createCPU(Integer.parseInt(messageToProcess.getMessage()[0]), Integer.parseInt(messageToProcess.getMessage()[1]));
 
                     } else if (command.equals(Constants.START_GAME)) { // start game
                         startGame();
@@ -172,7 +172,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         sendMessage(new String[] {Constants.NEW_GAME});
 
                     }  else if (command.equals(Constants.NEW_GAME)) { // player wants to play again
-                        createPlayer(messageToProcess.getMessage()[1]);
+                        createPlayer(messageToProcess.getMessage()[0]);
 
                     } else if (command.equals(Constants.COMPLETE_TURN)) { // player finish his turn
                         processTurn(messageToProcess.getMessage());

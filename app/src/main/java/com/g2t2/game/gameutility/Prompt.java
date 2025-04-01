@@ -57,7 +57,7 @@ public class Prompt {
      * @return The index of the selected card in the player's hand.
      */ 
     public static String promptForCard(String prompt, Player player) {
-        String chosenCardString = 0;
+        String chosenCardString = null;
         Scanner sc = new Scanner(System.in);
         int numOfCards = player.getCardsOnHand().size();
         while (true) {
@@ -67,7 +67,7 @@ public class Prompt {
                         Display.colorString(" ⚜ Choose card number (1 to " + numOfCards + ") ➢ "));
                 chosenCardString = sc.nextLine();
 
-                if (chosenCardString.equals(Constant.LEAVE_GAME)) {
+                if (chosenCardString.equals(Constants.LEAVE_GAME)) {
                     break;
                 }
 
@@ -88,7 +88,7 @@ public class Prompt {
                     continue;
 
                 }
-                chosenCardString = chosenCardString - 1 + "";
+                chosenCardString = chosenCardIndex - 1 + "";
                 break;
             } catch (InputMismatchException e) {
                 System.out.println(Display.errorColour(" ❌ Please input a number"));
@@ -130,7 +130,7 @@ public class Prompt {
                         " 📌 You need to choose TWO different cards \n" +
                         " ⚜ Card " + (i + 1) + ": ");
                 String cardIdx = Prompt.promptForCard(prompt, player);
-                if (cardIdx.equals(Constant.LEAVE_GAME)) {
+                if (cardIdx.equals(Constants.LEAVE_GAME)) {
                     choosenCardsIdx = new String[] {Constants.LEAVE_GAME};
                     break;
                 }
