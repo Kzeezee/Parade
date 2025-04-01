@@ -147,7 +147,7 @@ public class Prompt {
      * Prompts the user to decide whether they want to start a new game after the
      * current game ends.
      */
-    public static void promptForNewGame() {
+    public static String promptForNewGame() {
         Scanner sc = new Scanner(System.in);
         while (true) {
             try {
@@ -155,14 +155,15 @@ public class Prompt {
                 System.out.println(Display.colorString(" ⚜ Do you want to play another game? (y/n) ➢ "));
                 String confirmation = sc.nextLine();
 
-                if (confirmation.equalsIgnoreCase("y")) {
-                    StartMenu.showStartMenu();
-                    GamePlay.startGame(new GameState());
-                } else if (confirmation.equalsIgnoreCase("n")) {
-                    Display.sayGoodBye();
-                    System.exit(0);
-                }
+                // if (confirmation.equalsIgnoreCase("y")) {
+                //     StartMenu.showStartMenu();
+                //     GamePlay.startGame(new GameState());
+                // } else if (confirmation.equalsIgnoreCase("n")) {
+                //     Display.sayGoodBye();
+                //     System.exit(0);
+                // }
                 System.out.println(Constants.ANSI_RESET);
+                return confirmation;
             } catch (IllegalArgumentException e) {
                 System.out.println();
             }

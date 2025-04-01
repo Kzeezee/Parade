@@ -214,6 +214,15 @@ public class GameState implements Serializable { // to allow it to be sent over
         // finding a random person to start the game
         int currentPlayerIndex = (int) (Math.random() * players.size());
         currentPlayer = players.get(currentPlayerIndex);
+    }
+
+    public void resetGame() {
+        hasStarted = false; 
+        islastRound = false;
+        isPut2CollectionRound = false;
+        isEndOfGame = false;
+        paradeBoard = new ArrayList<>();
+        deck = new CardDeck();
 
     }
 

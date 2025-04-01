@@ -9,7 +9,7 @@ import com.g2t2.types.ScoreCalculation;
 
 public class GameFlow {
     
-    private void processTurn(String[] indexOfChosenCard, GameState game) {
+    public static void processTurn(String[] indexOfChosenCard, GameState game) {
         Player playerThatJustPlayed = game.getCurrentPlayer();
         int cardIndex = Integer.parseInt(indexOfChosenCard[1]);
         // System.out.println("current player: " + playerThatJustPlayed.getName());
@@ -34,7 +34,7 @@ public class GameFlow {
         broadcastGameStatus(game);
     }
 
-    private void processPut2Collection(String[] indexOfChosenCard, GameState game) {
+    public static void processPut2Collection(String[] indexOfChosenCard, GameState game) {
         Player playerThatJustPlayed = game.getCurrentPlayer();
         int[] cardIndices = {Integer.parseInt(indexOfChosenCard[1]), Integer.parseInt(indexOfChosenCard[2])};
         // System.out.println("current player: " + playerThatJustPlayed.getName());

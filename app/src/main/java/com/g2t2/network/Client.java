@@ -170,6 +170,15 @@ public class Client implements Runnable {
 
         if (game.isEndOfGame()) {
             GameRenderer.displayScores(game.getPlayers());
+            game.resetGame();
+            String gameId = game.getGameId();
+
+            String userChoice = Prompt.promptForNewGame();
+            if (userChoice.equals("y")) {
+                sendMessage(new String[] {Constants.NEW_GAME, username});
+            } else {
+                sendMessage(new String[] {Constants.LEAVE_GAME});
+            }
             return;
 
             // TODO: prompt user if they want to play again

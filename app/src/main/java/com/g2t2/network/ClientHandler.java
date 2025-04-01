@@ -171,6 +171,9 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         }
                         sendMessage(new String[] {Constants.NEW_GAME});
 
+                    }  else if (command.equals(Constants.NEW_GAME)) { // player wants to play again
+                        createPlayer(messageToProcess.getMessage()[1]);
+
                     } else if (command.equals(Constants.COMPLETE_TURN)) { // player finish his turn
                         processTurn(messageToProcess.getMessage());
 
