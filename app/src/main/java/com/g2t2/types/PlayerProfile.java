@@ -5,6 +5,7 @@ package com.g2t2.types;
  */
 public class PlayerProfile {
     private long ID;
+    private String uuid;
     private String name;
     private int wins;
 
@@ -12,11 +13,13 @@ public class PlayerProfile {
      * Creates a new PlayerProfile with the specified ID, name, and number of wins.
      * 
      * @param ID    ID of the PlayerProfile
+     * @param uuid  UUID identifier of the PlayerProfile
      * @param name  name of the PlayerProfile
      * @param wins  number of wins of the PlayerProfile
      */
-    public PlayerProfile(long ID, String name, int wins) {
+    public PlayerProfile(long ID, String uuid, String name, int wins) {
         this.ID = ID;
+        this.uuid = uuid;
         this.name = name;
         this.wins = wins;
     }
@@ -38,7 +41,15 @@ public class PlayerProfile {
     public void setID(long ID) {
         this.ID = ID;
     }
-    
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     /**
      * Returns the PlayerProfile's name as a String.
      * 
@@ -65,7 +76,7 @@ public class PlayerProfile {
     public int getWins() {
         return wins;
     }
-
+    
     /**
      * Sets the PlayerProfiles's number of wins to the specified wins.
      * 

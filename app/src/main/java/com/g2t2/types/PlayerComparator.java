@@ -3,7 +3,9 @@ package com.g2t2.types;
 import java.util.Comparator;
 
 /**
- * Comparator for the player.
+ * Comparator for the player
+ * 1. sort by descending score
+ * 2. sort by ascending name
  * 
  * @author Shwe
  */

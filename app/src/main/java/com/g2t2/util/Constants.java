@@ -18,10 +18,10 @@ public class Constants {
     public static final String GREEN_ANSI = "\033[38;2;85;205;121m";
     public static final String BLACK_ANSI = "\033[38;2;1;1;1m";
     public static final String ANSI_RESET = "\033[0m";
-    public static final String INVALID_OPTION_ERROR_MSG = " ❌ Please choose a valid option";
+    public static final String INVALID_OPTION_ERROR_MSG = " ❌ Please choose a valid option!";
     public static final String WELCOMEMESSAGE_STRING = " ⚜ Welcome to G2T2 Parade! Please select an option. (1 or 3 for now)";
     public static final String DIVIDER = "\033[90m" + "───────────────────────────────────────" 
-                                         + "⚜ ──────────────────────────────────────────" + ANSI_RESET;
+                                         + " ⚜ ──────────────────────────────────────────" + ANSI_RESET;
 
     public static final String BANNER = String.format(CardColour.BLUE.getAnsiCode()
                                         + "                              ┌──────── ⚜ ───────┐\n"  
@@ -46,18 +46,25 @@ public class Constants {
 
     public static final List<String> EMOJIS = List.of("🌹", "💧", "☀️ ", "🪻 ", "🍀", "🕷️ ");
 
+    public static final String PROMPT_ADD_TO_PARADE = Display.colorString(" 📌 Which card do you want to place in the Parade?");
+
     // Commands
     public static final String CREATE_GAME = "c"; //"CREATE_GAME";
     public static final String JOIN_GAME = "j"; //"JOIN_GAME";
     public static final String ADD_CPU = "x"; //"ADD_CPU";
     public static final String START_GAME = "w"; //"START_GAME";
     public static final String LEAVE_GAME = "y"; //"LEAVE_GAME";
+    public static final String ENTER_KEY = "";
 
+    // Message To Indicate Things
+    public static final String COMPLETE_TURN = "$complete_turn$";
+    public static final String PUT_TO_COLLECTION = "$put_to_collection$";
+    public static final String REFRESH_PAGE = "$refresh_page$";
 
     // ERRORS
     public static final String INVALID_GAME_ID = "INVALID GAME ID";
     public static final String INVALID_COMMAND = "INVALID COMMAND";
-    public static final String FULL_CAPACITY = "FULLY CAPACITY";
+    public static final String FULL_CAPACITY = "FULL CAPACITY";
 
     // Constants
     public static final List<CardColour> CARD_COLOURS = List.of(CardColour.RED, CardColour.BLUE, CardColour.YELLOW, 

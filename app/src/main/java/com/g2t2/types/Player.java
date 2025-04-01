@@ -10,16 +10,16 @@ import java.util.*;
  */
 
 public class Player implements Serializable {
-    private static final long serialVersionUID = 1L;
-    private static int counter = 1; // autoincrement
+    private static int counter = 1;  // autoincrement
     private int playerId;
     private String name;
-    private List<Card> cardsOnHand;
-    private List<Card> cardsInCollection;
-    private int collectionSize;
+    private List<Card> cardsOnHand = new ArrayList<>();
+    private List<Card> cardsInCollection = new ArrayList<>();;
     private int score;
     private boolean isCPU = false;
     private int difficulty;
+    private PlayerProfile playerProfile;
+    private int collectionSize;
 
     /**
      * Creates a new Player with the specified name.
@@ -55,7 +55,6 @@ public class Player implements Serializable {
      */
     public void drawStartingCards(CardDeck deck) {
         // draw 5 cards from the deck
-        cardsOnHand = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             cardsOnHand.add(deck.drawCard());
         }
@@ -140,6 +139,14 @@ public class Player implements Serializable {
      */
     public boolean getCPU() {
         return isCPU;
+    }
+
+    public PlayerProfile getPlayerProfile() {
+        return playerProfile;
+    }
+
+    public void setPlayerProfile(PlayerProfile playerProfile) {
+        this.playerProfile = playerProfile;
     }
 
     /**

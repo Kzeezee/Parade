@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
 
+import org.checkerframework.common.returnsreceiver.qual.This;
 
 import com.g2t2.types.*;
 import com.g2t2.util.Constants;
@@ -28,13 +29,16 @@ public class GameState implements Serializable { // to allow it to be sent over
     private static final long serialVersionUID = 1L;
     private int numOfPlayers; // The total number of players in the game.
     private String gameId;
-    private Player gameMaster; // The player designated as the game master.
-    private Player currentPlayer;
+    private Player gameMaster;
+    private Player currentPlayer; // turn of the current Player
+    private Player playerWhoStartFinalRound;
     private List<Player> players = new ArrayList<>();
     private List<Card> paradeBoard = new ArrayList<>();
     private CardDeck deck = new CardDeck();
     private boolean hasStarted = false; // Flag indicating whether the game has started.
     private boolean islastRound = false;
+    private boolean isPut2CollectionRound = false;
+    private boolean isEndOfGame = false;
 
     /**
      * Constructs a new `GameState` instance and generates a unique game ID.
@@ -47,7 +51,7 @@ public class GameState implements Serializable { // to allow it to be sent over
      * Generates a unique ID for this game instance based on the current timestamp
      * and random characters.
      *
-     * @return a string representing the unique game ID
+     * @return A string representing the unique game ID.
      */
     private String generateGameId() {
         long timestamp = Instant.now().getEpochSecond();
@@ -63,11 +67,12 @@ public class GameState implements Serializable { // to allow it to be sent over
     /**
      * Adds a player to the game. The first player added becomes the game master.
      *
-     * @param player the player to add to the game
+     * @param player The player to add to the game.
      */
     public void addPlayer(Player player) {
         numOfPlayers++;
         players.add(player);
+        System.out.println(player.getPlayerProfile());
 
         if (numOfPlayers == 1) { // first person becomes gameMaster
             gameMaster = players.get(0);
@@ -77,7 +82,7 @@ public class GameState implements Serializable { // to allow it to be sent over
     /**
      * Retrieves a list of all players in the game.
      *
-     * @return a list of players participating in the game
+     * @return A list of players participating in the game.
      */
     public List<Player> getPlayers() {
         return players;
@@ -92,11 +97,11 @@ public class GameState implements Serializable { // to allow it to be sent over
             Player player = players.get(i);
             // printing depending on role
             if (player.getCPU()) {
-                System.out.println(i + 1 + ") " + player.getName() + " (id=" + player.getPlayerId()
+                System.out.println(" " + (i + 1) + ") " + player.getName() + " (id=" + player.getPlayerId()
                         + ") (CPU, difficulty = " + player.getDifficulty() + ")");
             } else {
                 String playerRole = gameMaster.equals(player) ? "GameMaster" : "Player";
-                System.out.println(i + 1 + ") " + player.getName() + " (id=" + player.getPlayerId()
+                System.out.println(" " + (i + 1) + ") " + player.getName() + " (id=" + player.getPlayerId()
                         + ") (" + playerRole + ")");
             }
         }
@@ -114,10 +119,6 @@ public class GameState implements Serializable { // to allow it to be sent over
         return currentPlayer;
     }
 
-    public void setCurrentPlayer(Player currentplayer) {
-        this.currentPlayer = currentplayer;
-    }
-
     public Player getGameMaster() {
         return gameMaster;
     }
@@ -125,6 +126,13 @@ public class GameState implements Serializable { // to allow it to be sent over
     // public void setGameMaster(Player gameMaster) {
     // this.gameMaster = gameMaster;
     // }
+    public Player getPlayerWhoStartFinalRound() {
+        return playerWhoStartFinalRound;
+    }
+
+    public void setPlayerWhoStartFinalRound(Player playerWhoStartFinalRound) {
+        this.playerWhoStartFinalRound = playerWhoStartFinalRound;
+    }
 
     public boolean getHasStarted() {
         return hasStarted;
@@ -134,12 +142,28 @@ public class GameState implements Serializable { // to allow it to be sent over
         this.hasStarted = hasStarted;
     }
 
-    public void setIsLastRound(boolean isLastRound) {
+    public void setLastRound(boolean isLastRound) {
         this.islastRound = isLastRound;
     }
 
     public boolean isLastRound() {
         return islastRound;
+    }
+
+    public boolean isPut2CollectionRound() {
+        return isPut2CollectionRound;
+    }
+
+    public void setPut2CollectionRound(boolean isPut2CollectionRound) {
+        this.isPut2CollectionRound = isPut2CollectionRound;
+    }
+
+    public boolean isEndOfGame() {
+        return isEndOfGame;
+    }
+
+    public void setEndOfGame(boolean isEndOfGame) {
+        this.isEndOfGame = isEndOfGame;
     }
 
     public CardDeck getDeck() {
@@ -180,6 +204,11 @@ public class GameState implements Serializable { // to allow it to be sent over
 
     }
 
+    public void passTurnToNextPlayer() {
+        int indexOfNextPlayer = (players.indexOf(currentPlayer) + 1) % numOfPlayers;
+        currentPlayer = players.get(indexOfNextPlayer);
+    }
+
     public void printNumOfCardsLeft() {
         System.out.println(" 📌 Number of Cards Left in the Deck: " + deck.getCardsInDeck().size());
     }
@@ -188,19 +217,6 @@ public class GameState implements Serializable { // to allow it to be sent over
         System.out.println(" 📌 Currently, it is player " + Display.colorString(currentPlayer.getName()
                 + "(" + currentPlayer.getPlayerId() + ")" + Constants.ANSI_RESET + " turn."));
     }
-
-    // @Override
-    // public boolean equals(Object o) {
-    // if (o instanceof GameState gameState) {
-    // return this.getGameId().equals(gameState.getGameId());
-    // }
-    // return false;
-    // }
-
-    // @Override
-    // public int hashCode() {
-    // return Objects.hash(gameId);
-    // }
 
     public GameState deepCopy() {
         try {
@@ -216,4 +232,18 @@ public class GameState implements Serializable { // to allow it to be sent over
             throw new RuntimeException("Deep copy failed", e);
         }
     }
+
+
+    // @Override
+    // public boolean equals(Object o) {
+    //     if (o instanceof GameState gameState) {
+    //         return this.getGameId().equals(gameState.getGameId());
+    //     }
+    //     return false;
+    // }
+
+    // @Override
+    // public int hashCode() {
+    //     return Objects.hash(gameId);
+    // }
 }

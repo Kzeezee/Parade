@@ -12,8 +12,9 @@ import com.g2t2.enums.CardColour;
 import com.g2t2.util.Constants;
 
 /**
- * Score Calculation class to check for end game condition after every moveplayed,
- * as well as to compute score for the players after the game ends.
+ * Score Calculation class to check for end game condition after every
+ * moveplayed
+ * as well as to compute score for the players after the game ends
  * 
  * @author Shwe
  */

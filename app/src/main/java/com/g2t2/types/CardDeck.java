@@ -13,7 +13,7 @@ import java.util.*;
 
 public class CardDeck implements Serializable {
     private static final long serialVersionUID = 1L;
-    private ArrayList<Card> deck;
+    private List<Card> deck;
 
     /**
      * Creates a new CardDeck.
@@ -29,11 +29,11 @@ public class CardDeck implements Serializable {
     }
 
     /**
-     * Returns an ArrayList of Cards in the deck.
+     * Returns an List of Cards in the deck.
      * 
      * @return the cards in the deck
      */
-    public ArrayList<Card> getCardsInDeck() {
+    public List<Card> getCardsInDeck() {
         return deck;
     }
 

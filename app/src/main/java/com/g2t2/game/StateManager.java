@@ -15,19 +15,17 @@ public class StateManager {
      * Sets the current player profile and updates the application state accordingly.
      * After setting the profile, the start menu is displayed.
      * 
-     * @param pp the {@link PlayerProfile} to be set as the current player profile
+     * @param pp The {@link PlayerProfile} to be set as the current player profile.
      */
     public static void setPlayerProfile(PlayerProfile pp) {
         // After setting player profile, we know we which player to track games with
         currentPlayerProfile = pp;
-        // Show start menu
-        StartMenu.showStartMenu();
     }
 
     /**
      * Retrieves the current player profile.
      * 
-     * @return the {@link PlayerProfile} currently set in the application state, or {@code null} if none is set
+     * @return The {@link PlayerProfile} currently set in the application state, or {@code null} if none is set.
      */
     public static PlayerProfile getPlayerProfile() {
         return currentPlayerProfile;
