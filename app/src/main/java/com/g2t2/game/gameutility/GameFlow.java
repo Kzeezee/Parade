@@ -11,7 +11,7 @@ public class GameFlow {
     
     public static void processTurn(String[] indexOfChosenCard, GameState game) {
         Player playerThatJustPlayed = game.getCurrentPlayer();
-        int cardIndex = Integer.parseInt(indexOfChosenCard[1]);
+        int cardIndex = Integer.parseInt(indexOfChosenCard[0]);
         // System.out.println("current player: " + playerThatJustPlayed.getName());
         // System.out.println("CARD INDEX: " + cardIndex);
         GameProcessor.processPlayerTurn(cardIndex, playerThatJustPlayed, game);
@@ -31,12 +31,11 @@ public class GameFlow {
             // System.out.println("person that started final round: " + game.getPlayerWhoStartFinalRound().getName());
             // System.out.println();
         } 
-        broadcastGameStatus(game);
     }
 
     public static void processPut2Collection(String[] indexOfChosenCard, GameState game) {
         Player playerThatJustPlayed = game.getCurrentPlayer();
-        int[] cardIndices = {Integer.parseInt(indexOfChosenCard[1]), Integer.parseInt(indexOfChosenCard[2])};
+        int[] cardIndices = {Integer.parseInt(indexOfChosenCard[0]), Integer.parseInt(indexOfChosenCard[1])};
         // System.out.println("current player: " + playerThatJustPlayed.getName());
         // System.out.println("idx of card 1: " + cardIndices[0] + "|| idx of card 2: " + cardIndices[1]);
         GameProcessor.processCardChosenToCollection(cardIndices, playerThatJustPlayed);
@@ -49,6 +48,5 @@ public class GameFlow {
             game.setEndOfGame(true);
             ScoreCalculation.computeScore(game.getPlayers());
         }
-        broadcastGameStatus(game);
     }
 }

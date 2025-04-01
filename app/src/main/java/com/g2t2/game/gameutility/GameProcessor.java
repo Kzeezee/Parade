@@ -43,7 +43,7 @@ public class GameProcessor {
         GameRenderer.displayHandCards(player);
 
         String prompt = String.format(Constants.ANSI_RESET + " 📌 Which card do you want to place in the Parade?");
-        int cardIdx = Prompt.promptForCard(prompt, player);
+        int cardIdx = Integer.parseInt(Prompt.promptForCard(prompt, player));
         processPlayerTurn(cardIdx, player, game);
     }
 
@@ -142,11 +142,12 @@ public class GameProcessor {
     public static void putTwoToCollections(Player player, GameState game) {
         GameRenderer.displayRoundInformation(game);
 
-        int[] cardIdxToAddToCollection = null;
+        String[] cardIdxToAddToCollection = null;
+        int[] cards = null;
         if (player.getCPU()) {
             Display.delayPrint(" 📌 Player " + Display.colorString(player.getName())
                     + " is choosing their cards.", 30);
-            cardIdxToAddToCollection = CPUGameAction.CPUSelectTwoToCollections(player, game);
+            cards = CPUGameAction.CPUSelectTwoToCollections(player, game);
         } else {
             System.out.println(" ⚜ You need to select " + Display.colorString("TWO")
                     + " cards from your hand to add to the collection.");
@@ -154,7 +155,8 @@ public class GameProcessor {
             cardIdxToAddToCollection = Prompt.promptToCollectTwo(player);
         }
         System.out.println(Constants.DIVIDER);
-        processCardChosenToCollection(cardIdxToAddToCollection, player);
+        cards = new int[] {Integer.parseInt(cardIdxToAddToCollection[0]), Integer.parseInt(cardIdxToAddToCollection[1])};
+        processCardChosenToCollection(cards, player);
     }
 
     /**

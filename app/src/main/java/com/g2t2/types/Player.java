@@ -143,6 +143,7 @@ public class Player implements Serializable {
 
     public void setCPU(boolean isCPU) {
         this.isCPU = isCPU;
+        difficulty = 1;
     }
 
     public PlayerProfile getPlayerProfile() {
