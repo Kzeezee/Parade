@@ -94,7 +94,7 @@ public class Client implements Runnable {
 
     private void printWaitingRoomCommands(boolean isGameMaster, int numberOfPlayersCurrently) {
         System.out.println("> Here are some available commands you can use <");
-        System.out.println("> To refresh the page, press the ENTER KEY");
+        // System.out.println("> To refresh the page, press the ENTER KEY");
         // TODO: Implement LEAVE GAME
         // System.out.println("> To leave the room, enter '" + Constants.LEAVE_GAME + "'");
         if (isGameMaster) { // show available GameMaster Commands
@@ -107,7 +107,6 @@ public class Client implements Runnable {
             // TODO: enable the removal of CPUs / Players
     }
 
-    // CHANGE ALL TO RENDER PAGE FIRST
     private void activatingUserControlCommands(boolean isGameMaster, int numberOfPlayersCurrently) {
         Scanner sc = new Scanner(System.in);
         while (true) {
@@ -116,7 +115,7 @@ public class Client implements Runnable {
 
             if (needToRefreshPage) { // someone joins
                 needToRefreshPage = false;
-                sendMessage(new String[] {Constants.ENTER_KEY});
+                sendMessage(new String[] {Constants.ENTER_KEY}); // refresh page
                 System.out.println("📌 There is an update, refreshing page");
                 threadSleep(1000);
                 break;
@@ -147,15 +146,15 @@ public class Client implements Runnable {
                 }
             }
             // commands available to everyone
-            if (input.equals(Constants.ENTER_KEY)) { // refresh page
-                sendMessage(new String[] {Constants.ENTER_KEY});
-                break;
+           // if (input.equals(Constants.ENTER_KEY)) { // refresh page
+             //   sendMessage(new String[] {Constants.ENTER_KEY});
+               // break;
                 // TODO: Implement LEAVE GAME
             // } else if (input.equals(Constants.LEAVE_GAME)) {
             //     System.out.println("LEFT GAME");
             //     sendMessage(new String[] {Constants.LEAVE_GAME}); 
             //     break;
-            } 
+            //} 
             System.out.println(Constants.INVALID_COMMAND);
         }
     }
