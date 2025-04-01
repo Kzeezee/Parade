@@ -159,15 +159,16 @@ public class GameProcessor {
     }
 
     /**
-     * Processes a list of selected cards and adds them to a player's collection.
+     * Processes the 2 cards selected by the player in the put 2 cards to collection phase
+     * and adds them to a player's collection.
      *
-     * @param cardIdxList a list of indices representing selected cards from the
-     *                    hand
-     * @param player      the player whose collection is being updated
+     * @param cardIdxList An int[] containting of indices representing selected cards from the hand.
+     *                    
+     * @param player      The player whose collection is being updated.
      */
-    private static void processCardChosenToCollection(List<Integer> cardIdxList, Player player) {
-        for (Integer idx : cardIdxList) {
-            Card card = player.getCardsOnHand().get(idx);
+    public static void processCardChosenToCollection(int[] cardIdxToAddToCollection, Player player) {
+        Card[] cards = {player.getCardsOnHand().get(cardIdxToAddToCollection[0]), player.getCardsOnHand().get(cardIdxToAddToCollection[1])};
+        for (Card card : cards) {
             player.getCardsOnHand().remove(card);
             player.getCardsInCollection().add(card);
         }
