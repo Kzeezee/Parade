@@ -73,7 +73,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     
     private void processPlayerLeaveGame(GameState game) {
         NetworkUtility.findMyPlayer(game, myPlayerId).setCPU(true);
-        NetworkUtility.findMyPlayer(game, myPlayerId);
+        NetworkUtility.findMyPlayer(game, myPlayerId).
         removeClientHandler();
         if (!game.setNewGameMaster()) {
             availableGames.remove(gameId);
@@ -88,9 +88,10 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     }
 
     private void processTurn(String[] indexOfChosenCard) {
+        // GameFlow.processTurn(indexOfChosenCard, );
         GameState game = NetworkUtility.findGameState(gameId, availableGames);
         Player playerThatJustPlayed = game.getCurrentPlayer();
-        int cardIndex = Integer.parseInt(indexOfChosenCard[1]);
+        int cardIndex = Integer.parseInt(indexOfChosenCard[0]);
         // System.out.println("current player: " + playerThatJustPlayed.getName());
         // System.out.println("CARD INDEX: " + cardIndex);
         GameProcessor.processPlayerTurn(cardIndex, playerThatJustPlayed, game);

@@ -149,7 +149,10 @@ public class Client implements Runnable {
             if (input.equals(Constants.LEAVE_GAME)) {
                 sendMessage(new String[] {Constants.LEAVE_GAME}); 
                 break;
-            } 
+            }  else if (input.equals(Constants.ENTER_KEY)) { // to refresh page
+                sendMessage(new String[] {Constants.ENTER_KEY});
+                break;
+            }
             System.out.println(Constants.INVALID_COMMAND);
         }
     }
@@ -195,10 +198,13 @@ public class Client implements Runnable {
                     String[] indexOfChosenCard = Prompt.promptToCollectTwo(currentPlayer);
                     if (indexOfChosenCard[0].equals(Constants.LEAVE_GAME)) {
                         sendMessage(new String[] {Constants.LEAVE_GAME});
-                        return;
+                        // bot to take over the turn
+                        int[] temp = CPUGameAction.CPUSelectTwoToCollections(currentPlayer, game);
+                        indexOfChosenCard[0] = temp[0] + "";
+                        indexOfChosenCard[1] = temp[1] + "";
                     }
-                    messageToSendBack[0] = indexOfChosenCard[0] + "";
-                    messageToSendBack[1] = indexOfChosenCard[1] + ""; 
+                    messageToSendBack[0] = indexOfChosenCard[0];
+                    messageToSendBack[1] = indexOfChosenCard[1];
             } else { // not your turn
                 System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
                 return;
@@ -217,9 +223,9 @@ public class Client implements Runnable {
                 String indexOfChosenCard = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, currentPlayer);
                 if (indexOfChosenCard.equals(Constants.LEAVE_GAME)) {
                     sendMessage(new String[] {Constants.LEAVE_GAME});
-                    return;
+                    indexOfChosenCard = CPUGameAction.chooseCPUCardIdx(currentPlayer, game, -1) + "";
                 }
-                messageToSendBack[0] = indexOfChosenCard + ""; 
+                messageToSendBack[0] = indexOfChosenCard; 
             } else { // not your turn
                 System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
                 return;
