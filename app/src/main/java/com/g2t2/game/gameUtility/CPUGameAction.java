@@ -10,14 +10,14 @@ import com.g2t2.types.ScoreCalculation;
 import com.g2t2.util.Display;
 
 /**
- * Utility class for handling CPU-specific game actions.
+ * Utility class for handling CPU-specific game actions.a
  * 
  * This class provides methods for CPU players to execute their turns, select
  * cards
  * for collection, and make decisions based on difficulty levels. It is designed
  * to simulate the behavior of CPU players in the game.
  * 
- * @author Shwe
+ * @author Shw
  */
 public class CPUGameAction {
     /**
@@ -41,9 +41,9 @@ public class CPUGameAction {
      * @param game   The current game state.
      * @return An int[2] of indices representing selected cards from the hand.
      */
-    public static int[] CPUSelectTwoToCollections(Player player, GameState game) {
-        int[] cardIdxList = {-1, -1};
-        while (cardIdxList[0] == cardIdxList[1]) {
+    public static String[] CPUSelectTwoToCollections(Player player, GameState game) {
+        String[] cardIdxList = {"-1", "-1"};
+        while (cardIdxList[0].equals(cardIdxList[1])) {
             for (int i = 0; i < cardIdxList.length; i++) {
                 cardIdxList[i] = chooseCPUCardIdx(player, game, cardIdxList[0]);
                 System.out.println("Index of " + i + " card: " + cardIdxList[i]);
@@ -60,20 +60,20 @@ public class CPUGameAction {
      *                    hand.
      * @param player      The player whose collection is being updated.
      */
-    public static int chooseCPUCardIdx(Player player, GameState game, int idxOfFirstChosenCard) {
+    public static String chooseCPUCardIdx(Player player, GameState game, String idxOfFirstChosenCard) {
         int numOfCards = player.getCardsOnHand().size();
         switch (player.getDifficulty()) {
             // level 1 difficulty: random
             case 1:
-                return (int) (Math.random() * numOfCards);
+                return (int) (Math.random() * numOfCards) + "";
             // level 2 difficulty: picks the card that gives back the lowest number of cards
             // from the parade
             case 2:
-                return chooseMediumDifficultyCard(player, game, idxOfFirstChosenCard);
+                return chooseMediumDifficultyCard(player, game, idxOfFirstChosenCard) + "";
             case 3:
-                return chooseHardDifficultyCard(player, game, idxOfFirstChosenCard);
+                return chooseHardDifficultyCard(player, game, idxOfFirstChosenCard) + "";
             default:
-                return (int) (Math.random() * numOfCards);
+                return (int) (Math.random() * numOfCards) + "";
         }
     }
 
@@ -85,7 +85,7 @@ public class CPUGameAction {
      * @param game   The current game state.
      * @return An index representing the chosen card from the hand.
      */
-    private static int chooseMediumDifficultyCard(Player player, GameState game, int idxOfFirstChosenCard) {
+    private static int chooseMediumDifficultyCard(Player player, GameState game, String idxOfFirstChosenCard) {
         List<Card> hand = player.getCardsOnHand();
         int lowestNumCollect = Integer.MAX_VALUE;
         int bestIdx = -1;
@@ -111,13 +111,13 @@ public class CPUGameAction {
      * @param game   The current game state.
      * @return An index representing the chosen card from the hand.
      */
-    private static int chooseHardDifficultyCard(Player player, GameState game, int idxOfFirstChosenCard) {
+    private static int chooseHardDifficultyCard(Player player, GameState game, String idxOfFirstChosenCard) {
         List<Card> hand = player.getCardsOnHand();
         int lowestPoints = Integer.MAX_VALUE;
         int bestIdx = -1;
 
         for (int i = 0; i < hand.size(); i++) {
-            if (i == idxOfFirstChosenCard) {
+            if (i ==idxOfFirstChosenCard) {
                 continue;
             }
             List<Card> collectableCards = GameProcessor.getCollectableCards(hand.get(i), game);
