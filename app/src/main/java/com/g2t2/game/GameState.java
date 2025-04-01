@@ -136,7 +136,7 @@ public class GameState implements Serializable { // to allow it to be sent over
                 return true;
             }
         }
-        return false
+        return false;
     }
 
     public Player getPlayerWhoStartFinalRound() {
