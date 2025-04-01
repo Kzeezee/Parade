@@ -136,26 +136,25 @@ public class GameProcessor {
      * Allows a player to select two cards from their hand to add to their
      * collection.
      *
-     * @param player the player selecting cards
-     * @param game   the current game state
+     * @param player The player selecting cards.
+     * @param game   The current game state.
      */
     public static void putTwoToCollections(Player player, GameState game) {
         GameRenderer.displayRoundInformation(game);
 
-        List<Integer> cardIdxList = null;
+        int[] cardIdxToAddToCollection = null;
         if (player.getCPU()) {
             Display.delayPrint(" 📌 Player " + Display.colorString(player.getName())
                     + " is choosing their cards.", 30);
-            cardIdxList = CPUGameAction.CPUSelectTwoToCollections(player, game);
+            cardIdxToAddToCollection = CPUGameAction.CPUSelectTwoToCollections(player, game);
         } else {
             System.out.println(" ⚜ You need to select " + Display.colorString("TWO")
                     + " cards from your hand to add to the collection.");
 
-            cardIdxList = Prompt.promptToCollectTwo(player, game);
+            cardIdxToAddToCollection = Prompt.promptToCollectTwo(player);
         }
         System.out.println(Constants.DIVIDER);
-
-        processCardChosenToCollection(cardIdxList, player);
+        processCardChosenToCollection(cardIdxToAddToCollection, player);
     }
 
     /**
