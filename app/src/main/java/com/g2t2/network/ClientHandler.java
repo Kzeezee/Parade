@@ -42,7 +42,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     }
 
     private void createPlayer(String name) {
-        GameState game = NetworkUtility.findGameState(gameId, availableGames)
+        GameState game = NetworkUtility.findGameState(gameId, availableGames);
         Player player = new Player(name);
         player.setPlayerProfile(StateManager.getPlayerProfile());
         game.addPlayer(player);
@@ -54,7 +54,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     }
 
     private void createCPU(int numOfCPU, int difficulty) {
-        GameState game = NetworkUtility.findGameState(gameId, availableGames)
+        GameState game = NetworkUtility.findGameState(gameId, availableGames);
         for (int i = 0; i < numOfCPU; i++ ) {
         Player cpu = new Player(true, difficulty);
         game.addPlayer(cpu);

@@ -31,7 +31,6 @@ public class GameFlow {
             // System.out.println("person that started final round: " + game.getPlayerWhoStartFinalRound().getName());
             // System.out.println();
         } 
-        broadcastGameStatus(game);
     }
 
     public static void processPut2Collection(String[] indexOfChosenCard, GameState game) {
@@ -49,6 +48,5 @@ public class GameFlow {
             game.setEndOfGame(true);
             ScoreCalculation.computeScore(game.getPlayers());
         }
-        broadcastGameStatus(game);
     }
 }
