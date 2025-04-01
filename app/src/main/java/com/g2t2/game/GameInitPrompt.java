@@ -3,7 +3,7 @@ package com.g2t2.game;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import com.g2t2.game.GameUtility.Prompt;
+import com.g2t2.game.gameutility.*;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;

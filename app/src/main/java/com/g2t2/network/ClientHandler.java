@@ -7,8 +7,7 @@ import java.net.Socket;
 import java.util.*;
 
 import com.g2t2.game.*;
-import com.g2t2.game.gameUtility.CPUGameAction;
-import com.g2t2.game.gameUtility.GameProcessor;
+import com.g2t2.game.gameutility.*;
 import com.g2t2.util.*;
 import com.g2t2.types.*;
 
