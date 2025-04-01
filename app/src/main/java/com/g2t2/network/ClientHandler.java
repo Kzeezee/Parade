@@ -42,7 +42,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     }
 
     private void createPlayer(String name) {
-        GameState game = findGameState(gameId);
+        GameState game = NetworkUtility.findGameState(gameId, availableGames)
         Player player = new Player(name);
         player.setPlayerProfile(StateManager.getPlayerProfile());
         game.addPlayer(player);
@@ -54,21 +54,13 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     }
 
     private void createCPU(int numOfCPU, int difficulty) {
-        GameState game = findGameState(gameId);
+        GameState game = NetworkUtility.findGameState(gameId, availableGames)
         for (int i = 0; i < numOfCPU; i++ ) {
         Player cpu = new Player(true, difficulty);
         game.addPlayer(cpu);
         }
         sendGameState(game);
         broadcastMessage(new String[] {Constants.REFRESH_PAGE});
-    }
-
-    private GameState findGameState(String gameId) {
-        GameState game = availableGames.get(gameId);
-        if (game != null) {
-            return game;
-        }
-        return null;
     }
 
     private void processPlayerLeaveLobby() {
@@ -90,14 +82,14 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     }
 
     private void startGame() {
-        GameState game = findGameState(gameId);
+        GameState game = NetworkUtility.findGameState(gameId, availableGames);
         game.giveOutInitialCards();
         game.startGame();
         broadcastGameStatus(game);
     }
 
     private void processTurn(String[] indexOfChosenCard) {
-        GameState game = findGameState(gameId);
+        GameState game = NetworkUtility.findGameState(gameId, availableGames);
         Player playerThatJustPlayed = game.getCurrentPlayer();
         int cardIndex = Integer.parseInt(indexOfChosenCard[1]);
         // System.out.println("current player: " + playerThatJustPlayed.getName());
@@ -123,7 +115,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     }
 
     private void processPut2Collection(String[] indexOfChosenCard) {
-        GameState game = findGameState(gameId);
+        GameState game = NetworkUtility.findGameState(gameId, availableGames);
         Player playerThatJustPlayed = game.getCurrentPlayer();
         int[] cardIndices = {Integer.parseInt(indexOfChosenCard[1]), Integer.parseInt(indexOfChosenCard[2])};
         // System.out.println("current player: " + playerThatJustPlayed.getName());
@@ -155,7 +147,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                     
                     } else if (command.equals(Constants.JOIN_GAME)) { // join game
                         // checking if gameId sent in is valid
-                        GameState game = findGameState(messageToProcess.getMessage()[1]);
+                        GameState game = NetworkUtility.findGameState(gameId, messageToProcess.getMessage()[1], availableGames);
                         if (game == null) {
                             sendMessage(new String[] {Constants.INVALID_GAME_ID});
                         } else if (game.getNumOfPlayers() >= 6) {
@@ -188,7 +180,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         processPut2Collection(messageToProcess.getMessage());
 
                     } else if (command.equals(Constants.ENTER_KEY)) { // refresh page for that player only
-                        sendGameState(findGameState(gameId)); 
+                        sendGameState(NetworkUtility.findGameState(gameId, availableGames)); 
                     }
                 }
             } catch (IOException e) {
@@ -222,7 +214,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     } 
 
     private void sendGameState(GameState game) {
-        GameState snapshot = findGameState(gameId).deepCopy(); // Create a snapshot
+        GameState snapshot = NetworkUtility.findGameState(gameId, availableGames).deepCopy(); // Create a snapshot
         try {
             objectOutputStream.writeObject(snapshot);
             objectOutputStream.flush();

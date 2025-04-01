@@ -13,6 +13,7 @@ import com.g2t2.game.StartMenu;
 import com.g2t2.game.gameutility.CPUGameAction;
 import com.g2t2.game.gameutility.GameRenderer;
 import com.g2t2.game.gameutility.Prompt;
+import com.g2t2.network.networkUtility.NetworkUtility;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
@@ -175,7 +176,7 @@ public class Client implements Runnable {
         }
 
         GameRenderer.displayRoundInformation(game);
-        GameRenderer.displayHandCards(findMyPlayer(game));
+        GameRenderer.displayHandCards(NetworkUtility.findMyPlayer(game, myPlayerId));
         if (game.isPut2CollectionRound()) { // put 2 to collection round
             messageToSendBack[0] = Constants.PUT_TO_COLLECTION;
             if (currentPlayer.getCPU()) { // CPU turn
@@ -233,15 +234,6 @@ public class Client implements Runnable {
             closeEverything(socket, objectInputStream, objectOutputStream);
         } 
     }
-
-    private Player findMyPlayer(GameState game) {
-        for (Player player : game.getPlayers()) {
-            if (player.getPlayerId() == myPlayerId) {
-                return player;
-            }
-        }
-        return null;
-    }
      
     private void listenForMessage() {
         while (socket.isConnected()) {
@@ -277,7 +269,7 @@ public class Client implements Runnable {
 
                     } else if (command.equals(Constants.NEW_GAME)) {
                         StartMenu.showStartMenu();
-                        
+
                     }
                 } else if (incomingObject instanceof Player player) {
                     myPlayerId = player.getPlayerId();
