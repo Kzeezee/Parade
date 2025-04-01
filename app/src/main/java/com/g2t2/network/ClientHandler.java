@@ -87,52 +87,6 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         broadcastGameStatus(game);
     }
 
-    private void processTurn(String[] indexOfChosenCard) {
-        // GameFlow.processTurn(indexOfChosenCard, );
-        GameState game = NetworkUtility.findGameState(gameId, availableGames);
-        Player playerThatJustPlayed = game.getCurrentPlayer();
-        int cardIndex = Integer.parseInt(indexOfChosenCard[0]);
-        // System.out.println("current player: " + playerThatJustPlayed.getName());
-        // System.out.println("CARD INDEX: " + cardIndex);
-        GameProcessor.processPlayerTurn(cardIndex, playerThatJustPlayed, game);
-
-        game.passTurnToNextPlayer();
-        Player nextPlayer = game.getCurrentPlayer();
-        //System.out.println("next player: " + nextPlayer.getName());
-        
-        if (game.isLastRound() && nextPlayer.equals(game.getPlayerWhoStartFinalRound())) { // everyone took 1 turn, go to put cards in collection phase
-            game.setPut2CollectionRound(true);
-            // System.out.println("Go to put 2 collection round");
-            // System.out.println();
-
-        } else if (!game.isLastRound() && ScoreCalculation.meetsGameEndCondition(playerThatJustPlayed, game.getDeck())) { // go to last round
-            game.setLastRound(true);
-            game.setPlayerWhoStartFinalRound(nextPlayer);
-            // System.out.println("person that started final round: " + game.getPlayerWhoStartFinalRound().getName());
-            // System.out.println();
-        } 
-        broadcastGameStatus(game);
-    }
-
-    private void processPut2Collection(String[] indexOfChosenCard) {
-        GameState game = NetworkUtility.findGameState(gameId, availableGames);
-        Player playerThatJustPlayed = game.getCurrentPlayer();
-        int[] cardIndices = {Integer.parseInt(indexOfChosenCard[1]), Integer.parseInt(indexOfChosenCard[2])};
-        // System.out.println("current player: " + playerThatJustPlayed.getName());
-        // System.out.println("idx of card 1: " + cardIndices[0] + "|| idx of card 2: " + cardIndices[1]);
-        GameProcessor.processCardChosenToCollection(cardIndices, playerThatJustPlayed);
-
-        game.passTurnToNextPlayer();
-        Player nextPlayer = game.getCurrentPlayer();
-        // System.out.println("next player: " + nextPlayer.getName());
-
-        if (game.isPut2CollectionRound() && nextPlayer.equals(game.getPlayerWhoStartFinalRound())) { // go to score calculation
-            game.setEndOfGame(true);
-            ScoreCalculation.computeScore(game.getPlayers());
-        }
-        broadcastGameStatus(game);
-    }
-
     // This method contains everything that is supposed to ran on a separate thread, such as blocking operations
     @Override
     public void run() {
@@ -177,10 +131,16 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         createPlayer(messageToProcess.getMessage()[0]);
 
                     } else if (command.equals(Constants.COMPLETE_TURN)) { // player finish his turn
-                        processTurn(messageToProcess.getMessage());
+                        GameState game = NetworkUtility.findGameState(gameId, availableGames);
+                        GameFlow.processTurn(messageToProcess.getMessage(), game);
+                        broadcastGameStatus(game);
+                        // processTurn(messageToProcess.getMessage());
 
                     } else if (command.equals(Constants.PUT_TO_COLLECTION)) { // put 2 collection phase
-                        processPut2Collection(messageToProcess.getMessage());
+                        GameState game = NetworkUtility.findGameState(gameId, availableGames);
+                        GameFlow.processPut2Collection(messageToProcess.getMessage(), game);
+                        broadcastGameStatus(game);
+                        // processPut2Collection(messageToProcess.getMessage());
 
                     } else if (command.equals(Constants.ENTER_KEY)) { // refresh page for that player only
                         sendGameState(NetworkUtility.findGameState(gameId, availableGames)); 

@@ -223,6 +223,7 @@ public class Client implements Runnable {
                 String indexOfChosenCard = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, currentPlayer);
                 if (indexOfChosenCard.equals(Constants.LEAVE_GAME)) {
                     sendMessage(new String[] {Constants.LEAVE_GAME});
+                    // bot to take over the turn
                     indexOfChosenCard = CPUGameAction.chooseCPUCardIdx(currentPlayer, game, -1) + "";
                 }
                 messageToSendBack[0] = indexOfChosenCard; 

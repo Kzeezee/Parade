@@ -1,9 +1,6 @@
 package com.g2t2.game.gameutility;
 
-import javax.swing.text.Utilities;
-
 import com.g2t2.game.GameState;
-import com.g2t2.network.networkUtility.NetworkUtility;
 import com.g2t2.types.Player;
 import com.g2t2.types.ScoreCalculation;
 
