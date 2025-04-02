@@ -151,7 +151,7 @@ public class Client implements Runnable {
                     }
                     sendMessage(idsToRemove);
                     break;
-                    
+
                 } else if (input.equals(Constants.START_GAME)) {
                     if (game.getNumOfPlayers() < 2) {
                         System.out.println(Display.errorColour("❌ Insufficient Number of Players"));
@@ -241,7 +241,7 @@ public class Client implements Runnable {
                 return;
             }
         } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
-            String indexOfChosenCard = Prompt.promptForCard(currentPlayer);
+            String indexOfChosenCard = Prompt.promptForCard(currentPlayer, Constants.PROMPT_ADD_TO_PARADE);
             if (indexOfChosenCard.equals(Constants.LEAVE_GAME)) {
                 leaveGame();
                 // bot to take over the turn

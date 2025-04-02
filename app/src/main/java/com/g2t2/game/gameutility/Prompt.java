@@ -46,13 +46,13 @@ public class Prompt {
      * @param player The player selecting a card.
      * @return The index of the selected card in the player's hand.
      */ 
-    public static String promptForCard(Player player) {
+    public static String promptForCard(Player player, String prompt) {
         String chosenCardString = null;
         Scanner sc = new Scanner(System.in);
         int numOfCards = player.getCardsOnHand().size();
         while (true) {
             try {
-                System.out.println(Constants.PROMPT_ADD_TO_PARADE);
+                System.out.println(prompt);
                 System.out.print(
                         Display.colorString(" ⚜ Choose card number (1 to " + numOfCards + ") ➢ "));
                 chosenCardString = sc.nextLine();
@@ -118,7 +118,7 @@ public class Prompt {
                 String prompt = Display.colorString(" 📌 Which card do you want to place in the Collection?\n" +
                         " 📌 You need to choose TWO different cards \n" +
                         " ⚜ Card " + (i + 1) + ": ");
-                String cardIdx = Prompt.promptForCard(player);
+                String cardIdx = Prompt.promptForCard(player, prompt);
                 if (cardIdx.equals(Constants.LEAVE_GAME)) {
                     choosenCardsIdx = new String[] {Constants.LEAVE_GAME};
                     break;
