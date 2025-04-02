@@ -194,9 +194,9 @@ public class Client implements Runnable {
         if (currentPlayer.getCPU()) { // CPU turn
             CPUGameAction.displayCPUTurnAction(currentPlayer);
             if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
-                int[] indexOfChosenCard = CPUGameAction.CPUSelectTwoToCollections(currentPlayer, game);
-                messageToSendBack[0] = indexOfChosenCard[0] + "";
-                messageToSendBack[1] = indexOfChosenCard[1] + "";
+                String[] indexOfChosenCard = CPUGameAction.CPUSelectTwoToCollections(currentPlayer, game);
+                messageToSendBack[0] = indexOfChosenCard[0];
+                messageToSendBack[1] = indexOfChosenCard[1];
             } else { // the rest don't do anything
                 System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
                 return;
@@ -206,9 +206,9 @@ public class Client implements Runnable {
                 if (indexOfChosenCard[0].equals(Constants.LEAVE_GAME)) {
                     leaveGame();
                     // bot to take over the turn
-                    int[] temp = CPUGameAction.CPUSelectTwoToCollections(currentPlayer, game);
-                    indexOfChosenCard[0] = temp[0] + "";
-                    indexOfChosenCard[1] = temp[1] + "";
+                    String[] temp = CPUGameAction.CPUSelectTwoToCollections(currentPlayer, game);
+                    indexOfChosenCard[0] = temp[0];
+                    indexOfChosenCard[1] = temp[1];
                 }
                 messageToSendBack[0] = indexOfChosenCard[0];
                 messageToSendBack[1] = indexOfChosenCard[1];
@@ -228,7 +228,7 @@ public class Client implements Runnable {
                 return;
             }
         } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
-            String indexOfChosenCard = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, currentPlayer);
+            String indexOfChosenCard = Prompt.promptForCard(currentPlayer);
             if (indexOfChosenCard.equals(Constants.LEAVE_GAME)) {
                 leaveGame();
                 // bot to take over the turn

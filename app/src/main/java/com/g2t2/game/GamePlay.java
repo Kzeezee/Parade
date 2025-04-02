@@ -38,8 +38,7 @@ public class GamePlay {
      * @param game The current game state.
      */
     public static void startGame(GameState game) {
-        game.startGame();
-        game.setHasStarted(true);   
+        GameFlow.startGame(game);   
         List<Player> players = game.getPlayers();
         while (!game.isPut2CollectionRound()) {
             String cardChosen = null;

@@ -38,14 +38,14 @@ public class GameProcessor {
      * @param player the human player
      * @param game   the current game state
      */
-    private static void playerplayTurn(Player player, GameState game) {
-        GameRenderer.displayRoundInformation(game);
-        GameRenderer.displayHandCards(player);
+    // private static void playerplayTurn(Player player, GameState game) {
+    //     GameRenderer.displayRoundInformation(game);
+    //     GameRenderer.displayHandCards(player);
 
-        // String prompt = String.format(Constants.ANSI_RESET + " 📌 Which card do you want to place in the Parade?");
-        int cardIdx = Integer.parseInt(Prompt.promptForCard(player));
-        processPlayerTurn(cardIdx, player, game);
-    }
+    //     // String prompt = String.format(Constants.ANSI_RESET + " 📌 Which card do you want to place in the Parade?");
+    //     int cardIdx = Integer.parseInt(Prompt.promptForCard(player));
+    //     processPlayerTurn(cardIdx, player, game);
+    // }
 
        /**
      * Update the game based on what the user have done
