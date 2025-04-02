@@ -95,7 +95,6 @@ public class GameInit {
         }
 
         game.printPlayerList();
-        game.giveOutInitialCards();
     }
 
    

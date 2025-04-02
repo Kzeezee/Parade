@@ -4,6 +4,7 @@ import com.g2t2.types.Player;
 import com.g2t2.types.PlayerProfile;
 import com.g2t2.types.ScoreCalculation;
 import com.g2t2.db.dao.impl.PlayerProfileDaoImpl;
+import com.g2t2.game.gameutility.GameFlow;
 import com.g2t2.game.gameutility.GameProcessor;
 import com.g2t2.game.gameutility.GameRenderer;
 import com.g2t2.game.gameutility.Prompt;
@@ -36,9 +37,8 @@ public class GamePlay {
      * @param game The current game state.
      */
     public static void startGame(GameState game) {
-        game.setHasStarted(true);
+        GameFlow.startGame(game);
         List<Player> players = game.getPlayers();
-        System.out.println(players);
 
         // finding a random person to start the game
         int currentIdx = (int) (Math.random() * players.size());
