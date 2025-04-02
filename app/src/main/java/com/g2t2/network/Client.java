@@ -20,7 +20,6 @@ public class Client implements Runnable {
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
     private final BlockingQueue<Runnable> mainThreadTasks = new LinkedBlockingQueue<>();
-    private static final Runnable CLOSE_MAIN_THREAD = () -> {}; // Empty task to signal termination
     private volatile boolean needToRefreshPage = false;
     private boolean isInGame = false;
     private String username;
@@ -56,8 +55,14 @@ public class Client implements Runnable {
                 hasCorrectInput = true;
 
             } else if (userChoice[userChoice.length-1].equals(Constants.GO_BACK)) {
-                StartMenu.showStartMenu();
-                gameJoiningLobby();
+                // TODO (leave server and go to main menu)
+                continue;
+
+            } else if (userChoice[userChoice.length-1].equals(Constants.CLOSE_APP)) {
+                sendMessage(new String[] {Constants.CLOSE_APP});
+                hasCorrectInput = true;
+                closeEverything(socket, objectInputStream, objectOutputStream);
+
             } else {
                 System.out.println(Display.errorColour(" ❌ Please input either a valid command"));
                 System.out.println();
@@ -326,7 +331,10 @@ public class Client implements Runnable {
             if (socket != null) {
                 socket.close();
             }
-            mainThreadTasks.add(CLOSE_MAIN_THREAD);
+            mainThreadTasks.add(() -> {
+                System.out.println("Closing main client...");
+                Thread.currentThread().interrupt(); 
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -335,26 +343,32 @@ public class Client implements Runnable {
     public static void main(String[] args) throws IOException {
         // TODO settle exceptions for username input
         // set up client -> connected to server
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter your username for the game: ");
-        String username = sc.nextLine();
-        Socket socket = new Socket("localhost", portNumber);
-        Client client = new Client(socket, username);
-        StartMenu.showStartMenu();
+        try {
+            Scanner sc = new Scanner(System.in);
+            System.out.print("Enter your username for the game: "); 
+            String username = sc.nextLine(); // TODO: to take profile name
+            Socket socket = new Socket("localhost", portNumber);
+            Client client = new Client(socket, username);
+            StartMenu.showStartMenu();
 
-        // Starting the Thread
-        Thread thread = new Thread(client);
-        thread.start();
-        client.gameJoiningLobby();
+             // Starting the Thread
+            Thread thread = new Thread(client);
+            thread.start();
+            client.gameJoiningLobby();
 
-        while (socket.isConnected()) {
-            try {
-                Runnable task = client.mainThreadTasks.take(); // Blocks until a task is available
-                task.run();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
+            while (socket.isConnected()) {
+                try {
+                    Runnable task = client.mainThreadTasks.take(); // Blocks until a task is available
+                    task.run();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
             }
+        } catch (IOException e) {
+            System.out.println(Display.errorColour(" ❌ Server is closed"));
         }
+
+        System.out.println(Constants.GOODBYE); // TODO: remove after combining with local
     }
 }
