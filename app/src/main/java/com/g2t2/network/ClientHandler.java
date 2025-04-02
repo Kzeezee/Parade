@@ -156,7 +156,6 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                     }
                 }
             } catch (IOException e) {
-                System.out.println("Something happened----");
                 closeEverything(socket, objectInputStream, objectOutputStream);
                 break; // break out from the while loop, because client socket is still connected
             } catch (ClassNotFoundException e) {
@@ -168,7 +167,6 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     
     // send gameState to all players in the game
     private void broadcastGameStatus(GameState game) {
-        // System.out.println("Broadcasting GameState: " + game.getGameId());
         for (ClientHandler clientHandler : clientHandlers.get(gameId)) {
             clientHandler.sendGameState(game);
         }
@@ -176,10 +174,8 @@ public class ClientHandler implements Runnable { // allows instances to be execu
 
     // broadcoast a message to all players less the sender
     private void broadcastMessage(String[] message) {
-        // System.out.println("Broadcasting Message");
         for (ClientHandler clientHandler : clientHandlers.get(gameId)) {
             if (clientHandler.myPlayerId != this.myPlayerId) {
-                // System.out.println("Sending to clientHandler: " + clientHandler.myPlayerId);
                 clientHandler.sendMessage(message);
             }
         }

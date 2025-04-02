@@ -8,17 +8,11 @@ import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.g2t2.game.GameState;
-import com.g2t2.game.StartMenu;
-import com.g2t2.game.gameutility.CPUGameAction;
-import com.g2t2.game.gameutility.GameRenderer;
-import com.g2t2.game.gameutility.Prompt;
-import com.g2t2.network.networkUtility.NetworkUtility;
-import com.g2t2.network.networkUtility.Message;
+import com.g2t2.game.*;
+import com.g2t2.game.gameutility.*;
+import com.g2t2.network.networkUtility.*;
 import com.g2t2.types.Player;
-import com.g2t2.util.Constants;
-import com.g2t2.util.Display;
-import com.g2t2.util.Utility;
+import com.g2t2.util.*;
 
 public class Client implements Runnable {
     private static final int portNumber = 1234;
@@ -88,7 +82,6 @@ public class Client implements Runnable {
 
     private void printWaitingRoomDetails(GameState game) {
         boolean isGameMaster = game.getGameMaster().getPlayerId() == myPlayerId;
-        int numberOfPlayersCurrently = game.getNumOfPlayers();
         Utility.clearConsoleScreen();
         System.out.println(Constants.WAITING_LOBBY_BANNER);
         printWaitingRoomCommands(isGameMaster, game);
@@ -99,11 +92,10 @@ public class Client implements Runnable {
     }
 
     private void printWaitingRoomCommands(boolean isGameMaster, GameState game) {
-        System.out.println("> Here are some available commands you can use <");
-        // System.out.println("> To refresh the page, press the ENTER KEY");
+        System.out.println(Display.colorString("--- Here are some available commands you can use ---"));
         System.out.println(" 📌 To leave the room, enter '" + Constants.LEAVE_GAME + "'");
         if (isGameMaster) { // show available GameMaster Commands
-            System.out.println("--GameMaster Specific Commands--");
+            System.out.println(Display.colorString("--- GameMaster Specific Commands ---"));
             if (game.getNumOfPlayers() < 6) {
                 System.out.println(" 📌 To add CPU(s), enter '" + Constants.ADD_CPU + "'");
             } 
@@ -112,7 +104,6 @@ public class Client implements Runnable {
             } 
             System.out.println(" 📌 To start the game, enter '" + Constants.START_GAME + "'");
         }
-            // TODO: enable the removal of CPUs / Players
     }
 
     private void activatingUserControlCommands(boolean isGameMaster, GameState game) {
@@ -126,10 +117,15 @@ public class Client implements Runnable {
                 sendMessage(new String[] {Constants.ENTER_KEY}); // refresh page
                 System.out.println("📌 There is an update, refreshing page");
                 threadSleep(1000);
-                break;
-            }
 
-            if (isGameMaster) { // commands available to gameMaster
+                // commands available to everyone
+            } else if (input.equals(Constants.LEAVE_GAME)) { 
+                sendMessage(new String[] {Constants.LEAVE_GAME}); 
+
+            }  else if (input.equals(Constants.ENTER_KEY)) { // refresh page
+                sendMessage(new String[] {Constants.ENTER_KEY});
+
+            } else if (isGameMaster) { // commands available to gameMaster
                 if (input.equals(Constants.ADD_CPU)) {
                     if (game.getNumOfPlayers() < 6) {
                         String[] CPUInformation = {"", "", Constants.ADD_CPU};
@@ -140,9 +136,7 @@ public class Client implements Runnable {
                         }
                         System.arraycopy(userInput, 0, CPUInformation, 0, 2);
                         sendMessage(CPUInformation);
-                        break;
                     }
-                    
                 } else if (game.getNumOfCPU() > 0 && input.equals(Constants.REMOVE_CPU)) {
                     String[] idsToRemove = Prompt.promptForCPURemoval(game);
                     if (idsToRemove[0].equals(Constants.CANCEL_ACTION)) {
@@ -150,26 +144,16 @@ public class Client implements Runnable {
                         break;
                     }
                     sendMessage(idsToRemove);
-                    break;
-
                 } else if (input.equals(Constants.START_GAME)) {
                     if (game.getNumOfPlayers() < 2) {
-                        System.out.println(Display.errorColour("❌ Insufficient Number of Players"));
+                        System.out.println(Display.errorColour(" ❌ Insufficient Number of Players"));
                         continue;
                     }
                     sendMessage(new String[] {Constants.START_GAME});
-                    break;
                 }
-            }
-            // commands available to everyone
-            if (input.equals(Constants.LEAVE_GAME)) {
-                sendMessage(new String[] {Constants.LEAVE_GAME}); 
-                break;
-            }  else if (input.equals(Constants.ENTER_KEY)) { // refresh page
-                sendMessage(new String[] {Constants.ENTER_KEY});
-                break;
-            }
-            System.out.println(Constants.INVALID_COMMAND);
+            } else {
+                System.out.println(Constants.INVALID_COMMAND);
+            }   
         }
     }
 
@@ -270,11 +254,8 @@ public class Client implements Runnable {
     private void listenForMessage() {
         while (socket.isConnected()) {
             try {
-                // System.out.println("needToRefreshGame: " + needToRefreshPage);
                 Object incomingObject = objectInputStream.readObject();
-                // System.out.println("Received object: " + incomingObject);
                 if (incomingObject instanceof GameState game) {
-                    // System.out.println("Number of player: " + game.getNumOfPlayers());
                     if (!game.getHasStarted()) {
                         mainThreadTasks.add(() -> printWaitingRoomDetails(game));
 
@@ -300,8 +281,6 @@ public class Client implements Runnable {
                         needToRefreshPage = true;
 
                     } else if (command.equals(Constants.NEW_GAME)) {
-                        // temp fix
-                        StartMenu.showStartMenu();
                         gameJoiningLobby();
 
                     }
