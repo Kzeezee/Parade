@@ -53,7 +53,7 @@ public class Constants {
     public static final String JOIN_GAME = "j"; //"JOIN GAME";
     public static final String ADD_CPU = "x"; //"ADD CPU";
     public static final String START_GAME = "w"; //"START GAME";
-    public static final String LEAVE_GAME = "y"; //"LEAVE GAME";
+    public static final String LEAVE_GAME = "l"; //"LEAVE GAME";
     public static final String ENTER_KEY = "";
     public static final String CANCEL_ACTION = "CANCEL ACTION";
 

@@ -55,7 +55,7 @@ public class Prompt {
                 chosenCardString = sc.nextLine();
 
                 if (chosenCardString.equals(Constants.LEAVE_GAME)) {
-                    break;
+                    return Constants.LEAVE_GAME;
                 }
 
                 int chosenCardIndex = Integer.parseInt(chosenCardString);
@@ -156,7 +156,7 @@ public class Prompt {
      * @return A String array that represents user's selection of the CPU information.
      *         Index 0 -> Number of CPU to add
      *         Index 1 -> Difficulty Level
-     */ // MAY CONVERT TO INT[]
+     */
     public static String[] promptForCPUDetails(int numOfPlayers) {
         Scanner sc = new Scanner(System.in);
         int maxNumOfCPU = 6 - numOfPlayers;

@@ -65,7 +65,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
 
     private void processPlayerLeaveLobby(GameState game) {
         game.removePlayer(NetworkUtility.findMyPlayer(game, myPlayerId));
-        if (game.getNumOfPlayers() == 1 || !game.setNewGameMaster()) {
+        if (!game.setNewGameMaster()) {
             availableGames.remove(gameId);
         }
         removePlayerFromGame();
@@ -132,17 +132,17 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                     }  else if (command.equals(Constants.NEW_GAME)) { // player wants to play again
                         createPlayer(messageToProcess.getMessage()[0]);
 
-                    } else if (command.equals(Constants.COMPLETE_TURN)) { // player finish his turn
-                        GameFlow.processTurn(messageToProcess.getMessage(), game);
+                    } else if (command.equals(Constants.COMPLETE_TURN) && game != null) { // player finish his turn
+                        GameFlow.processTurn(messageToProcess.getMessage(), game); // ERROR
                         broadcastGameStatus(game);
 
-                    } else if (command.equals(Constants.PUT_TO_COLLECTION)) { // put 2 collection phase
+                    } else if (command.equals(Constants.PUT_TO_COLLECTION) && game != null) { // put 2 collection phase
                         GameFlow.processPut2Collection(messageToProcess.getMessage(), game);
                         broadcastGameStatus(game);
 
                     } else if (command.equals(Constants.ENTER_KEY)) { // refresh page for that player only
                         sendGameState(NetworkUtility.findGameState(gameId, availableGames)); 
-                        
+                    
                     } else if (command.equals(Constants.GAME_ENDED)) { // reset game setting
                         resetGame();
                     }
