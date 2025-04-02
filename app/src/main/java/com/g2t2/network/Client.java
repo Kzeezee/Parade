@@ -91,28 +91,31 @@ public class Client implements Runnable {
         int numberOfPlayersCurrently = game.getNumOfPlayers();
         Utility.clearConsoleScreen();
         System.out.println(Constants.WAITING_LOBBY_BANNER);
-        printWaitingRoomCommands(isGameMaster, numberOfPlayersCurrently);
+        printWaitingRoomCommands(isGameMaster, game);
         System.out.println(Constants.DIVIDER);
         System.out.println(" 📌 GAME ID: " + game.getGameId());
         game.printPlayerList();
-        activatingUserControlCommands(isGameMaster, numberOfPlayersCurrently);
+        activatingUserControlCommands(isGameMaster, game);
     }
 
-    private void printWaitingRoomCommands(boolean isGameMaster, int numberOfPlayersCurrently) {
+    private void printWaitingRoomCommands(boolean isGameMaster, GameState game) {
         System.out.println("> Here are some available commands you can use <");
         // System.out.println("> To refresh the page, press the ENTER KEY");
-        System.out.println("> To leave the room, enter '" + Constants.LEAVE_GAME + "'");
+        System.out.println(" 📌 To leave the room, enter '" + Constants.LEAVE_GAME + "'");
         if (isGameMaster) { // show available GameMaster Commands
             System.out.println("--GameMaster Specific Commands--");
-            if (numberOfPlayersCurrently < 6) {
-                System.out.println("> To add CPU(s), enter '" + Constants.ADD_CPU + "'");
+            if (game.getNumOfPlayers() < 6) {
+                System.out.println(" 📌 To add CPU(s), enter '" + Constants.ADD_CPU + "'");
             } 
-            System.out.println("> To start the game, enter '" + Constants.START_GAME + "'");
+            if (game.getNumOfCPU() > 0) {
+                System.out.println(" 📌 To remove CPU(s), enter '" + Constants.REMOVE_CPU + "'");
+            } 
+            System.out.println(" 📌 To start the game, enter '" + Constants.START_GAME + "'");
         }
             // TODO: enable the removal of CPUs / Players
     }
 
-    private void activatingUserControlCommands(boolean isGameMaster, int numberOfPlayersCurrently) {
+    private void activatingUserControlCommands(boolean isGameMaster, GameState game) {
         Scanner sc = new Scanner(System.in);
         while (true) {
             System.out.print(Display.colorString(" ➢ Enter command: "));
@@ -128,21 +131,29 @@ public class Client implements Runnable {
 
             if (isGameMaster) { // commands available to gameMaster
                 if (input.equals(Constants.ADD_CPU)) {
-                    if (numberOfPlayersCurrently < 6) {
+                    if (game.getNumOfPlayers() < 6) {
                         String[] CPUInformation = {"", "", Constants.ADD_CPU};
-                        String[] userInput = Prompt.promptForCPUDetails(numberOfPlayersCurrently);
+                        String[] userInput = Prompt.promptForCPUDetails(game.getNumOfPlayers());
                         if (userInput[0].equals(Constants.CANCEL_ACTION)) { // user cancelled action
                             sendMessage(new String[] {Constants.ENTER_KEY});
                             break;
                         }
-
                         System.arraycopy(userInput, 0, CPUInformation, 0, 2);
                         sendMessage(CPUInformation);
                         break;
                     }
                     
+                } else if (game.getNumOfCPU() > 0 && input.equals(Constants.REMOVE_CPU)) {
+                    String[] idsToRemove = Prompt.promptForCPURemoval(game);
+                    if (idsToRemove[0].equals(Constants.CANCEL_ACTION)) {
+                        sendMessage(new String[] {Constants.ENTER_KEY});
+                        break;
+                    }
+                    sendMessage(idsToRemove);
+                    break;
+                    
                 } else if (input.equals(Constants.START_GAME)) {
-                    if (numberOfPlayersCurrently < 2) {
+                    if (game.getNumOfPlayers() < 2) {
                         System.out.println(Display.errorColour("❌ Insufficient Number of Players"));
                         continue;
                     }

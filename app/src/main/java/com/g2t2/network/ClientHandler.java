@@ -38,11 +38,10 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         gameId = game.getGameId();
         clientHandlers.put(gameId, new ArrayList<>());
         availableGames.put(gameId, game);
-        createPlayer(name);
+        createPlayer(name, game);
     }
 
-    private void createPlayer(String name) {
-        GameState game = NetworkUtility.findGameState(gameId, availableGames);
+    private void createPlayer(String name, GameState game) {
         Player player = new Player(name);
         player.setPlayerProfile(StateManager.getPlayerProfile());
         game.addPlayer(player);
@@ -53,11 +52,18 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         broadcastMessage(new String[] {Constants.REFRESH_PAGE});
     }
 
-    private void createCPU(int numOfCPU, int difficulty) {
-        GameState game = NetworkUtility.findGameState(gameId, availableGames);
+    private void createCPU(int numOfCPU, int difficulty, GameState game) {
         for (int i = 0; i < numOfCPU; i++ ) {
         Player cpu = new Player(true, difficulty);
         game.addPlayer(cpu);
+        }
+        sendGameState(game);
+        broadcastMessage(new String[] {Constants.REFRESH_PAGE});
+    }
+
+    private void removeCPU(String[] ids, GameState game) {
+        for (int i = 0; i < ids.length - 1; i++) {
+            game.removePlayer(NetworkUtility.findMyPlayer(game, Integer.parseInt(ids[i])));
         }
         sendGameState(game);
         broadcastMessage(new String[] {Constants.REFRESH_PAGE});
@@ -79,8 +85,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         removePlayerFromGame();
     }
 
-    private void resetGame() {
-        GameState game = NetworkUtility.findGameState(gameId, availableGames);
+    private void resetGame(GameState game) {
         game.resetGame();
         clientHandlers.get(gameId).clear();
     }
@@ -111,11 +116,14 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         }
                         else {
                             gameId = messageToProcess.getMessage()[1];
-                            createPlayer(messageToProcess.getMessage()[0]);
+                            createPlayer(messageToProcess.getMessage()[0], game);
                         }
 
                     } else if (command.equals(Constants.ADD_CPU)) { // add cpu
-                        createCPU(Integer.parseInt(messageToProcess.getMessage()[0]), Integer.parseInt(messageToProcess.getMessage()[1]));
+                        createCPU(Integer.parseInt(messageToProcess.getMessage()[0]), Integer.parseInt(messageToProcess.getMessage()[1]), game);
+
+                    } else if (command.equals(Constants.REMOVE_CPU)) { // remove cpu
+                        removeCPU(messageToProcess.getMessage(), game);
 
                     } else if (command.equals(Constants.START_GAME)) { // start game
                         GameFlow.startGame(game);
@@ -130,7 +138,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         sendMessage(new String[] {Constants.NEW_GAME});
 
                     }  else if (command.equals(Constants.NEW_GAME)) { // player wants to play again
-                        createPlayer(messageToProcess.getMessage()[0]);
+                        createPlayer(messageToProcess.getMessage()[0], game);
 
                     } else if (command.equals(Constants.COMPLETE_TURN) && game != null) { // player finish his turn
                         GameFlow.processTurn(messageToProcess.getMessage(), game); // ERROR
@@ -144,7 +152,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         sendGameState(NetworkUtility.findGameState(gameId, availableGames)); 
                     
                     } else if (command.equals(Constants.GAME_ENDED)) { // reset game setting
-                        resetGame();
+                        resetGame(game);
                     }
                 }
             } catch (IOException e) {
@@ -178,7 +186,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     } 
 
     private void sendGameState(GameState game) {
-        GameState snapshot = NetworkUtility.findGameState(gameId, availableGames).deepCopy(); // Create a snapshot
+        GameState snapshot = game.deepCopy(); // Create a snapshot
         try {
             objectOutputStream.writeObject(snapshot);
             objectOutputStream.flush();

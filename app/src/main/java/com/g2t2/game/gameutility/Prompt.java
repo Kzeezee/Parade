@@ -1,8 +1,11 @@
 package com.g2t2.game.gameutility;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
+import com.g2t2.game.GameState;
 import com.g2t2.types.Player;
 
 import com.g2t2.util.Constants;
@@ -209,11 +212,59 @@ public class Prompt {
                 System.out.println(Display.errorColour(" ❌ Please enter a number or an appropriate command"));
                 System.out.println();
             } catch (InputMismatchException e) {
-                System.out.println("this ran");
                 System.out.println(e.getMessage());
                 System.out.println();
             }
         }
         return new String[] {"" + numOfCPU, "" + difficulty};
     }
+
+    public static String[] promptForCPURemoval(GameState game) {
+        Scanner sc = new Scanner(System.in);
+        String input = null;
+        List<String> idsToRemove = new ArrayList<>();
+        int currentNumOfCPU = game.getNumOfCPU();
+        while (true) {
+            try {        
+                System.out.println(Constants.DIVIDER);
+                System.out.println(" 📌 Enter '" + Constants.CANCEL_ACTION + "' to stop this action."); 
+                System.out.println(" 📌 How many CPU(s) do you want to remove?: "); 
+                System.out.print(Display.colorString(" ➢ Enter a number: "));
+                input = sc.nextLine();
+                if (input.equals(Constants.CANCEL_ACTION)) {
+                    return new String[] {input};
+                }
+                int numOfCPUToRemove = Integer.parseInt(input);
+                if (numOfCPUToRemove < 1 || numOfCPUToRemove > currentNumOfCPU) {
+                    System.out.println(Display.errorColour(" ❌ Please input a valid number. There are currently only " + currentNumOfCPU + " CPU(s)"));
+                    continue;
+                }
+
+                int count = 0;
+                while (count < numOfCPUToRemove) {
+                    System.out.println(" 📌 Which CPU(s) do you want to remove? (Enter the playerId of the CPU)"); 
+                    System.out.print(Display.colorString(" ➢ Enter CPU's playerId: "));
+                    input = sc.nextLine();
+                    if (input.equals(Constants.CANCEL_ACTION)) {
+                        return new String[] {input};
+                    }
+                    int cpuId = Integer.parseInt(input);
+                    if (game.checkPlayerIsCPU(cpuId)) {
+                        idsToRemove.add(input);
+                        count++;
+                    } else {
+                        System.out.println(Display.errorColour(" ❌ Invalid Player ID."));
+                    }
+                }
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println(Display.errorColour(" ❌ Please enter a number or an appropriate command"));
+                System.out.println();
+            }
+        }
+
+        idsToRemove.add(Constants.REMOVE_CPU);
+        return idsToRemove.toArray(new String[0]);
+    }
+
 }
