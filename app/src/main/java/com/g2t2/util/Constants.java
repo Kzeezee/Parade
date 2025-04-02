@@ -16,7 +16,8 @@ public class Constants {
     public static final String YELLOW_ANSI = "\033[38;2;255;255;0m";
     public static final String PURPLE_ANSI = "\033[38;2;147;112;219m";
     public static final String GREEN_ANSI = "\033[38;2;85;205;121m";
-    public static final String BLACK_ANSI = "\033[38;2;1;1;1m";
+    // public static final String BLACK_ANSI = "\033[38;2;1;1;1m"; // \033[38;5;251m
+    public static final String BLACK_ANSI = "\033[38;5;251m"; // \033[38;5;251m
     public static final String ANSI_RESET = "\033[0m";
     public static final String INVALID_OPTION_ERROR_MSG = " ❌ Please enter a number or an appropriate command";
     public static final String WELCOMEMESSAGE_STRING = " ⚜ Welcome to G2T2 Parade! Please select an option. (1 or 3 for now)";
@@ -83,4 +84,6 @@ public class Constants {
 
     public static final int MIN_CPU_DIFFICULTY = 1;
     public static final int MAX_CPU_DIFFICULTY = 3;
+
+    public static final int CARD_HEIGHT = 5;
 }

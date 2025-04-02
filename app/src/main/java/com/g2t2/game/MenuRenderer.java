@@ -15,10 +15,9 @@ public class MenuRenderer {
 
         // If it isn't empty, display selection of all the profiles.
         for (int i = 0; i < players.size(); i++) {
-            System.out.printf(" 📌 %s | %d wins | (%d)\n", players.get(i).getName(), players.get(i).getWins(),
-                    i + 1);
+            System.out.printf(" (%d) %s | %d wins\n", i + 1, players.get(i).getName(), players.get(i).getWins());
         }
-        System.out.println("\n\n\n");
+        System.out.println("\n\n");
         System.out.println(Constants.DIVIDER);
     }
 }

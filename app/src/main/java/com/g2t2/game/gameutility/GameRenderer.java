@@ -63,7 +63,7 @@ public class GameRenderer {
     public static void displayParade(GameState game) {
         System.out.println(Display.colorString("「 ✦ PARADE COLLECTION ✦ 」" + Constants.ANSI_RESET));
         System.out.println("The front of the Parade starts from the left");
-        Display.displayCardsSideBySide(game.getParade());
+        Display.displayCardsSideBySide(game.getParade(), false);
         System.out.println(Constants.DIVIDER);
     }
 
@@ -75,7 +75,7 @@ public class GameRenderer {
     public static void displayHandCards(Player player) {
         System.out.println(Display.colorString("「 ✦ CARDS IN YOUR HAND ✦ 」") + Constants.ANSI_RESET);
         System.out.println("Each card is numbered, starting from the left, 1");
-        Display.displayCardsSideBySide(player.getCardsOnHand());
+        Display.displayCardsSideBySide(player.getCardsOnHand(), true);
         System.out.println(Constants.DIVIDER);
     }
 
@@ -96,7 +96,7 @@ public class GameRenderer {
         // Assign ranks based on sorted order
         int rank = 1;
         for (Player player : sortedPlayers) {
-            System.out.printf("%d. Player %d, %s, Score: [%d]%n", rank, player.getPlayerId(), player.getName(),
+            System.out.printf("(%d) Player %d, %s, Score: [%d]%n", rank, player.getPlayerId(), player.getName(),
                     player.getScore());
             rank++;
         }
