@@ -8,7 +8,7 @@ import java.util.*;
 
 import com.g2t2.game.*;
 import com.g2t2.game.gameutility.*;
-import com.g2t2.network.networkUtility.NetworkUtility;
+import com.g2t2.network.networkUtility.*;
 import com.g2t2.util.*;
 import com.g2t2.types.*;
 
@@ -79,13 +79,6 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         removePlayerFromGame();
     }
 
-    private void startGame() {
-        GameState game = NetworkUtility.findGameState(gameId, availableGames);
-        game.giveOutInitialCards();
-        game.startGame();
-        broadcastGameStatus(game);
-    }
-
     private void resetGame() {
         GameState game = NetworkUtility.findGameState(gameId, availableGames);
         game.resetGame();
@@ -100,13 +93,17 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                 Object incomingObject = objectInputStream.readObject();
                 if (incomingObject instanceof Message messageToProcess) {
                     String command = messageToProcess.getMessage()[messageToProcess.getMessage().length - 1];
+                    GameState game = null;
+                    if (gameId != null) {
+                        game = NetworkUtility.findGameState(gameId, availableGames);
+                    }
 
                     if (command.equals(Constants.CREATE_GAME)) { // create game
                         createGame(messageToProcess.getMessage()[0]);
                     
                     } else if (command.equals(Constants.JOIN_GAME)) { // join game
                         // checking if gameId sent in is valid
-                        GameState game = NetworkUtility.findGameState(messageToProcess.getMessage()[1], availableGames);
+                        game = NetworkUtility.findGameState(messageToProcess.getMessage()[1], availableGames);
                         if (game == null) {
                             sendMessage(new String[] {Constants.INVALID_GAME_ID});
                         } else if (game.getNumOfPlayers() >= 6) {
@@ -121,10 +118,10 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         createCPU(Integer.parseInt(messageToProcess.getMessage()[0]), Integer.parseInt(messageToProcess.getMessage()[1]));
 
                     } else if (command.equals(Constants.START_GAME)) { // start game
-                        startGame();
+                        GameFlow.startGame(game);
+                        broadcastGameStatus(game);
 
                     } else if (command.equals(Constants.LEAVE_GAME)) { // leave game
-                        GameState game = NetworkUtility.findGameState(gameId, availableGames);
                         if (game.getHasStarted()) { // leave game
                             processPlayerLeaveGame(game);
                         } else { // leave from lobby
@@ -136,16 +133,12 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         createPlayer(messageToProcess.getMessage()[0]);
 
                     } else if (command.equals(Constants.COMPLETE_TURN)) { // player finish his turn
-                        GameState game = NetworkUtility.findGameState(gameId, availableGames);
                         GameFlow.processTurn(messageToProcess.getMessage(), game);
                         broadcastGameStatus(game);
-                        // processTurn(messageToProcess.getMessage());
 
                     } else if (command.equals(Constants.PUT_TO_COLLECTION)) { // put 2 collection phase
-                        GameState game = NetworkUtility.findGameState(gameId, availableGames);
                         GameFlow.processPut2Collection(messageToProcess.getMessage(), game);
                         broadcastGameStatus(game);
-                        // processPut2Collection(messageToProcess.getMessage());
 
                     } else if (command.equals(Constants.ENTER_KEY)) { // refresh page for that player only
                         sendGameState(NetworkUtility.findGameState(gameId, availableGames)); 

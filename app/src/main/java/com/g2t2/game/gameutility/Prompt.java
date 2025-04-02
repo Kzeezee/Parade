@@ -1,13 +1,7 @@
 package com.g2t2.game.gameutility;
 
-import java.util.ArrayList;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
-
-import com.g2t2.game.GameState;
-import com.g2t2.game.StartMenu;
-import com.g2t2.game.GamePlay;
 
 import com.g2t2.types.Player;
 
@@ -49,13 +43,13 @@ public class Prompt {
      * @param player The player selecting a card.
      * @return The index of the selected card in the player's hand.
      */ 
-    public static String promptForCard(String prompt, Player player) {
+    public static String promptForCard(Player player) {
         String chosenCardString = null;
         Scanner sc = new Scanner(System.in);
         int numOfCards = player.getCardsOnHand().size();
         while (true) {
             try {
-                System.out.println(prompt);
+                System.out.println(Constants.PROMPT_ADD_TO_PARADE);
                 System.out.print(
                         Display.colorString(" ⚜ Choose card number (1 to " + numOfCards + ") ➢ "));
                 chosenCardString = sc.nextLine();
@@ -83,14 +77,13 @@ public class Prompt {
                 }
                 chosenCardString = chosenCardIndex - 1 + "";
                 break;
-            } catch (InputMismatchException e) {
+            } catch (IllegalArgumentException e) {
                 System.out.println(Display.errorColour(" ❌ Please input a number"));
                 System.out.println();
-                sc.nextLine();
             } catch (IndexOutOfBoundsException e) {
                 System.out.println(Display.errorColour(" ❌ Please input a card number (1 to " + numOfCards + "): "));
                 System.out.println();
-            } catch (IllegalArgumentException e) {
+            } catch (InputMismatchException e) {
                 System.out.println();
             }
         }
@@ -122,7 +115,7 @@ public class Prompt {
                 String prompt = Display.colorString(" 📌 Which card do you want to place in the Collection?\n" +
                         " 📌 You need to choose TWO different cards \n" +
                         " ⚜ Card " + (i + 1) + ": ");
-                String cardIdx = Prompt.promptForCard(prompt, player);
+                String cardIdx = Prompt.promptForCard(player);
                 if (cardIdx.equals(Constants.LEAVE_GAME)) {
                     choosenCardsIdx = new String[] {Constants.LEAVE_GAME};
                     break;
@@ -147,17 +140,9 @@ public class Prompt {
                 System.out.println(" 📌 The game has ended. 📌 ");
                 System.out.println(Display.colorString(" ⚜ Do you want to play another game? (y/n) ➢ "));
                 String confirmation = sc.nextLine();
-
-                // if (confirmation.equalsIgnoreCase("y")) {
-                //     StartMenu.showStartMenu();
-                //     GamePlay.startGame(new GameState());
-                // } else if (confirmation.equalsIgnoreCase("n")) {
-                //     Display.sayGoodBye();
-                //     System.exit(0);
-                // }
                 System.out.println(Constants.ANSI_RESET);
                 return confirmation;
-            } catch (IllegalArgumentException e) {
+            } catch (InputMismatchException e) {
                 System.out.println();
             }
         }
@@ -176,28 +161,30 @@ public class Prompt {
         Scanner sc = new Scanner(System.in);
         int maxNumOfCPU = 6 - numOfPlayers;
         int numOfCPU = 0;
+        String input = null;
         while (true) {
             try {        
+                System.out.println(Constants.DIVIDER);
+                System.out.println(" 📌 Enter '" + Constants.CANCEL_ACTION + "' to stop this action."); 
                 System.out.println(" 📌 How many CPU do you want to add?"); 
                 System.out.print(Display.colorString(" ➢ Enter a number (max = " + maxNumOfCPU + "): "));
-                numOfCPU = sc.nextInt();
+                input = sc.nextLine();
+                if (input.equals(Constants.CANCEL_ACTION)) {
+                    return new String[] {input};
+                }
+                numOfCPU = Integer.parseInt(input);
                 if (numOfCPU < 0 || numOfCPU > maxNumOfCPU) {
-                    throw new IllegalArgumentException(Display.errorColour(" ❌ Please enter a number between 0 to " 
+                    throw new InputMismatchException(Display.errorColour(" ❌ Please enter a number between 0 to " 
                     + maxNumOfCPU + ". Maximum number of players = 6"));
                 }
                 break;
-            } catch (InputMismatchException e) {
-                System.out.println(Display.errorColour(" ❌ Please enter a number"));
-                System.out.println();
-                sc.nextLine();
             } catch (IllegalArgumentException e) {
+                System.out.println(Display.errorColour(" ❌ Please enter a number or an appropriate command"));
+                System.out.println();
+            } catch (InputMismatchException e) {
                 System.out.println(e.getMessage());
                 System.out.println();
             }
-        }
-
-        if (numOfCPU == 0) {
-            return null;
         }
         
         int difficulty = 0;
@@ -205,18 +192,24 @@ public class Prompt {
             try {
                 System.out.print(Constants.ANSI_RESET);
                 System.out.println(Constants.DIVIDER);
-                System.out.println(Prompt.GAME_DIFFICULTY_OPTIONS);
-                difficulty = sc.nextInt();
+                System.out.println(" 📌 Enter '" + Constants.CANCEL_ACTION + "' to stop this action."); 
+                System.out.print(Prompt.GAME_DIFFICULTY_OPTIONS);
+                input = sc.nextLine();
+                if (input.equals(Constants.CANCEL_ACTION)) {
+                    return new String[] {input};
+                }
+
+                difficulty = Integer.parseInt(input);
                 System.out.print(Constants.ANSI_RESET);
                 if (difficulty < 1 || difficulty > 3) {
-                    throw new IllegalArgumentException(Display.errorColour(" ❌ Please enter a number between 1 to 3"));
+                    throw new InputMismatchException(Display.errorColour(" ❌ Please enter a number between 1 to 3"));
                 }
                 break;
-            } catch (InputMismatchException e) {
-                System.out.println(Display.errorColour(" ❌ Please enter a number"));
-                System.out.println();
-                sc.nextLine();
             } catch (IllegalArgumentException e) {
+                System.out.println(Display.errorColour(" ❌ Please enter a number or an appropriate command"));
+                System.out.println();
+            } catch (InputMismatchException e) {
+                System.out.println("this ran");
                 System.out.println(e.getMessage());
                 System.out.println();
             }

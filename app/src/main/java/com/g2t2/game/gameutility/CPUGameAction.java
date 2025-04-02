@@ -183,11 +183,11 @@ public class CPUGameAction {
      * @param player The CPU player.
      * @param game   The current game state.
      */
-    protected static void CPUplayTurn(Player player, GameState game) {
+    public static String CPUSelectCard(Player player, GameState game) {
         Display.delayPrint(" 📌 Player " + Display.colorString(player.getName())
                 + " is choosing their cards.", 30);
         int cardIdx = chooseCPUCardIdx(player, game, -1);
-        GameProcessor.processPlayerTurn(cardIdx, player, game);
+        return String.valueOf(cardIdx);
     }
 
     /**
@@ -198,7 +198,7 @@ public class CPUGameAction {
      * @param game   The current game state.
      * @return An int[2] of indices representing selected cards from the hand.
      */
-    public static int[] CPUSelectTwoToCollections(Player player, GameState game) {
+    public static String[] CPUSelectTwoToCollections(Player player, GameState game) {
         int[] cardIdxList = {-1, -1};
         while (cardIdxList[0] == cardIdxList[1]) {
             for (int i = 0; i < cardIdxList.length; i++) {
@@ -207,7 +207,8 @@ public class CPUGameAction {
 
             }
         }
-        return cardIdxList;
+        String[] returnCardIdxList = {String.valueOf(cardIdxList[0]), String.valueOf(cardIdxList[1])};
+        return returnCardIdxList;
     }
 
     /**

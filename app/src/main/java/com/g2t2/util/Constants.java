@@ -46,15 +46,16 @@ public class Constants {
 
     public static final List<String> EMOJIS = List.of("🌹", "💧", "☀️ ", "🪻 ", "🍀", "🕷️ ");
 
-    public static final String PROMPT_ADD_TO_PARADE = Display.colorString(" 📌 Which card do you want to place in the Parade?");
+    public static final String PROMPT_ADD_TO_PARADE = " 📌 Which card do you want to place in the Parade?";
 
     // Commands
-    public static final String CREATE_GAME = "c"; //"CREATE_GAME";
-    public static final String JOIN_GAME = "j"; //"JOIN_GAME";
-    public static final String ADD_CPU = "x"; //"ADD_CPU";
-    public static final String START_GAME = "w"; //"START_GAME";
-    public static final String LEAVE_GAME = "y"; //"LEAVE_GAME";
+    public static final String CREATE_GAME = "c"; //"CREATE GAME";
+    public static final String JOIN_GAME = "j"; //"JOIN GAME";
+    public static final String ADD_CPU = "x"; //"ADD CPU";
+    public static final String START_GAME = "w"; //"START GAME";
+    public static final String LEAVE_GAME = "y"; //"LEAVE GAME";
     public static final String ENTER_KEY = "";
+    public static final String CANCEL_ACTION = "CANCEL ACTION";
 
     // Message To Indicate Things
     public static final String COMPLETE_TURN = "$complete_turn$";
@@ -62,6 +63,7 @@ public class Constants {
     public static final String REFRESH_PAGE = "$refresh_page$";
     public static final String NEW_GAME = "$new_game$";
     public static final String GAME_ENDED = "$game_ended$";
+    
 
     // ERRORS
     public static final String INVALID_GAME_ID = "INVALID GAME ID";

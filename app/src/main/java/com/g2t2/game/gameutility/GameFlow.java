@@ -5,6 +5,11 @@ import com.g2t2.types.Player;
 import com.g2t2.types.ScoreCalculation;
 
 public class GameFlow {
+
+    public static void startGame(GameState game) {
+        game.giveOutInitialCards();
+        game.startGame();
+    }
     
     public static void processTurn(String[] indexOfChosenCard, GameState game) {
         Player playerThatJustPlayed = game.getCurrentPlayer();

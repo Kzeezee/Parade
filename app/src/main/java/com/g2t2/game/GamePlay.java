@@ -4,6 +4,8 @@ import com.g2t2.types.Player;
 import com.g2t2.types.PlayerProfile;
 import com.g2t2.types.ScoreCalculation;
 import com.g2t2.db.dao.impl.PlayerProfileDaoImpl;
+import com.g2t2.game.gameutility.CPUGameAction;
+import com.g2t2.game.gameutility.GameFlow;
 import com.g2t2.game.gameutility.GameProcessor;
 import com.g2t2.game.gameutility.GameRenderer;
 import com.g2t2.game.gameutility.Prompt;
@@ -36,27 +38,32 @@ public class GamePlay {
      * @param game The current game state.
      */
     public static void startGame(GameState game) {
-        game.setHasStarted(true);
+        game.startGame();
+        game.setHasStarted(true);   
         List<Player> players = game.getPlayers();
-        System.out.println(players);
-
-        // finding a random person to start the game
-        int currentIdx = (int) (Math.random() * players.size());
-        int previousIdx = currentIdx;
-
-        // checks the previous player because they are the one that might have a
-        // complete collection (ALL COLOURS)
-        while (!ScoreCalculation.meetsGameEndCondition(players.get(previousIdx), game.getDeck())) {
-            GameProcessor.playTurn(players.get(currentIdx), game);
-            previousIdx = currentIdx;
-            currentIdx = (currentIdx + 1) % players.size();
+        while (!game.isPut2CollectionRound()) {
+            String cardChosen = null;
+            if(!game.getCurrentPlayer().getCPU()){
+                GameRenderer.displayRoundInformation(game);
+                cardChosen = Prompt.promptForCard(game.getCurrentPlayer());
+            } else {
+                cardChosen = CPUGameAction.CPUSelectCard(game.getCurrentPlayer(), game);
+            }
+            GameFlow.processTurn(new String[]{cardChosen}, game);
         }
 
-        lastRoundOfPlay(players, currentIdx, game);
+        while(!game.isEndOfGame()){
+            String[] cardsChosen = null;
+            if(!game.getCurrentPlayer().getCPU()){
+                GameRenderer.displayRoundInformation(game);
+                cardsChosen = Prompt.promptToCollectTwo(game.getCurrentPlayer());
+            } else {
+                cardsChosen = CPUGameAction.CPUSelectTwoToCollections(game.getCurrentPlayer(), game);
+            }
+            GameFlow.processPut2Collection(cardsChosen, game);
+        }
 
-        chooseTwoCardsToCollection(players, currentIdx, game);
-
-        ScoreCalculation.computeScore(players);
+        
         GameRenderer.displayScores(players);
         // Update wins in DB for player
         PlayerProfile pp = players.get(0).getPlayerProfile();
@@ -76,12 +83,12 @@ public class GamePlay {
      * @param idx     The index of the player who starts the last round.
      * @param game    The current game state.
      */
-    private static void lastRoundOfPlay(List<Player> players, int idx, GameState game) {
-        for (int i = 0; i < players.size(); i++) {
-            GameProcessor.playTurn(players.get(idx), game);
-            idx = (idx + 1) % players.size();
-        }
-    }
+    // private static void lastRoundOfPlay(List<Player> players, int idx, GameState game) {
+    //     for (int i = 0; i < players.size(); i++) {
+    //         GameProcessor.playTurn(players.get(idx), game);
+    //         idx = (idx + 1) % players.size();
+    //     }
+    // }
 
     /**
      * Allows each player to select two cards from their hand to add to their collection.
@@ -92,10 +99,10 @@ public class GamePlay {
      * @param idx     The index of the player who starts this phase.
      * @param game    The current game state.
      */
-    private static void chooseTwoCardsToCollection(List<Player> players, int idx, GameState game) {
-        for (int i = 0; i < players.size(); i++) {
-            GameProcessor.putTwoToCollections(players.get(idx), game);
-            idx = (idx + 1) % players.size();
-        }
-    }
+    // private static void chooseTwoCardsToCollection(List<Player> players, int idx, GameState game) {
+    //     for (int i = 0; i < players.size(); i++) {
+    //         GameProcessor.putTwoToCollections(players.get(idx), game);
+    //         idx = (idx + 1) % players.size();
+    //     }
+    // }
 }

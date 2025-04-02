@@ -39,6 +39,7 @@ public class GameRenderer {
         } else if (game.isLastRound()) {
             System.out.println(" ⚜ " + Display.colorString(" 📌 LAST ROUND 📌 ") + Constants.ANSI_RESET);
         } 
+        displayHandCards(game.getCurrentPlayer());
         System.out.println(Constants.DIVIDER);
     }
 
