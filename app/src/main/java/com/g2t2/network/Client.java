@@ -14,12 +14,14 @@ import com.g2t2.game.gameutility.CPUGameAction;
 import com.g2t2.game.gameutility.GameRenderer;
 import com.g2t2.game.gameutility.Prompt;
 import com.g2t2.network.networkUtility.NetworkUtility;
+import com.g2t2.network.networkUtility.Message;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 import com.g2t2.util.Utility;
 
 public class Client implements Runnable {
+    private static final int portNumber = 1234;
     private Socket socket;
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
@@ -126,12 +128,12 @@ public class Client implements Runnable {
                     if (numberOfPlayersCurrently < 6) {
                         String[] CPUInformation = {"", "", Constants.ADD_CPU};
                         String[] userInput = Prompt.promptForCPUDetails(numberOfPlayersCurrently);
-                        System.arraycopy(userInput, 0, CPUInformation, 0, 2);
-
-                        if (CPUInformation == null) { // user input 0 CPU
-                            System.out.println("> No CPU added");
-                            continue;
+                        if (userInput[0].equals(Constants.CANCEL_ACTION)) { // user cancelled action
+                            sendMessage(new String[] {Constants.ENTER_KEY});
+                            break;
                         }
+
+                        System.arraycopy(userInput, 0, CPUInformation, 0, 2);
                         sendMessage(CPUInformation);
                         break;
                     }
@@ -149,7 +151,7 @@ public class Client implements Runnable {
             if (input.equals(Constants.LEAVE_GAME)) {
                 sendMessage(new String[] {Constants.LEAVE_GAME}); 
                 break;
-            }  else if (input.equals(Constants.ENTER_KEY)) { // to refresh page
+            }  else if (input.equals(Constants.ENTER_KEY)) { // refresh page
                 sendMessage(new String[] {Constants.ENTER_KEY});
                 break;
             }
@@ -331,7 +333,7 @@ public class Client implements Runnable {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter your username for the game: ");
         String username = sc.nextLine();
-        Socket socket = new Socket("localhost", 1234);
+        Socket socket = new Socket("localhost", portNumber);
         Client client = new Client(socket, username);
         StartMenu.showStartMenu();
 

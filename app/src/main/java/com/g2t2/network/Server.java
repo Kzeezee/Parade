@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
+    private static final int portNumber = 1234;
     private ServerSocket serverSocket;
     private boolean isRunning = true;
 
@@ -47,7 +48,7 @@ public class Server {
     }
 
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(1234);
+        ServerSocket serverSocket = new ServerSocket(portNumber);
         Server server = new Server(serverSocket);
         server.startServer();
     }

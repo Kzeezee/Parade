@@ -8,7 +8,7 @@ import java.util.*;
 
 import com.g2t2.game.*;
 import com.g2t2.game.gameutility.*;
-import com.g2t2.network.networkUtility.NetworkUtility;
+import com.g2t2.network.networkUtility.*;
 import com.g2t2.util.*;
 import com.g2t2.types.*;
 
@@ -79,13 +79,6 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         removePlayerFromGame();
     }
 
-    private void startGame() {
-        GameState game = NetworkUtility.findGameState(gameId, availableGames);
-        game.giveOutInitialCards();
-        game.startGame();
-        broadcastGameStatus(game);
-    }
-
     private void resetGame() {
         GameState game = NetworkUtility.findGameState(gameId, availableGames);
         game.resetGame();
@@ -121,7 +114,9 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         createCPU(Integer.parseInt(messageToProcess.getMessage()[0]), Integer.parseInt(messageToProcess.getMessage()[1]));
 
                     } else if (command.equals(Constants.START_GAME)) { // start game
-                        startGame();
+                        GameState game = NetworkUtility.findGameState(gameId, availableGames);
+                        GameFlow.startGame(game);
+                        broadcastGameStatus(game);
 
                     } else if (command.equals(Constants.LEAVE_GAME)) { // leave game
                         GameState game = NetworkUtility.findGameState(gameId, availableGames);
@@ -139,13 +134,11 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         GameState game = NetworkUtility.findGameState(gameId, availableGames);
                         GameFlow.processTurn(messageToProcess.getMessage(), game);
                         broadcastGameStatus(game);
-                        // processTurn(messageToProcess.getMessage());
 
                     } else if (command.equals(Constants.PUT_TO_COLLECTION)) { // put 2 collection phase
                         GameState game = NetworkUtility.findGameState(gameId, availableGames);
                         GameFlow.processPut2Collection(messageToProcess.getMessage(), game);
                         broadcastGameStatus(game);
-                        // processPut2Collection(messageToProcess.getMessage());
 
                     } else if (command.equals(Constants.ENTER_KEY)) { // refresh page for that player only
                         sendGameState(NetworkUtility.findGameState(gameId, availableGames)); 
