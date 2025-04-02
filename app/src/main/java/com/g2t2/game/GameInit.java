@@ -1,19 +1,10 @@
 package com.g2t2.game;
 
-import java.util.InputMismatchException;
-import java.util.Scanner;
-import java.util.List;
-import java.util.ArrayList;
-
 import com.g2t2.util.Constants;
-import com.g2t2.util.Display;
 import com.g2t2.util.Utility;
 
-import com.g2t2.types.ParadeBoard;
 import com.g2t2.types.Player;
 import com.g2t2.types.PlayerProfile;
-import com.g2t2.game.gameutility.Prompt;
-import com.g2t2.types.Card;
 
 /**
  * Class responsible for initializing the game settings, players, and parade

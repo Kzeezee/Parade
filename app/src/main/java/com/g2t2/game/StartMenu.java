@@ -30,7 +30,7 @@ public class StartMenu {
      * console).
      */
     public static void showStartMenu() {
-        if (StateManager.getPlayerProfile() == null) {
+        if (StateManager.getPlayerProfile() == null) { // no host for the game is found
             checkForPlayerProfiles();
         } else {
             consoleStartMenu();
@@ -38,116 +38,57 @@ public class StartMenu {
     }
 
     /**
-     * Allows the player to select a profile to play on, enabling progress tracking.
-     * 
-     * @param players list of available player profiles
+     * Displays the console-based start menu and handles user input.
      */
-    private static void selectPlayerProfile(List<PlayerProfile> players) {
-        MenuRenderer.displayPlayerProfiles(players);
-        System.out.println(" 📌 Select your Parade profile (" + 1 + "-" + players.size() + ")");
+    private static void consoleStartMenu() {
+        Utility.clearConsoleScreen();
+        System.out.println(Constants.BANNER);
+        System.out.println(Constants.DIVIDER);
+        System.out.println(WELCOMEMESSAGE_STRING);
 
+        promptForGamePlayOptions();
+    }
+
+    private static void promptForGamePlayOptions() {
         Scanner sc = new Scanner(System.in);
-        boolean validOptionSelected = false;
-        while (!validOptionSelected) {
+        while (true) {
+            System.out.print(GAMEPLAY_OPTIONS);
+            String s = sc.nextLine();
             try {
-                System.out.print(Display.colorString(" ⚜ Select profile ('c' to create, 'd' to delete instead) ➢ "));
-                System.out.print(Constants.ANSI_RESET);
-
-                String input = sc.nextLine();
-                PlayerProfileOptionInput option = determineUserProfileOptionInput(input);
-                if (option == PlayerProfileOptionInput.CREATE_PROFILE) {
-                    validOptionSelected = true;
-                    showPlayerProfileCreation(false);
-                }
-                if (option == PlayerProfileOptionInput.DELETE_PROFILE) {
-                    System.out.print(Display.errorColour(" ⚜ Select profile to delete ➢ "));
-                    try {
-                        int profileToDelete = Integer.parseInt(sc.nextLine());
-                        if (profileToDelete > players.size() || profileToDelete <= 0) {
-                            throw new IllegalArgumentException("No such player profile");
-                        }
-                        System.out.printf(Display.errorColour("Are you sure you want to delete %s (%d)? ('y'/'N')"), players.get(profileToDelete - 1).getName(), profileToDelete);
-                        String deletionInput = sc.nextLine().toLowerCase();
-                        if (deletionInput.equals("y")) {
-                            new PlayerProfileDaoImpl().deletePlayerProfile(players.get(profileToDelete - 1));
-                            checkForPlayerProfiles();
-                        }
-                    } catch (NumberFormatException e) {
-                        System.out.println(Display.errorColour(" ❌ Invalid input"));
-                    } catch (IllegalArgumentException e) {
-                        System.out.println(Display.errorColour(e.getMessage()));
-                    }
-                } else {
-                    int profileSelect = Integer.parseInt(input.trim());
-                    if (profileSelect > players.size() || profileSelect <= 0) {
-                        throw new IllegalArgumentException(" ❌ No such player profile");
-                    }
-
-                    validOptionSelected = true;
-                    PlayerProfile pp = players.get(profileSelect - 1);
-                    // Set StateManager's current player profile
-                    StateManager.setPlayerProfile(pp);
-                    // Show start menu
-                    StartMenu.showStartMenu();
-                }
+                int option = Integer.parseInt(s);
+                processGamePlayOptions(option);
+                break;
             } catch (NumberFormatException e) {
-                System.out.println(Display.errorColour(" ❌ Invalid input"));
+                Utility.clearConsoleScreen();
+                System.out.println(Display.errorColour(Constants.INVALID_OPTION_ERROR_MSG));
             } catch (IllegalArgumentException e) {
-                System.out.println(Display.errorColour(e.getMessage()));
+                Utility.clearConsoleScreen();
+                System.out.println(e.getMessage());
             }
         }
     }
 
-    /**
-     * Displays the console-based start menu and handles user input.
-     */
-    private static void consoleStartMenu() {
-        Scanner sc = new Scanner(System.in);
-        int optionChosen = 0;
-
-        boolean validOptionSelected = false;
-        while (!validOptionSelected) {
-            Utility.clearConsoleScreen();
-            System.out.println(Constants.ANSI_RESET);
-            System.out.println(Constants.BANNER);
-            System.out.println(Constants.DIVIDER);
-            System.out.println(WELCOMEMESSAGE_STRING);
-            System.out.print(GAMEPLAY_OPTIONS);
-            String s = sc.nextLine();
-            System.out.print(Constants.ANSI_RESET);
-            System.out.println("Triggered here");
-            try {
-                optionChosen = Integer.parseInt(s);
-                switch (optionChosen) {
-                    case 1:
-                        // Start options of game
-                        validOptionSelected = true;
-                        GameInit.displayGameOptions();
-                        break;
-                    case 2:
-                        // Start lobby
-                        validOptionSelected = true;
-                        OnlineLobby.displayLobby();
-                        break;
-                    case 3:
-                        // Change player profile
-                        checkForPlayerProfiles();
-                        break;
-                    case 4:
-                        System.out.println(Constants.GOODBYE);
-                        System.exit(0);
-                    default:
-                        System.out.println("Entered : " + s);
-                        throw new IllegalArgumentException(Display.errorColour(" ❌ Invalid input"));
-                }
-            } catch (NumberFormatException e) {
-                Utility.clearConsoleScreen();
-                System.out.println(Display.errorColour(Constants.INVALID_OPTION_ERROR_MSG));
-            } catch (IllegalArgumentException e) {
-                Utility.clearConsoleScreen();
-                System.out.println(Display.errorColour(Constants.INVALID_OPTION_ERROR_MSG));
-            }
+    private static void processGamePlayOptions(int optionChosen) {
+        if (optionChosen == 1) {
+            GameInit.displayGameOptions();  // Start options of game
+            return;
         }
+        if (optionChosen == 2) {
+            OnlineLobby.displayLobby(); // Start lobby
+            return;
+        }
+        
+        if (optionChosen == 3) {
+            checkForPlayerProfiles(); // check player profile to allow chaning profile
+            return;
+        }
+        if (optionChosen == 4) {
+            System.out.println(Constants.GOODBYE);
+            System.exit(0);
+            return;
+        }
+        throw new IllegalArgumentException(Display.errorColour(" ❌ Please choose a number 1 to 4"));
+
     }
 
     /**
@@ -156,11 +97,9 @@ public class StartMenu {
      */
     private static void checkForPlayerProfiles() {
         Utility.clearConsoleScreen();
-        System.out.println(Constants.ANSI_RESET);
         System.out.println(Constants.BANNER);
         System.out.println(Constants.DIVIDER);
         Display.delayPrint("Loading in progress...", 30);
-        System.out.println(Constants.ANSI_RESET);
 
         // DB search what profiles exist
         List<PlayerProfile> players = new PlayerProfileDaoImpl().getAllPlayerProfiles();
@@ -169,50 +108,111 @@ public class StartMenu {
         if (players.isEmpty()) {
             showPlayerProfileCreation(true);
         } else {
-            selectPlayerProfile(players);
+            promptForProfileActions(players);
         }
     }
 
     /**
      * Prompts the user to create a new player profile.
      */
-    private static void showPlayerProfileCreation(boolean noProfiles) {
+    private static void showPlayerProfileCreation(boolean hasNoProfiles) {
         Utility.clearConsoleScreen();
-        System.out.println(Constants.ANSI_RESET);
         System.out.println(Constants.BANNER);
         System.out.println(Constants.DIVIDER);
-        Scanner sc = new Scanner(System.in);
 
-        Utility.clearConsoleScreen();
         // Prompt user to create new user profile
-        String message = "";
-        if (noProfiles)
-            message += "No player profile was detected. ";
-        message += "Create a new profile?";
-        System.out.println(Display.colorString(message));
+        String message = hasNoProfiles ? "No player profile was detected. " : "Create a new profile?";
+        System.out.println(message);
+        String name = promptForName();
+        System.out.println(Display.colorString("Creating player profile: " + name));
+
+        // Create new value in DB
+        PlayerProfileDao ppd = new PlayerProfileDaoImpl();
+        if (ppd.createPlayerProfile(name) != null) {
+            promptForProfileActions(ppd.getAllPlayerProfiles());
+        }
+    }
+
+    private static void promptForProfileActions(List<PlayerProfile> playerProfiles) {
+        MenuRenderer.displayPlayerProfiles(playerProfiles);
+        int numOfProfiles = playerProfiles.size();
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            try {
+                System.out.print(Display.colorString(" ⚜ Select profile (1 to " + numOfProfiles
+                        + ", OR 'c' to create, OR 'd' to delete instead) ➢ "));
+                String input = sc.nextLine();
+                PlayerProfileOptionInput option = determineUserProfileOptionInput(input);
+                processUserProfileOptionInput(playerProfiles, option, input);
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println(Display.errorColour(" ❌ Invalid input"));
+            } catch (IllegalArgumentException e) {
+                System.out.println(Display.errorColour(e.getMessage()));
+            }
+        }
+    }
+
+    private static void processUserProfileOptionInput(List<PlayerProfile> playerProfiles,
+            PlayerProfileOptionInput option, String input) {
+        if (option == PlayerProfileOptionInput.CREATE_PROFILE) {
+            showPlayerProfileCreation(false);
+        }
+        if (option == PlayerProfileOptionInput.DELETE_PROFILE) {
+            promptForProfileDeletion(playerProfiles);
+        } else {
+            int profileSelect = Integer.parseInt(input.trim());
+            if (profileSelect > playerProfiles.size() || profileSelect <= 0) {
+                throw new IllegalArgumentException(" ❌ No such player profile");
+            }
+
+            PlayerProfile pp = playerProfiles.get(profileSelect - 1);
+            // Set StateManager's current player profile
+            StateManager.setPlayerProfile(pp);
+            // Show start menu
+            StartMenu.showStartMenu();
+        }
+    }
+
+    private static void promptForProfileDeletion(List<PlayerProfile> players) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print(Display.errorColour(" ⚜ Select profile to delete ➢ "));
+        try {
+            int profileToDelete = Integer.parseInt(sc.nextLine());
+            if (profileToDelete > players.size() || profileToDelete <= 0) {
+                throw new IllegalArgumentException("No such player profile");
+            }
+            System.out.printf(Display.errorColour("Are you sure you want to delete %s (%d)? ('y'/'N')"),
+                    players.get(profileToDelete - 1).getName(), profileToDelete);
+            String deletionInput = sc.nextLine().toLowerCase();
+
+            if (deletionInput.equals("y")) {
+                new PlayerProfileDaoImpl().deletePlayerProfile(players.get(profileToDelete - 1));
+                checkForPlayerProfiles();
+            }
+        } catch (NumberFormatException e) {
+            System.out.println(Display.errorColour(" ❌ Invalid input"));
+        } catch (IllegalArgumentException e) {
+            System.out.println(Display.errorColour(e.getMessage()));
+        }
+    }
+
+    private static String promptForName() {
+        Scanner sc = new Scanner(System.in);
         String name = "";
         while (true) {
             try {
                 System.out.print(Display.colorString(" ⚜ Enter your name: "));
                 name = sc.nextLine();
                 if (name.isEmpty()) {
-                    throw new InputMismatchException(" 📌 Please enter an appropriate name.");
+                    throw new InputMismatchException(Display.errorColour(" ❌ Please enter an appropriate name."));
                 }
                 break;
             } catch (InputMismatchException e) {
                 System.out.println(e.getMessage());
-                System.out.println();
-                System.out.println("in profile creation");
             }
         }
-        System.out.println(Display.colorString("Creating player profile: " + name));
-        System.out.println(Constants.ANSI_RESET);
-
-        // Create new value in DB
-        PlayerProfileDao ppd = new PlayerProfileDaoImpl();
-        if (ppd.createPlayerProfile(name) != null) {
-            selectPlayerProfile(ppd.getAllPlayerProfiles());
-        }
+        return name;
     }
 
     private static PlayerProfileOptionInput determineUserProfileOptionInput(String input) {

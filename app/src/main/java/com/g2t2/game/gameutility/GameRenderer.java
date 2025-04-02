@@ -35,9 +35,9 @@ public class GameRenderer {
         game.printNumOfCardsLeft();
         game.printPlayerTurn();
         if (game.isPut2CollectionRound()) {
-            System.out.println(" ⚜ " + Display.colorString(" 📌 PUT 2 COLLECTION ROUND 📌 ") + Constants.ANSI_RESET);
+            System.out.println(" ⚜ " + Display.colorString(" 📌 PUT 2 COLLECTION ROUND 📌 "));
         } else if (game.isLastRound()) {
-            System.out.println(" ⚜ " + Display.colorString(" 📌 LAST ROUND 📌 ") + Constants.ANSI_RESET);
+            System.out.println(" ⚜ " + Display.colorString(" 📌 LAST ROUND 📌 "));
         } 
         System.out.println(Constants.DIVIDER);
     }
@@ -50,8 +50,7 @@ public class GameRenderer {
     public static void displayCollections(GameState game) {
         for (Player p : game.getPlayers()) {
             System.out.println(
-                    Display.colorString("「 ✦ CARDS IN " + p.getName() + "(" + p.getPlayerId() + ") COLLECTION ✦ ")
-                            + Constants.ANSI_RESET);
+                    Display.colorString("「 ✦ CARDS IN " + p.getName() + "(" + p.getPlayerId() + ") COLLECTION ✦ "));
             Display.displayAllStacks(p.getCardsInCollection());
         }
     }

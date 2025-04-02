@@ -18,7 +18,7 @@ public class Constants {
     public static final String GREEN_ANSI = "\033[38;2;85;205;121m";
     public static final String BLACK_ANSI = "\033[38;2;1;1;1m";
     public static final String ANSI_RESET = "\033[0m";
-    public static final String INVALID_OPTION_ERROR_MSG = " ❌ Please choose a valid option!";
+    public static final String INVALID_OPTION_ERROR_MSG = " ❌ Please enter a number or an appropriate command";
     public static final String WELCOMEMESSAGE_STRING = " ⚜ Welcome to G2T2 Parade! Please select an option. (1 or 3 for now)";
     public static final String DIVIDER = "\033[90m" + "───────────────────────────────────────" 
                                          + " ⚜ ──────────────────────────────────────────" + ANSI_RESET;

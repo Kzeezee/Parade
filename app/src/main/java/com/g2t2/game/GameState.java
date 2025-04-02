@@ -9,8 +9,6 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
 
-import org.checkerframework.common.returnsreceiver.qual.This;
-
 import com.g2t2.types.*;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;

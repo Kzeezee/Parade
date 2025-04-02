@@ -22,12 +22,12 @@ public class Prompt {
     /**
      * Options for selecting the difficulty level for CPU players.
      */
-    public static final String GAME_DIFFICULTY_OPTIONS = " 📌 Choose the difficulty level for each of your CPU players\n" + //
+    public static final String GAME_DIFFICULTY_OPTIONS = " 📌 Choose the difficulty level for each of your CPU players\n"
+            + //
             " 📌 Easy (1)\n" + //
             " 📌 Medium (2)\n" + //
             " 📌 Difficult (3)\n" + //
             Display.colorString(" ⚜ Enter option ➢ ");
-
 
     /**
      * Error message displayed when an invalid number of players is entered.
@@ -42,7 +42,7 @@ public class Prompt {
      * @param prompt The message displayed to the player.
      * @param player The player selecting a card.
      * @return The index of the selected card in the player's hand.
-     */ 
+     */
     public static String promptForCard(String prompt, Player player) {
         String chosenCardString = null;
         Scanner sc = new Scanner(System.in);
@@ -95,11 +95,12 @@ public class Prompt {
      * collection.
      *
      * @param player The player selecting cards.
-     * @return An int[2] representing indices the selected cards from the player's hand.
+     * @return An int[2] representing indices the selected cards from the player's
+     *         hand.
      *         int[0] -> 1st card || int[1] -> 2nd card
      */
     public static String[] promptToCollectTwo(Player player) {
-        String[] choosenCardsIdx = {"-1" , "-1"};
+        String[] choosenCardsIdx = { "-1", "-1" };
 
         System.out.println(" ⚜ You need to select " + Display.colorString("TWO")
                 + " cards from your hand to add to the collection.");
@@ -117,7 +118,7 @@ public class Prompt {
                         " ⚜ Card " + (i + 1) + ": ");
                 String cardIdx = Prompt.promptForCard(prompt, player);
                 if (cardIdx.equals(Constants.LEAVE_GAME)) {
-                    choosenCardsIdx = new String[] {Constants.LEAVE_GAME};
+                    choosenCardsIdx = new String[] { Constants.LEAVE_GAME };
                     break;
                 }
                 choosenCardsIdx[i] = cardIdx;
@@ -125,7 +126,7 @@ public class Prompt {
             }
             isReprompting = true;
         }
-        
+
         return choosenCardsIdx;
     }
 
@@ -153,7 +154,8 @@ public class Prompt {
      * Details contains: "number of CPUs" and "Difficulty Level"
      * 
      * @param numOfPlayers Number of players currently playing the game
-     * @return A String array that represents user's selection of the CPU information.
+     * @return A String array that represents user's selection of the CPU
+     *         information.
      *         Index 0 -> Number of CPU to add
      *         Index 1 -> Difficulty Level
      */ // MAY CONVERT TO INT[]
@@ -163,19 +165,19 @@ public class Prompt {
         int numOfCPU = 0;
         String input = null;
         while (true) {
-            try {        
+            try {
                 System.out.println(Constants.DIVIDER);
-                System.out.println(" 📌 Enter '" + Constants.CANCEL_ACTION + "' to stop this action."); 
-                System.out.println(" 📌 How many CPU do you want to add?"); 
+                System.out.println(" 📌 Enter '" + Constants.CANCEL_ACTION + "' to stop this action.");
+                System.out.println(" 📌 How many CPU do you want to add?");
                 System.out.print(Display.colorString(" ➢ Enter a number (max = " + maxNumOfCPU + "): "));
                 input = sc.nextLine();
                 if (input.equals(Constants.CANCEL_ACTION)) {
-                    return new String[] {input};
+                    return new String[] { input };
                 }
                 numOfCPU = Integer.parseInt(input);
                 if (numOfCPU < 0 || numOfCPU > maxNumOfCPU) {
-                    throw new InputMismatchException(Display.errorColour(" ❌ Please enter a number between 0 to " 
-                    + maxNumOfCPU + ". Maximum number of players = 6"));
+                    throw new InputMismatchException(
+                            Display.errorColour(" ❌ Please enter a number between 0 to " + maxNumOfCPU + " 6"));
                 }
                 break;
             } catch (IllegalArgumentException e) {
@@ -186,17 +188,17 @@ public class Prompt {
                 System.out.println();
             }
         }
-        
+
         int difficulty = 0;
         while (true) {
             try {
                 System.out.print(Constants.ANSI_RESET);
                 System.out.println(Constants.DIVIDER);
-                System.out.println(" 📌 Enter '" + Constants.CANCEL_ACTION + "' to stop this action."); 
+                System.out.println(" 📌 Enter '" + Constants.CANCEL_ACTION + "' to stop this action.");
                 System.out.print(Prompt.GAME_DIFFICULTY_OPTIONS);
                 input = sc.nextLine();
                 if (input.equals(Constants.CANCEL_ACTION)) {
-                    return new String[] {input};
+                    return new String[] { input };
                 }
 
                 difficulty = Integer.parseInt(input);
@@ -214,6 +216,6 @@ public class Prompt {
                 System.out.println();
             }
         }
-        return new String[] {"" + numOfCPU, "" + difficulty};
+        return new String[] { "" + numOfCPU, "" + difficulty };
     }
 }
