@@ -20,7 +20,6 @@ public class Client implements Runnable {
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
     private final BlockingQueue<Runnable> mainThreadTasks = new LinkedBlockingQueue<>();
-    private static final Runnable CLOSE_MAIN_THREAD = () -> {}; // Empty task to signal termination
     private volatile boolean needToRefreshPage = false;
     private boolean isInGame = false;
     private String username;
@@ -56,8 +55,14 @@ public class Client implements Runnable {
                 hasCorrectInput = true;
 
             } else if (userChoice[userChoice.length-1].equals(Constants.GO_BACK)) {
-                StartMenu.showStartMenu();
-                gameJoiningLobby();
+                // TODO (leave server and go to main menu)
+                continue;
+
+            } else if (userChoice[userChoice.length-1].equals(Constants.CLOSE_APP)) {
+                sendMessage(new String[] {Constants.CLOSE_APP});
+                hasCorrectInput = true;
+                closeEverything(socket, objectInputStream, objectOutputStream);
+
             } else {
                 System.out.println(Display.errorColour(" ❌ Please input either a valid command"));
                 System.out.println();
@@ -91,16 +96,16 @@ public class Client implements Runnable {
 
     private void printWaitingRoomCommands(boolean isGameMaster, GameState game) {
         System.out.println(Display.colorString("--- Here are some available commands you can use ---"));
-        System.out.println(" 📌 To leave the room, enter '" + Constants.LEAVE_GAME + "'");
+        System.out.println(" 📌 To leave the room, enter '" + Display.colorString(Constants.LEAVE_GAME) + "'");
         if (isGameMaster) { // show available GameMaster Commands
             System.out.println(Display.colorString("--- GameMaster Specific Commands ---"));
-            if (game.getNumOfPlayers() < 6) {
-                System.out.println(" 📌 To add CPU(s), enter '" + Constants.ADD_CPU + "'");
+            if (game.getNumOfPlayers() < Constants.MAX_PLAYER_NO) {
+                System.out.println(" 📌 To add CPU(s), enter '" + Display.colorString(Constants.ADD_CPU) + "'");
             } 
             if (game.getNumOfCPU() > 0) {
-                System.out.println(" 📌 To remove CPU(s), enter '" + Constants.REMOVE_CPU + "'");
+                System.out.println(" 📌 To remove CPU(s), enter '" + Display.colorString(Constants.REMOVE_CPU) + "'");
             } 
-            System.out.println(" 📌 To start the game, enter '" + Constants.START_GAME + "'");
+            System.out.println(" 📌 To start the game, enter '" + Display.colorString(Constants.START_GAME) + "'");
         }
     }
 
@@ -127,7 +132,7 @@ public class Client implements Runnable {
 
             } else if (isGameMaster) { // commands available to gameMaster
                 if (input.equals(Constants.ADD_CPU)) {
-                    if (game.getNumOfPlayers() < 6) {
+                    if (game.getNumOfPlayers() < Constants.MAX_PLAYER_NO) {
                         String[] CPUInformation = {"", "", Constants.ADD_CPU};
                         String[] userInput = Prompt.promptForCPUDetails(game.getNumOfPlayers());
                         if (userInput[0].equals(Constants.CANCEL_ACTION)) { // user cancelled action
@@ -145,12 +150,15 @@ public class Client implements Runnable {
                     }
                     sendMessage(idsToRemove);
                 } else if (input.equals(Constants.START_GAME)) {
-                    if (game.getNumOfPlayers() < 2) {
+                    if (game.getNumOfPlayers() < Constants.MIN_PLAYER_NO) {
                         System.out.println(Display.errorColour(" ❌ Insufficient Number of Players"));
                         toContinue = true;
                     } else  {
                         sendMessage(new String[] {Constants.START_GAME});
                     }
+                } else {
+                    System.out.println(Constants.INVALID_COMMAND);
+                    toContinue = true;
                 }
             } else {
                 System.out.println(Constants.INVALID_COMMAND);
@@ -326,7 +334,10 @@ public class Client implements Runnable {
             if (socket != null) {
                 socket.close();
             }
-            mainThreadTasks.add(CLOSE_MAIN_THREAD);
+            mainThreadTasks.add(() -> {
+                System.out.println("Closing main client...");
+                Thread.currentThread().interrupt(); 
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -335,26 +346,32 @@ public class Client implements Runnable {
     public static void main(String[] args) throws IOException {
         // TODO settle exceptions for username input
         // set up client -> connected to server
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter your username for the game: ");
-        String username = sc.nextLine();
-        Socket socket = new Socket("localhost", portNumber);
-        Client client = new Client(socket, username);
-        StartMenu.showStartMenu();
+        try {
+            Scanner sc = new Scanner(System.in);
+            System.out.print("Enter your username for the game: "); 
+            String username = sc.nextLine(); // TODO: to take profile name
+            Socket socket = new Socket("localhost", portNumber);
+            Client client = new Client(socket, username);
+            StartMenu.showStartMenu();
 
-        // Starting the Thread
-        Thread thread = new Thread(client);
-        thread.start();
-        client.gameJoiningLobby();
+             // Starting the Thread
+            Thread thread = new Thread(client);
+            thread.start();
+            client.gameJoiningLobby();
 
-        while (socket.isConnected()) {
-            try {
-                Runnable task = client.mainThreadTasks.take(); // Blocks until a task is available
-                task.run();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
+            while (socket.isConnected()) {
+                try {
+                    Runnable task = client.mainThreadTasks.take(); // Blocks until a task is available
+                    task.run();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
             }
+        } catch (IOException e) {
+            System.out.println(Display.errorColour(" ❌ Server is closed"));
         }
+
+        System.out.println(Constants.GOODBYE); // TODO: remove after combining with local
     }
 }

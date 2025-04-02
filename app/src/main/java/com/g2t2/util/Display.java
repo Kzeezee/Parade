@@ -326,7 +326,7 @@ public class Display {
     public static void gameHeader() {
         Utility.clearConsoleScreen();
         System.out.println(Constants.BANNER);
-        System.out.println(" 📌 To leave the game, enter '" + Constants.LEAVE_GAME + "'");
+        System.out.println(" 📌 To leave the game, enter '" + colorString(Constants.LEAVE_GAME) + "'");
         System.out.println(Constants.DIVIDER);
     }
 
@@ -334,8 +334,9 @@ public class Display {
         Utility.clearConsoleScreen();
         System.out.println(Constants.ONLINE_LOBBY_BANNER);
         System.out.println(Constants.DIVIDER);
-        System.out.println(" 📌 To go back, enter: '" + Constants.GO_BACK + "'");
-        System.out.println(" 📌 To create a game, enter: '" + Constants.CREATE_GAME + "'");
-        System.out.println(" 📌 To join a game, enter: '" + Constants.JOIN_GAME + "'");
+        System.out.println(" 📌 To leave the application, enter: '" + colorString(Constants.CLOSE_APP) + "'");
+        System.out.println(" 📌 To go back, enter: '" + colorString(Constants.GO_BACK) + "'");
+        System.out.println(" 📌 To create a game, enter: '" + colorString(Constants.CREATE_GAME) + "'");
+        System.out.println(" 📌 To join a game, enter: '" + colorString(Constants.JOIN_GAME) + "'");
     }
 }

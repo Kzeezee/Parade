@@ -164,13 +164,13 @@ public class Prompt {
      */
     public static String[] promptForCPUDetails(int numOfPlayers) {
         Scanner sc = new Scanner(System.in);
-        int maxNumOfCPU = 6 - numOfPlayers;
+        int maxNumOfCPU = Constants.MAX_PLAYER_NO - numOfPlayers;
         int numOfCPU = 0;
         String input = null;
         while (true) {
             try {
                 System.out.println(Constants.DIVIDER);
-                System.out.println(" 📌 Enter '" + Constants.CANCEL_ACTION + "' to stop this action.");
+                System.out.println(Constants.PROMPT_CANCEL_ACTION);
                 System.out.println(" 📌 How many CPU do you want to add?");
                 System.out.print(Display.colorString(" ➢ Enter a number (max = " + maxNumOfCPU + "): "));
                 input = sc.nextLine();
@@ -179,8 +179,8 @@ public class Prompt {
                 }
                 numOfCPU = Integer.parseInt(input);
                 if (numOfCPU < 0 || numOfCPU > maxNumOfCPU) {
-                    throw new InputMismatchException(
-                            Display.errorColour(" ❌ Please enter a number between 0 to " + maxNumOfCPU + " 6"));
+                    throw new InputMismatchException(Display.errorColour(" ❌ Please enter a number between 0 to " 
+                    + maxNumOfCPU + ". Maximum number of players = " + Constants.MAX_PLAYER_NO));
                 }
                 break;
             } catch (IllegalArgumentException e) {
@@ -197,7 +197,7 @@ public class Prompt {
             try {
                 System.out.print(Constants.ANSI_RESET);
                 System.out.println(Constants.DIVIDER);
-                System.out.println(" 📌 Enter '" + Constants.CANCEL_ACTION + "' to stop this action.");
+                System.out.println(Constants.PROMPT_CANCEL_ACTION);
                 System.out.print(Prompt.GAME_DIFFICULTY_OPTIONS);
                 input = sc.nextLine();
                 if (input.equals(Constants.CANCEL_ACTION)) {
@@ -206,8 +206,9 @@ public class Prompt {
 
                 difficulty = Integer.parseInt(input);
                 System.out.print(Constants.ANSI_RESET);
-                if (difficulty < 1 || difficulty > 3) {
-                    throw new InputMismatchException(Display.errorColour(" ❌ Please enter a number between 1 to 3"));
+                if (difficulty < Constants.MIN_CPU_DIFFICULTY || difficulty > Constants.MAX_CPU_DIFFICULTY) {
+                    throw new InputMismatchException(Display.errorColour(" ❌ Please enter a number between " +
+                    Constants.MIN_CPU_DIFFICULTY + " to " + Constants.MAX_CPU_DIFFICULTY));
                 }
                 break;
             } catch (IllegalArgumentException e) {
@@ -229,7 +230,7 @@ public class Prompt {
         while (true) {
             try {        
                 System.out.println(Constants.DIVIDER);
-                System.out.println(" 📌 Enter '" + Constants.CANCEL_ACTION + "' to stop this action."); 
+                System.out.println(Constants.PROMPT_CANCEL_ACTION);
                 System.out.println(" 📌 How many CPU(s) do you want to remove?: "); 
                 System.out.print(Display.colorString(" ➢ Enter a number: "));
                 input = sc.nextLine();

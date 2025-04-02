@@ -13,7 +13,6 @@ public class GameFlow {
     
     public static void processTurn(String[] indexOfChosenCard, GameState game) {
         Player playerThatJustPlayed = game.getCurrentPlayer();
-        System.out.println("CARD: " + indexOfChosenCard[0]);
         int cardIndex = Integer.parseInt(indexOfChosenCard[0]);
         GameProcessor.processPlayerTurn(cardIndex, playerThatJustPlayed, game);
 

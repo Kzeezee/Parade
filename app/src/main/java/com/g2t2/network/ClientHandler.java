@@ -153,11 +153,14 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                     
                     } else if (command.equals(Constants.GAME_ENDED)) { // reset game setting
                         resetGame(game);
+
+                    } else if (command.equals(Constants.CLOSE_APP)) {
+                        throw new IOException();
                     }
                 }
             } catch (IOException e) {
                 closeEverything(socket, objectInputStream, objectOutputStream);
-                break; // break out from the while loop, because client socket is still connected
+                break; // break out from the while loop
             } catch (ClassNotFoundException e) {
                 closeEverything(socket, objectInputStream, objectOutputStream);
                 break;
@@ -210,7 +213,9 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     }
 
     private void removePlayerFromGame() {
-        clientHandlers.get(gameId).remove(this);
+        if (gameId != null) {
+            clientHandlers.get(gameId).remove(this);
+        }
         myPlayerId = 0;
         gameId = null;
     }
@@ -227,6 +232,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
             if (socket != null) {
                 socket.close();
             }
+            System.out.println("client has disconnected");
         } catch (IOException e) {
             e.printStackTrace();
         }
