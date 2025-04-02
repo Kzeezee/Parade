@@ -38,12 +38,10 @@ public class Client implements Runnable {
     }
 
     private void gameJoiningLobby() {
+        Display.waitingLobbyHeader();
         Scanner sc = new Scanner(System.in);
         boolean hasCorrectInput = false;
         while (!hasCorrectInput) {
-            System.out.println(" 📌 To go back, enter: '" + Constants.GO_BACK + "'");
-            System.out.println(" 📌 To create a game, enter: '" + Constants.CREATE_GAME + "'");
-            System.out.println(" 📌 To join a game, enter: '" + Constants.JOIN_GAME + "'");
             System.out.print(Display.colorString(" ➢ Enter your choice: "));
 
             String[] userChoice = {username, "", ""};
@@ -59,9 +57,9 @@ public class Client implements Runnable {
 
             } else if (userChoice[userChoice.length-1].equals(Constants.GO_BACK)) {
                 StartMenu.showStartMenu();
+                gameJoiningLobby();
             } else {
-                System.out.println(Display.errorColour(" ❌ Please input either " +
-                Constants.CREATE_GAME + " or " + Constants.JOIN_GAME));
+                System.out.println(Display.errorColour(" ❌ Please input either a valid command"));
                 System.out.println();
                 continue; // reprompt the user
             }
@@ -108,21 +106,23 @@ public class Client implements Runnable {
 
     private void activatingUserControlCommands(boolean isGameMaster, GameState game) {
         Scanner sc = new Scanner(System.in);
-        while (true) {
+        boolean toContinue = true;
+        while (toContinue) {
+            toContinue = false;
             System.out.print(Display.colorString(" ➢ Enter command: "));
             String input = sc.nextLine();
 
             if (needToRefreshPage) { // someone joins
                 needToRefreshPage = false;
-                sendMessage(new String[] {Constants.ENTER_KEY}); // refresh page
                 System.out.println("📌 There is an update, refreshing page");
                 threadSleep(1000);
+                sendMessage(new String[] {Constants.ENTER_KEY}); // refresh page
 
                 // commands available to everyone
             } else if (input.equals(Constants.LEAVE_GAME)) { 
                 sendMessage(new String[] {Constants.LEAVE_GAME}); 
 
-            }  else if (input.equals(Constants.ENTER_KEY)) { // refresh page
+            } else if (input.equals(Constants.ENTER_KEY)) { // refresh page
                 sendMessage(new String[] {Constants.ENTER_KEY});
 
             } else if (isGameMaster) { // commands available to gameMaster
@@ -147,18 +147,20 @@ public class Client implements Runnable {
                 } else if (input.equals(Constants.START_GAME)) {
                     if (game.getNumOfPlayers() < 2) {
                         System.out.println(Display.errorColour(" ❌ Insufficient Number of Players"));
-                        continue;
+                        toContinue = true;
+                    } else  {
+                        sendMessage(new String[] {Constants.START_GAME});
                     }
-                    sendMessage(new String[] {Constants.START_GAME});
                 }
             } else {
                 System.out.println(Constants.INVALID_COMMAND);
+                toContinue = true;
             }   
         }
     }
 
     private void renderGame(GameState game) {
-        Display.printGameHeader();
+        Display.gameHeader();
         Player currentPlayer = game.getCurrentPlayer();
         String[] messageToSendBack = {"", "", Constants.COMPLETE_TURN};
 
@@ -180,14 +182,13 @@ public class Client implements Runnable {
         GameRenderer.displayHandCards(NetworkUtility.findMyPlayer(game, myPlayerId));
         if (game.isPut2CollectionRound()) { // put 2 to collection round
             messageToSendBack[2] = Constants.PUT_TO_COLLECTION;
-            renderPut2CollectionRound(messageToSendBack, currentPlayer, game);
+            processPut2CollectionRound(messageToSendBack, currentPlayer, game);
         } else { // normal rounds
-            renderNormalRound(messageToSendBack, currentPlayer, game);
+            processNormalRound(messageToSendBack, currentPlayer, game);
             }
-        sendMessage(messageToSendBack);
     }
 
-    private void renderPut2CollectionRound(String[] messageToSendBack, Player currentPlayer, GameState game) {
+    private void processPut2CollectionRound(String[] messageToSendBack, Player currentPlayer, GameState game) {
         if (currentPlayer.getCPU()) { // CPU turn
             CPUGameAction.displayCPUTurnAction(currentPlayer);
             if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
@@ -211,10 +212,12 @@ public class Client implements Runnable {
                 messageToSendBack[1] = indexOfChosenCard[1];
         } else {
             System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
+            return;
         }
+        sendMessage(messageToSendBack);
     }
 
-    private void renderNormalRound(String[] messageToSendBack, Player currentPlayer, GameState game) {
+    private void processNormalRound(String[] messageToSendBack, Player currentPlayer, GameState game) {
         if (currentPlayer.getCPU()) { // CPU turn
             CPUGameAction.displayCPUTurnAction(currentPlayer);
             if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
@@ -234,7 +237,9 @@ public class Client implements Runnable {
             messageToSendBack[0] = indexOfChosenCard; 
         } else {
             System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
+            return;
         }
+        sendMessage(messageToSendBack);
     }
 
     private void sendMessage(String msg[]) {

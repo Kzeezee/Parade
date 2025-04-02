@@ -286,10 +286,19 @@ public class Display {
     /**
      * Prints the game header.
      */    
-    public static void printGameHeader() {
+    public static void gameHeader() {
         Utility.clearConsoleScreen();
         System.out.println(Constants.BANNER);
         System.out.println(" 📌 To leave the game, enter '" + Constants.LEAVE_GAME + "'");
         System.out.println(Constants.DIVIDER);
+    }
+
+    public static void waitingLobbyHeader() {
+        Utility.clearConsoleScreen();
+        System.out.println(Constants.ONLINE_LOBBY_BANNER);
+        System.out.println(Constants.DIVIDER);
+        System.out.println(" 📌 To go back, enter: '" + Constants.GO_BACK + "'");
+        System.out.println(" 📌 To create a game, enter: '" + Constants.CREATE_GAME + "'");
+        System.out.println(" 📌 To join a game, enter: '" + Constants.JOIN_GAME + "'");
     }
 }
