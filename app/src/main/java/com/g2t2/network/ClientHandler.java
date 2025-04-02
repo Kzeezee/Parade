@@ -38,11 +38,10 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         gameId = game.getGameId();
         clientHandlers.put(gameId, new ArrayList<>());
         availableGames.put(gameId, game);
-        createPlayer(name);
+        createPlayer(name, game);
     }
 
-    private void createPlayer(String name) {
-        GameState game = NetworkUtility.findGameState(gameId, availableGames);
+    private void createPlayer(String name, GameState game) {
         Player player = new Player(name);
         player.setPlayerProfile(StateManager.getPlayerProfile());
         game.addPlayer(player);
@@ -53,8 +52,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         broadcastMessage(new String[] {Constants.REFRESH_PAGE});
     }
 
-    private void createCPU(int numOfCPU, int difficulty) {
-        GameState game = NetworkUtility.findGameState(gameId, availableGames);
+    private void createCPU(int numOfCPU, int difficulty, GameState game) {
         for (int i = 0; i < numOfCPU; i++ ) {
         Player cpu = new Player(true, difficulty);
         game.addPlayer(cpu);
@@ -63,9 +61,17 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         broadcastMessage(new String[] {Constants.REFRESH_PAGE});
     }
 
+    private void removeCPU(String[] ids, GameState game) {
+        for (int i = 0; i < ids.length - 1; i++) {
+            game.removePlayer(NetworkUtility.findMyPlayer(game, Integer.parseInt(ids[i])));
+        }
+        sendGameState(game);
+        broadcastMessage(new String[] {Constants.REFRESH_PAGE});
+    }
+
     private void processPlayerLeaveLobby(GameState game) {
         game.removePlayer(NetworkUtility.findMyPlayer(game, myPlayerId));
-        if (game.getNumOfPlayers() == 1 || !game.setNewGameMaster()) {
+        if (!game.setNewGameMaster()) {
             availableGames.remove(gameId);
         }
         removePlayerFromGame();
@@ -79,8 +85,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         removePlayerFromGame();
     }
 
-    private void resetGame() {
-        GameState game = NetworkUtility.findGameState(gameId, availableGames);
+    private void resetGame(GameState game) {
         game.resetGame();
         clientHandlers.get(gameId).clear();
     }
@@ -111,11 +116,14 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         }
                         else {
                             gameId = messageToProcess.getMessage()[1];
-                            createPlayer(messageToProcess.getMessage()[0]);
+                            createPlayer(messageToProcess.getMessage()[0], game);
                         }
 
                     } else if (command.equals(Constants.ADD_CPU)) { // add cpu
-                        createCPU(Integer.parseInt(messageToProcess.getMessage()[0]), Integer.parseInt(messageToProcess.getMessage()[1]));
+                        createCPU(Integer.parseInt(messageToProcess.getMessage()[0]), Integer.parseInt(messageToProcess.getMessage()[1]), game);
+
+                    } else if (command.equals(Constants.REMOVE_CPU)) { // remove cpu
+                        removeCPU(messageToProcess.getMessage(), game);
 
                     } else if (command.equals(Constants.START_GAME)) { // start game
                         GameFlow.startGame(game);
@@ -130,25 +138,24 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         sendMessage(new String[] {Constants.NEW_GAME});
 
                     }  else if (command.equals(Constants.NEW_GAME)) { // player wants to play again
-                        createPlayer(messageToProcess.getMessage()[0]);
+                        createPlayer(messageToProcess.getMessage()[0], game);
 
-                    } else if (command.equals(Constants.COMPLETE_TURN)) { // player finish his turn
+                    } else if (command.equals(Constants.COMPLETE_TURN) && game != null) { // player finish his turn
                         GameFlow.processTurn(messageToProcess.getMessage(), game);
                         broadcastGameStatus(game);
 
-                    } else if (command.equals(Constants.PUT_TO_COLLECTION)) { // put 2 collection phase
+                    } else if (command.equals(Constants.PUT_TO_COLLECTION) && game != null) { // put 2 collection phase
                         GameFlow.processPut2Collection(messageToProcess.getMessage(), game);
                         broadcastGameStatus(game);
 
                     } else if (command.equals(Constants.ENTER_KEY)) { // refresh page for that player only
                         sendGameState(NetworkUtility.findGameState(gameId, availableGames)); 
-                        
+                    
                     } else if (command.equals(Constants.GAME_ENDED)) { // reset game setting
-                        resetGame();
+                        resetGame(game);
                     }
                 }
             } catch (IOException e) {
-                System.out.println("Something happened----");
                 closeEverything(socket, objectInputStream, objectOutputStream);
                 break; // break out from the while loop, because client socket is still connected
             } catch (ClassNotFoundException e) {
@@ -160,7 +167,6 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     
     // send gameState to all players in the game
     private void broadcastGameStatus(GameState game) {
-        // System.out.println("Broadcasting GameState: " + game.getGameId());
         for (ClientHandler clientHandler : clientHandlers.get(gameId)) {
             clientHandler.sendGameState(game);
         }
@@ -168,17 +174,15 @@ public class ClientHandler implements Runnable { // allows instances to be execu
 
     // broadcoast a message to all players less the sender
     private void broadcastMessage(String[] message) {
-        // System.out.println("Broadcasting Message");
         for (ClientHandler clientHandler : clientHandlers.get(gameId)) {
             if (clientHandler.myPlayerId != this.myPlayerId) {
-                // System.out.println("Sending to clientHandler: " + clientHandler.myPlayerId);
                 clientHandler.sendMessage(message);
             }
         }
     } 
 
     private void sendGameState(GameState game) {
-        GameState snapshot = NetworkUtility.findGameState(gameId, availableGames).deepCopy(); // Create a snapshot
+        GameState snapshot = game.deepCopy(); // Create a snapshot
         try {
             objectOutputStream.writeObject(snapshot);
             objectOutputStream.flush();

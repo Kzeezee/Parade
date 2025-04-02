@@ -1,8 +1,11 @@
 package com.g2t2.game.gameutility;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
+import com.g2t2.game.GameState;
 import com.g2t2.types.Player;
 
 import com.g2t2.util.Constants;
@@ -42,8 +45,8 @@ public class Prompt {
      * @param prompt The message displayed to the player.
      * @param player The player selecting a card.
      * @return The index of the selected card in the player's hand.
-     */
-    public static String promptForCard(String prompt, Player player) {
+     */ 
+    public static String promptForCard(Player player, String prompt) {
         String chosenCardString = null;
         Scanner sc = new Scanner(System.in);
         int numOfCards = player.getCardsOnHand().size();
@@ -55,7 +58,7 @@ public class Prompt {
                 chosenCardString = sc.nextLine();
 
                 if (chosenCardString.equals(Constants.LEAVE_GAME)) {
-                    break;
+                    return Constants.LEAVE_GAME;
                 }
 
                 int chosenCardIndex = Integer.parseInt(chosenCardString);
@@ -116,7 +119,7 @@ public class Prompt {
                 String prompt = Display.colorString(" 📌 Which card do you want to place in the Collection?\n" +
                         " 📌 You need to choose TWO different cards \n" +
                         " ⚜ Card " + (i + 1) + ": ");
-                String cardIdx = Prompt.promptForCard(prompt, player);
+                String cardIdx = Prompt.promptForCard(player, prompt);
                 if (cardIdx.equals(Constants.LEAVE_GAME)) {
                     choosenCardsIdx = new String[] { Constants.LEAVE_GAME };
                     break;
@@ -158,7 +161,7 @@ public class Prompt {
      *         information.
      *         Index 0 -> Number of CPU to add
      *         Index 1 -> Difficulty Level
-     */ // MAY CONVERT TO INT[]
+     */
     public static String[] promptForCPUDetails(int numOfPlayers) {
         Scanner sc = new Scanner(System.in);
         int maxNumOfCPU = 6 - numOfPlayers;
@@ -211,11 +214,59 @@ public class Prompt {
                 System.out.println(Display.errorColour(" ❌ Please enter a number or an appropriate command"));
                 System.out.println();
             } catch (InputMismatchException e) {
-                System.out.println("this ran");
                 System.out.println(e.getMessage());
                 System.out.println();
             }
         }
         return new String[] { "" + numOfCPU, "" + difficulty };
     }
+
+    public static String[] promptForCPURemoval(GameState game) {
+        Scanner sc = new Scanner(System.in);
+        String input = null;
+        List<String> idsToRemove = new ArrayList<>();
+        int currentNumOfCPU = game.getNumOfCPU();
+        while (true) {
+            try {        
+                System.out.println(Constants.DIVIDER);
+                System.out.println(" 📌 Enter '" + Constants.CANCEL_ACTION + "' to stop this action."); 
+                System.out.println(" 📌 How many CPU(s) do you want to remove?: "); 
+                System.out.print(Display.colorString(" ➢ Enter a number: "));
+                input = sc.nextLine();
+                if (input.equals(Constants.CANCEL_ACTION)) {
+                    return new String[] {input};
+                }
+                int numOfCPUToRemove = Integer.parseInt(input);
+                if (numOfCPUToRemove < 1 || numOfCPUToRemove > currentNumOfCPU) {
+                    System.out.println(Display.errorColour(" ❌ Please input a valid number. There are currently only " + currentNumOfCPU + " CPU(s)"));
+                    continue;
+                }
+
+                int count = 0;
+                while (count < numOfCPUToRemove) {
+                    System.out.println(" 📌 Which CPU(s) do you want to remove? (Enter the playerId of the CPU)"); 
+                    System.out.print(Display.colorString(" ➢ Enter CPU's playerId: "));
+                    input = sc.nextLine();
+                    if (input.equals(Constants.CANCEL_ACTION)) {
+                        return new String[] {input};
+                    }
+                    int cpuId = Integer.parseInt(input);
+                    if (game.checkPlayerIsCPU(cpuId)) {
+                        idsToRemove.add(input);
+                        count++;
+                    } else {
+                        System.out.println(Display.errorColour(" ❌ Invalid Player ID."));
+                    }
+                }
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println(Display.errorColour(" ❌ Please enter a number or an appropriate command"));
+                System.out.println();
+            }
+        }
+
+        idsToRemove.add(Constants.REMOVE_CPU);
+        return idsToRemove.toArray(new String[0]);
+    }
+
 }

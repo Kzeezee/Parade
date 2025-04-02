@@ -52,10 +52,12 @@ public class Constants {
     public static final String CREATE_GAME = "c"; //"CREATE GAME";
     public static final String JOIN_GAME = "j"; //"JOIN GAME";
     public static final String ADD_CPU = "x"; //"ADD CPU";
+    public static final String REMOVE_CPU = "REMOVE CPU";
     public static final String START_GAME = "w"; //"START GAME";
-    public static final String LEAVE_GAME = "y"; //"LEAVE GAME";
+    public static final String LEAVE_GAME = "l"; //"LEAVE GAME";
     public static final String ENTER_KEY = "";
     public static final String CANCEL_ACTION = "CANCEL ACTION";
+    public static final String GO_BACK = "GO BACK";
 
     // Message To Indicate Things
     public static final String COMPLETE_TURN = "$complete_turn$";

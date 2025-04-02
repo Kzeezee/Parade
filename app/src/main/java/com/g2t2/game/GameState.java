@@ -118,6 +118,27 @@ public class GameState implements Serializable { // to allow it to be sent over
         return numOfPlayers;
     }
 
+    public int getNumOfCPU() {
+        int count = 0;
+        for (Player player : players) {
+            if (player.getCPU()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public boolean checkPlayerIsCPU(int playerId) {
+        for (Player player : players) {
+            if (player.getPlayerId() == playerId) {
+                if (player.getCPU()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
@@ -254,18 +275,4 @@ public class GameState implements Serializable { // to allow it to be sent over
             throw new RuntimeException("Deep copy failed", e);
         }
     }
-
-
-    // @Override
-    // public boolean equals(Object o) {
-    //     if (o instanceof GameState gameState) {
-    //         return this.getGameId().equals(gameState.getGameId());
-    //     }
-    //     return false;
-    // }
-
-    // @Override
-    // public int hashCode() {
-    //     return Objects.hash(gameId);
-    // }
 }
