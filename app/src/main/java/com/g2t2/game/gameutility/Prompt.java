@@ -164,7 +164,7 @@ public class Prompt {
      */
     public static String[] promptForCPUDetails(int numOfPlayers) {
         Scanner sc = new Scanner(System.in);
-        int maxNumOfCPU = 6 - numOfPlayers;
+        int maxNumOfCPU = Constants.MAX_PLAYER_NO - numOfPlayers;
         int numOfCPU = 0;
         String input = null;
         while (true) {
@@ -179,8 +179,8 @@ public class Prompt {
                 }
                 numOfCPU = Integer.parseInt(input);
                 if (numOfCPU < 0 || numOfCPU > maxNumOfCPU) {
-                    throw new InputMismatchException(
-                            Display.errorColour(" ❌ Please enter a number between 0 to " + maxNumOfCPU + " 6"));
+                    throw new InputMismatchException(Display.errorColour(" ❌ Please enter a number between 0 to " 
+                    + maxNumOfCPU + ". Maximum number of players = " + Constants.MAX_PLAYER_NO));
                 }
                 break;
             } catch (IllegalArgumentException e) {
@@ -206,8 +206,9 @@ public class Prompt {
 
                 difficulty = Integer.parseInt(input);
                 System.out.print(Constants.ANSI_RESET);
-                if (difficulty < 1 || difficulty > 3) {
-                    throw new InputMismatchException(Display.errorColour(" ❌ Please enter a number between 1 to 3"));
+                if (difficulty < Constants.MIN_CPU_DIFFICULTY || difficulty > Constants.MAX_CPU_DIFFICULTY) {
+                    throw new InputMismatchException(Display.errorColour(" ❌ Please enter a number between " +
+                    Constants.MIN_CPU_DIFFICULTY + " to " + Constants.MAX_CPU_DIFFICULTY));
                 }
                 break;
             } catch (IllegalArgumentException e) {

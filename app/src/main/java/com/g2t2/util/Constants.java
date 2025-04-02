@@ -51,13 +51,14 @@ public class Constants {
     // Commands
     public static final String CREATE_GAME = "c"; //"CREATE GAME";
     public static final String JOIN_GAME = "j"; //"JOIN GAME";
-    public static final String ADD_CPU = "x"; //"ADD CPU";
+    public static final String ADD_CPU = "a"; //"ADD CPU";
     public static final String REMOVE_CPU = "REMOVE CPU";
-    public static final String START_GAME = "w"; //"START GAME";
+    public static final String START_GAME = "s"; //"START GAME";
     public static final String LEAVE_GAME = "l"; //"LEAVE GAME";
     public static final String ENTER_KEY = "";
     public static final String CANCEL_ACTION = "CANCEL ACTION";
     public static final String GO_BACK = "GO BACK";
+    public static final String CLOSE_APP = "CLOSE APP";
 
     // Message To Indicate Things
     public static final String COMPLETE_TURN = "$complete_turn$";
@@ -65,7 +66,6 @@ public class Constants {
     public static final String REFRESH_PAGE = "$refresh_page$";
     public static final String NEW_GAME = "$new_game$";
     public static final String GAME_ENDED = "$game_ended$";
-    
 
     // ERRORS
     public static final String INVALID_GAME_ID = "INVALID GAME ID";

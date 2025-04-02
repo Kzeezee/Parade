@@ -94,7 +94,7 @@ public class Client implements Runnable {
         System.out.println(" 📌 To leave the room, enter '" + Constants.LEAVE_GAME + "'");
         if (isGameMaster) { // show available GameMaster Commands
             System.out.println(Display.colorString("--- GameMaster Specific Commands ---"));
-            if (game.getNumOfPlayers() < 6) {
+            if (game.getNumOfPlayers() < Constants.MAX_PLAYER_NO) {
                 System.out.println(" 📌 To add CPU(s), enter '" + Constants.ADD_CPU + "'");
             } 
             if (game.getNumOfCPU() > 0) {
@@ -127,7 +127,7 @@ public class Client implements Runnable {
 
             } else if (isGameMaster) { // commands available to gameMaster
                 if (input.equals(Constants.ADD_CPU)) {
-                    if (game.getNumOfPlayers() < 6) {
+                    if (game.getNumOfPlayers() < Constants.MAX_PLAYER_NO) {
                         String[] CPUInformation = {"", "", Constants.ADD_CPU};
                         String[] userInput = Prompt.promptForCPUDetails(game.getNumOfPlayers());
                         if (userInput[0].equals(Constants.CANCEL_ACTION)) { // user cancelled action
@@ -145,7 +145,7 @@ public class Client implements Runnable {
                     }
                     sendMessage(idsToRemove);
                 } else if (input.equals(Constants.START_GAME)) {
-                    if (game.getNumOfPlayers() < 2) {
+                    if (game.getNumOfPlayers() < Constants.MIN_PLAYER_NO) {
                         System.out.println(Display.errorColour(" ❌ Insufficient Number of Players"));
                         toContinue = true;
                     } else  {
