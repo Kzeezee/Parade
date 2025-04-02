@@ -47,6 +47,7 @@ public class Client implements Runnable {
         Scanner sc = new Scanner(System.in);
         boolean hasCorrectInput = false;
         while (!hasCorrectInput) {
+            System.out.println(" 📌 To go back, enter: '" + Constants.GO_BACK + "'");
             System.out.println(" 📌 To create a game, enter: '" + Constants.CREATE_GAME + "'");
             System.out.println(" 📌 To join a game, enter: '" + Constants.JOIN_GAME + "'");
             System.out.print(Display.colorString(" ➢ Enter your choice: "));
@@ -62,6 +63,8 @@ public class Client implements Runnable {
                 joinGamePrompt();
                 hasCorrectInput = true;
 
+            } else if (userChoice[userChoice.length-1].equals(Constants.GO_BACK)) {
+                StartMenu.showStartMenu();
             } else {
                 System.out.println(Display.errorColour(" ❌ Please input either " +
                 Constants.CREATE_GAME + " or " + Constants.JOIN_GAME));
@@ -188,7 +191,6 @@ public class Client implements Runnable {
             }
         sendMessage(messageToSendBack);
     }
-
 
     private void renderPut2CollectionRound(String[] messageToSendBack, Player currentPlayer, GameState game) {
         if (currentPlayer.getCPU()) { // CPU turn
