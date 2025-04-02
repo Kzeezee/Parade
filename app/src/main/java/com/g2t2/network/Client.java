@@ -14,12 +14,14 @@ import com.g2t2.game.gameutility.CPUGameAction;
 import com.g2t2.game.gameutility.GameRenderer;
 import com.g2t2.game.gameutility.Prompt;
 import com.g2t2.network.networkUtility.NetworkUtility;
+import com.g2t2.network.networkUtility.Message;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 import com.g2t2.util.Utility;
 
 public class Client implements Runnable {
+    private static final int portNumber = 1234;
     private Socket socket;
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
@@ -126,12 +128,12 @@ public class Client implements Runnable {
                     if (numberOfPlayersCurrently < 6) {
                         String[] CPUInformation = {"", "", Constants.ADD_CPU};
                         String[] userInput = Prompt.promptForCPUDetails(numberOfPlayersCurrently);
-                        System.arraycopy(userInput, 0, CPUInformation, 0, 2);
-
-                        if (CPUInformation == null) { // user input 0 CPU
-                            System.out.println("> No CPU added");
-                            continue;
+                        if (userInput[0].equals(Constants.CANCEL_ACTION)) { // user cancelled action
+                            sendMessage(new String[] {Constants.ENTER_KEY});
+                            break;
                         }
+
+                        System.arraycopy(userInput, 0, CPUInformation, 0, 2);
                         sendMessage(CPUInformation);
                         break;
                     }
@@ -149,7 +151,7 @@ public class Client implements Runnable {
             if (input.equals(Constants.LEAVE_GAME)) {
                 sendMessage(new String[] {Constants.LEAVE_GAME}); 
                 break;
-            }  else if (input.equals(Constants.ENTER_KEY)) { // to refresh page
+            }  else if (input.equals(Constants.ENTER_KEY)) { // refresh page
                 sendMessage(new String[] {Constants.ENTER_KEY});
                 break;
             }
@@ -180,54 +182,62 @@ public class Client implements Runnable {
         GameRenderer.displayHandCards(NetworkUtility.findMyPlayer(game, myPlayerId));
         if (game.isPut2CollectionRound()) { // put 2 to collection round
             messageToSendBack[2] = Constants.PUT_TO_COLLECTION;
-            if (currentPlayer.getCPU()) { // CPU turn
-                CPUGameAction.displayCPUTurnAction(currentPlayer);
-                if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
-                    int[] indexOfChosenCard = CPUGameAction.CPUSelectTwoToCollections(currentPlayer, game);
-                    messageToSendBack[0] = indexOfChosenCard[0] + "";
-                    messageToSendBack[1] = indexOfChosenCard[1] + "";
-                } else { // the rest don't do anything
-                    return; 
-                }
-            } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
-                    String[] indexOfChosenCard = Prompt.promptToCollectTwo(currentPlayer);
-                    if (indexOfChosenCard[0].equals(Constants.LEAVE_GAME)) {
-                        leaveGame();
-                        // bot to take over the turn
-                        int[] temp = CPUGameAction.CPUSelectTwoToCollections(currentPlayer, game);
-                        indexOfChosenCard[0] = temp[0] + "";
-                        indexOfChosenCard[1] = temp[1] + "";
-                    }
-                    messageToSendBack[0] = indexOfChosenCard[0];
-                    messageToSendBack[1] = indexOfChosenCard[1];
-            } else { // not your turn
+            renderPut2CollectionRound(messageToSendBack, currentPlayer, game);
+        } else { // normal rounds
+            renderNormalRound(messageToSendBack, currentPlayer, game);
+            }
+        sendMessage(messageToSendBack);
+    }
+
+
+    private void renderPut2CollectionRound(String[] messageToSendBack, Player currentPlayer, GameState game) {
+        if (currentPlayer.getCPU()) { // CPU turn
+            CPUGameAction.displayCPUTurnAction(currentPlayer);
+            if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
+                int[] indexOfChosenCard = CPUGameAction.CPUSelectTwoToCollections(currentPlayer, game);
+                messageToSendBack[0] = indexOfChosenCard[0] + "";
+                messageToSendBack[1] = indexOfChosenCard[1] + "";
+            } else { // the rest don't do anything
                 System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
                 return;
             }
-
-        } else { // normal rounds
-            if (currentPlayer.getCPU()) { // CPU turn
-                CPUGameAction.displayCPUTurnAction(currentPlayer);
-                if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
-                    int indexOfChosenCard = CPUGameAction.chooseCPUCardIdx(currentPlayer, game, -1);
-                    messageToSendBack[0] = indexOfChosenCard + "";
-                } else { // the rest don't do anything
-                    return;
-                }
-            } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
-                String indexOfChosenCard = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, currentPlayer);
-                if (indexOfChosenCard.equals(Constants.LEAVE_GAME)) {
+        } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
+                String[] indexOfChosenCard = Prompt.promptToCollectTwo(currentPlayer);
+                if (indexOfChosenCard[0].equals(Constants.LEAVE_GAME)) {
                     leaveGame();
                     // bot to take over the turn
-                    indexOfChosenCard = CPUGameAction.chooseCPUCardIdx(currentPlayer, game, -1) + "";
+                    int[] temp = CPUGameAction.CPUSelectTwoToCollections(currentPlayer, game);
+                    indexOfChosenCard[0] = temp[0] + "";
+                    indexOfChosenCard[1] = temp[1] + "";
                 }
-                messageToSendBack[0] = indexOfChosenCard; 
-            } else { // not your turn
+                messageToSendBack[0] = indexOfChosenCard[0];
+                messageToSendBack[1] = indexOfChosenCard[1];
+        } else {
+            System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
+        }
+    }
+
+    private void renderNormalRound(String[] messageToSendBack, Player currentPlayer, GameState game) {
+        if (currentPlayer.getCPU()) { // CPU turn
+            CPUGameAction.displayCPUTurnAction(currentPlayer);
+            if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
+                int indexOfChosenCard = CPUGameAction.chooseCPUCardIdx(currentPlayer, game, -1);
+                messageToSendBack[0] = indexOfChosenCard + "";
+            } else { // the rest don't do anything
                 System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
                 return;
             }
+        } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
+            String indexOfChosenCard = Prompt.promptForCard(Constants.PROMPT_ADD_TO_PARADE, currentPlayer);
+            if (indexOfChosenCard.equals(Constants.LEAVE_GAME)) {
+                leaveGame();
+                // bot to take over the turn
+                indexOfChosenCard = CPUGameAction.chooseCPUCardIdx(currentPlayer, game, -1) + "";
+            }
+            messageToSendBack[0] = indexOfChosenCard; 
+        } else {
+            System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
         }
-        sendMessage(messageToSendBack);
     }
 
     private void sendMessage(String msg[]) {
@@ -331,7 +341,7 @@ public class Client implements Runnable {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter your username for the game: ");
         String username = sc.nextLine();
-        Socket socket = new Socket("localhost", 1234);
+        Socket socket = new Socket("localhost", portNumber);
         Client client = new Client(socket, username);
         StartMenu.showStartMenu();
 
