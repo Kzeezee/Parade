@@ -170,7 +170,7 @@ public class Prompt {
         while (true) {
             try {
                 System.out.println(Constants.DIVIDER);
-                System.out.println(" 📌 Enter '" + Constants.CANCEL_ACTION + "' to stop this action.");
+                System.out.println(Constants.PROMPT_CANCEL_ACTION);
                 System.out.println(" 📌 How many CPU do you want to add?");
                 System.out.print(Display.colorString(" ➢ Enter a number (max = " + maxNumOfCPU + "): "));
                 input = sc.nextLine();
@@ -197,7 +197,7 @@ public class Prompt {
             try {
                 System.out.print(Constants.ANSI_RESET);
                 System.out.println(Constants.DIVIDER);
-                System.out.println(" 📌 Enter '" + Constants.CANCEL_ACTION + "' to stop this action.");
+                System.out.println(Constants.PROMPT_CANCEL_ACTION);
                 System.out.print(Prompt.GAME_DIFFICULTY_OPTIONS);
                 input = sc.nextLine();
                 if (input.equals(Constants.CANCEL_ACTION)) {
@@ -230,7 +230,7 @@ public class Prompt {
         while (true) {
             try {        
                 System.out.println(Constants.DIVIDER);
-                System.out.println(" 📌 Enter '" + Constants.CANCEL_ACTION + "' to stop this action."); 
+                System.out.println(Constants.PROMPT_CANCEL_ACTION);
                 System.out.println(" 📌 How many CPU(s) do you want to remove?: "); 
                 System.out.print(Display.colorString(" ➢ Enter a number: "));
                 input = sc.nextLine();

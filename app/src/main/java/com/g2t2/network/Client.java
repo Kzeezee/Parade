@@ -96,16 +96,16 @@ public class Client implements Runnable {
 
     private void printWaitingRoomCommands(boolean isGameMaster, GameState game) {
         System.out.println(Display.colorString("--- Here are some available commands you can use ---"));
-        System.out.println(" 📌 To leave the room, enter '" + Constants.LEAVE_GAME + "'");
+        System.out.println(" 📌 To leave the room, enter '" + Display.colorString(Constants.LEAVE_GAME) + "'");
         if (isGameMaster) { // show available GameMaster Commands
             System.out.println(Display.colorString("--- GameMaster Specific Commands ---"));
             if (game.getNumOfPlayers() < Constants.MAX_PLAYER_NO) {
-                System.out.println(" 📌 To add CPU(s), enter '" + Constants.ADD_CPU + "'");
+                System.out.println(" 📌 To add CPU(s), enter '" + Display.colorString(Constants.ADD_CPU) + "'");
             } 
             if (game.getNumOfCPU() > 0) {
-                System.out.println(" 📌 To remove CPU(s), enter '" + Constants.REMOVE_CPU + "'");
+                System.out.println(" 📌 To remove CPU(s), enter '" + Display.colorString(Constants.REMOVE_CPU) + "'");
             } 
-            System.out.println(" 📌 To start the game, enter '" + Constants.START_GAME + "'");
+            System.out.println(" 📌 To start the game, enter '" + Display.colorString(Constants.START_GAME) + "'");
         }
     }
 
@@ -156,6 +156,9 @@ public class Client implements Runnable {
                     } else  {
                         sendMessage(new String[] {Constants.START_GAME});
                     }
+                } else {
+                    System.out.println(Constants.INVALID_COMMAND);
+                    toContinue = true;
                 }
             } else {
                 System.out.println(Constants.INVALID_COMMAND);
