@@ -2,15 +2,13 @@ package com.g2t2.game;
 
 import com.g2t2.types.Player;
 import com.g2t2.types.PlayerProfile;
-import com.g2t2.types.ScoreCalculation;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 import com.g2t2.db.dao.impl.PlayerProfileDaoImpl;
 import com.g2t2.game.gameutility.CPUGameAction;
 import com.g2t2.game.gameutility.GameFlow;
-import com.g2t2.game.gameutility.GameProcessor;
 import com.g2t2.game.gameutility.GameRenderer;
-import com.g2t2.game.gameutility.Prompt;
+import com.g2t2.game.gameutility.GamePlayPrompt;
 
 import java.util.List;
 
@@ -47,7 +45,7 @@ public class GamePlay {
             if(!game.getCurrentPlayer().getCPU()){
                 GameRenderer.displayRoundInformation(game);
                 GameRenderer.displayHandCards(game.getCurrentPlayer());
-                cardChosen = Prompt.promptForCard(game.getCurrentPlayer(), Constants.PROMPT_ADD_TO_PARADE);
+                cardChosen = GamePlayPrompt.promptForCard(game.getCurrentPlayer(), Constants.PROMPT_ADD_TO_PARADE);
             } else {
                 cardChosen = CPUGameAction.CPUSelectCard(game.getCurrentPlayer(), game);
             }
@@ -58,7 +56,7 @@ public class GamePlay {
             String[] cardsChosen = null;
             if(!game.getCurrentPlayer().getCPU()){
                 GameRenderer.displayRoundInformation(game);
-                cardsChosen = Prompt.promptToCollectTwo(game.getCurrentPlayer());
+                cardsChosen = GamePlayPrompt.promptToCollectTwo(game.getCurrentPlayer());
             } else {
                 cardsChosen = CPUGameAction.CPUSelectTwoToCollections(game.getCurrentPlayer(), game);
             }
@@ -73,7 +71,7 @@ public class GamePlay {
             new PlayerProfileDaoImpl().updatePlayerProfile(pp);
         }
 
-        if ("y".equals(Prompt.promptForNewGame())) {
+        if ("y".equals(GamePlayPrompt.promptForNewGame())) {
             StartMenu.showStartMenu();
         } else {
             Display.sayGoodBye();

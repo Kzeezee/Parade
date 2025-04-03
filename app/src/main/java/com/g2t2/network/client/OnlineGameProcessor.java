@@ -2,7 +2,7 @@ package com.g2t2.network.client;
 
 import com.g2t2.game.GameState;
 import com.g2t2.game.gameutility.CPUGameAction;
-import com.g2t2.game.gameutility.Prompt;
+import com.g2t2.game.gameutility.GamePlayPrompt;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
 
@@ -20,7 +20,7 @@ public class OnlineGameProcessor {
                 return null;
             }
         } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
-                String[] indexOfChosenCard = Prompt.promptToCollectTwo(currentPlayer);
+                String[] indexOfChosenCard = GamePlayPrompt.promptToCollectTwo(currentPlayer);
                 if (indexOfChosenCard[0].equals(Constants.LEAVE_GAME)) {
                     caller.setIsInGame(false);
                     // bot to take over the turn
@@ -49,7 +49,7 @@ public class OnlineGameProcessor {
                 return null;
             }
         } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
-            String indexOfChosenCard = Prompt.promptForCard(currentPlayer, Constants.PROMPT_ADD_TO_PARADE);
+            String indexOfChosenCard = GamePlayPrompt.promptForCard(currentPlayer, Constants.PROMPT_ADD_TO_PARADE);
             if (indexOfChosenCard.equals(Constants.LEAVE_GAME)) {
                 caller.setIsInGame(false);
                 // bot to take over the turn

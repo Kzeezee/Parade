@@ -20,6 +20,25 @@ import com.g2t2.util.Display;
  * @author Shwe
  */
 public class GameInitPrompt {
+
+    /**
+     * Options for selecting the difficulty level for CPU players.
+     */
+    public static final String GAME_DIFFICULTY_OPTIONS = " 📌 Choose the difficulty level for your CPU\n"
+            + //
+            " 📌 Easy (1)\n" + //
+            " 📌 Medium (2)\n" + //
+            " 📌 Difficult (3)\n" + //
+            Display.colorString(" ⚜ Enter option ➢ ");
+
+    /**
+     * Error message displayed when an invalid number of players is entered.
+     */
+    public static final String PLAYER_NO_ERROR_MESSAGE = Display
+            .errorColour(" ❌ A minimum of 2 players and a maximum of 6 players are allowed."
+                    + "Please enter a number between 2 to 6.");
+
+
     /**
      * Prompts the user to select a difficulty level for CPU-controlled players.
      * Ensures that the chosen difficulty is within the allowed range.
@@ -33,7 +52,7 @@ public class GameInitPrompt {
         while (true) {
             System.out.print(Constants.ANSI_RESET);
             System.out.println(Constants.DIVIDER);
-            System.out.print(Prompt.GAME_DIFFICULTY_OPTIONS);
+            System.out.print(GAME_DIFFICULTY_OPTIONS);
             try {
                 difficultyChosen = sc.nextInt();
                 sc.nextLine();
@@ -70,7 +89,7 @@ public class GameInitPrompt {
                 numOfPlayers = sc.nextInt();
                 sc.nextLine();
                 if (numOfPlayers < 2 || numOfPlayers > 6) {
-                    throw new IllegalArgumentException(Prompt.PLAYER_NO_ERROR_MESSAGE);
+                    throw new IllegalArgumentException(PLAYER_NO_ERROR_MESSAGE);
                 }
                 break;
             } catch (InputMismatchException e) {
@@ -159,8 +178,34 @@ public class GameInitPrompt {
     public static String[] promptForCPUDetails(int numOfPlayers) {
         Scanner sc = new Scanner(System.in);
         int maxNumOfCPU = Constants.MAX_PLAYER_NO - numOfPlayers;
-        int numOfCPU = 0;
         String input = null;
+        int difficulty = 0;
+        while (true) {
+            try {
+                System.out.println(Constants.DIVIDER);
+                System.out.println(Constants.PROMPT_CANCEL_ACTION);
+                System.out.print(GAME_DIFFICULTY_OPTIONS);
+                input = sc.nextLine();
+                if (input.equals(Constants.CANCEL_ACTION)) {
+                    return new String[] {input};
+                }
+
+                difficulty = Integer.parseInt(input);
+                if (difficulty < Constants.MIN_CPU_DIFFICULTY || difficulty > Constants.MAX_CPU_DIFFICULTY) {
+                    throw new InputMismatchException(Display.errorColour(" ❌ Please enter a number between " +
+                            Constants.MIN_CPU_DIFFICULTY + " to " + Constants.MAX_CPU_DIFFICULTY));
+                }
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println(Display.errorColour(" ❌ Please enter a number or an appropriate command"));
+                System.out.println();
+            } catch (InputMismatchException e) {
+                System.out.println(e.getMessage());
+                System.out.println();
+            }
+        }
+
+        int numOfCPU = 0;
         while (true) {
             try {
                 System.out.println(Constants.DIVIDER);
@@ -186,31 +231,7 @@ public class GameInitPrompt {
             }
         }
 
-        int difficulty = 0;
-        while (true) {
-            try {
-                System.out.println(Constants.DIVIDER);
-                System.out.println(Constants.PROMPT_CANCEL_ACTION);
-                System.out.print(Prompt.GAME_DIFFICULTY_OPTIONS);
-                input = sc.nextLine();
-                if (input.equals(Constants.CANCEL_ACTION)) {
-                    return new String[] { input };
-                }
-
-                difficulty = Integer.parseInt(input);
-                if (difficulty < Constants.MIN_CPU_DIFFICULTY || difficulty > Constants.MAX_CPU_DIFFICULTY) {
-                    throw new InputMismatchException(Display.errorColour(" ❌ Please enter a number between " +
-                            Constants.MIN_CPU_DIFFICULTY + " to " + Constants.MAX_CPU_DIFFICULTY));
-                }
-                break;
-            } catch (IllegalArgumentException e) {
-                System.out.println(Display.errorColour(" ❌ Please enter a number or an appropriate command"));
-                System.out.println();
-            } catch (InputMismatchException e) {
-                System.out.println(e.getMessage());
-                System.out.println();
-            }
-        }
+        
         return new String[] { "" + numOfCPU, "" + difficulty };
     }
 

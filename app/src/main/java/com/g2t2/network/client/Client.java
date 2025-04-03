@@ -73,7 +73,7 @@ public class Client implements Runnable {
                 NetworkUtility.sendMessage(new String[] {Constants.GAME_ENDED}, objectOutputStream); // signal to clienthandler to reset server side things
                 isInGame = false;
 
-                String userChoice = Prompt.promptForNewGame();
+                String userChoice = GamePlayPrompt.promptForNewGame();
                 if (userChoice.equals("y")) {
                     NetworkUtility.sendMessage(new String[] {username, Constants.NEW_GAME}, objectOutputStream);
                 } else {

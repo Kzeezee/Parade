@@ -21,24 +21,7 @@ import com.g2t2.util.Display;
  * 
  * @author Shwe
  */
-public class Prompt {
-    /**
-     * Options for selecting the difficulty level for CPU players.
-     */
-    public static final String GAME_DIFFICULTY_OPTIONS = " 📌 Choose the difficulty level for each of your CPU players\n"
-            + //
-            " 📌 Easy (1)\n" + //
-            " 📌 Medium (2)\n" + //
-            " 📌 Difficult (3)\n" + //
-            Display.colorString(" ⚜ Enter option ➢ ");
-
-    /**
-     * Error message displayed when an invalid number of players is entered.
-     */
-    public static final String PLAYER_NO_ERROR_MESSAGE = Display
-            .errorColour(" ❌ A minimum of 2 players and a maximum of 6 players are allowed."
-                    + "Please enter a number between 2 to 6.");
-
+public class GamePlayPrompt {
     /**
      * Prompts the player to select a card from their hand.
      *
@@ -131,7 +114,7 @@ public class Prompt {
                 String prompt = " 📌 Which card do you want to place in the Collection?\n"
                         + " 📌 You need to choose TWO different cards \n"
                         + Display.colorString(" ⚜ Card " + (i + 1) + ": ");
-                String cardIdx = Prompt.promptForCard(player, prompt);
+                String cardIdx = promptForCard(player, prompt);
 
                 if (cardIdx.equals(Constants.LEAVE_GAME) && confirmsChoice()) {
                     choosenCardsIdx = new String[] { Constants.LEAVE_GAME };
