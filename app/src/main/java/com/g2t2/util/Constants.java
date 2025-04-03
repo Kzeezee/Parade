@@ -21,23 +21,23 @@ public class Constants {
     public static final String ANSI_RESET = "\033[0m";
     public static final String INVALID_OPTION_ERROR_MSG = " ❌ Please enter a number or an appropriate command";
     public static final String WELCOMEMESSAGE_STRING = " ⚜ Welcome to G2T2 Parade! Please select an option. (1 or 3 for now)";
-    public static final String DIVIDER = "\033[90m" + "───────────────────────────────────────" 
-                                         + " ⚜ ──────────────────────────────────────────" + ANSI_RESET;
+    public static final String DIVIDER = "\033[90m" + "───────────────────────────────────────"
+            + " ⚜ ──────────────────────────────────────────" + ANSI_RESET;
 
     public static final String BANNER = String.format(CardColour.BLUE.getAnsiCode()
-                                        + "                              ┌──────── ⚜ ───────┐\n"  
-                                        + "                              │    P A R A D E   │\n"
-                                        + "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
+            + "                              ┌──────── ⚜ ───────┐\n"
+            + "                              │    P A R A D E   │\n"
+            + "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
 
     public static final String ONLINE_LOBBY_BANNER = String.format(CardColour.BLUE.getAnsiCode() +
-        "                              ┌──────── ⚜ ───────┐\n" + //
-        "                              │   ONLINE  LOBBY  │\n" + //
-        "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
+            "                              ┌──────── ⚜ ───────┐\n" + //
+            "                              │   ONLINE  LOBBY  │\n" + //
+            "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
 
     public static final String WAITING_LOBBY_BANNER = String.format(CardColour.BLUE.getAnsiCode() +
-        "                              ┌──────── ⚜ ───────┐\n" + //
-        "                              │  WAITING  LOBBY  │\n" + //
-        "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
+            "                              ┌──────── ⚜ ───────┐\n" + //
+            "                              │  WAITING  LOBBY  │\n" + //
+            "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
 
     public static final String GOODBYE = BLUE_ANSI + "\n" +
             "                    ┌──────────────────── ⚜ ───────────────────────┐\n" + //
@@ -45,18 +45,62 @@ public class Constants {
             "                    │    Have a nice day and see you again soon!   │\n" + //
             "                    └──────────────────── ⚜ ───────────────────────┘\n" + ANSI_RESET;
 
+    public static final String GAME_INSTRUCTION_OBJ = Display.colorString("\n 🎯 Objective\n")
+            + "End the game with the lowest score by avoiding collecting cards from the parade.\n" + DIVIDER;
+
+    public static final String GAME_INSTRUCTION_COMPONENT = Display.colorString("\n 🃏 Components\n")
+            + "66 cards in 6 colors (values 0-10)\n" + DIVIDER;
+
+    public static final String GAME_INSTRUCTION_SETUP = Display.colorString("\n 🛠 Setup\n")
+            + "1️⃣ Shuffle the deck.  \n"
+            + "2️⃣ Deal 5 cards to each player.  \n"
+            + "3️⃣ Place 6 cards face-up in a row (the parade 🎉).  \n"
+            + "4️⃣ Mark the front of the parade with the game box 📦.  \n"
+            + "5️⃣ Remaining cards = draw pile 🔄.  \n" + DIVIDER;
+
+    public static final String GAME_INSTRUCTION_PLAY = Display.colorString("\n ▶️ Gameplay\n")
+            + "Players take turns clockwise:\n"
+            + "1️⃣ Play a Card: Place a card from your hand at the end of the parade ➡️.\n"
+            + "2️⃣ Remove Cards (if applicable):\n"
+            + "   • Count parade cards (excluding your played card).\n"
+            + "   • If this count > your card's value:\n"
+            + "   • Cards beyond your card's value enter \"removal mode.\" 🚨\n"
+            + "   • Remove cards that:\n"
+            + "      ⚬ Match your card's color 🎨, OR\n"
+            + "      ⚬ Have a value ≤ your card's value 🔢.\n"
+            + "   • Add removed cards to your collection 🃏.\n"
+            + "3️⃣ Draw a Card: Replenish your hand to 5 cards 🔄.\n" + DIVIDER;
+
+    public static final String GAME_INSTRUCTION_ENDGAME = Display.colorString("\n ⏳ Endgame\n")
+            + "The game ends when:\n"
+            + "1️⃣ A player collects cards of all 6 colors, OR\n"
+            + "2️⃣ The draw pile is exhausted 📉.\n\n"
+            + "Each player takes one final turn (no drawing afterward).\n" + DIVIDER;
+
+    public static final String GAME_INSTRUCTION_SPECIAL_RULES = Display.colorString("\n ✨ Special Rules\n")
+            + "Playing a card with value 0 triggers removal mode for all parade cards! 💥\n" + DIVIDER;
+
+    public static final String GAME_INSTRUCTION_SCORING = Display.colorString("\n 🧮 Scoring\n")
+            + "1️⃣ Choose 2 cards in hand to add to your collection.  \n"
+            + "2️⃣ For each color:  \n"
+            + "   • Majority owner flips their cards face down; each = 1 point 🔢.  \n"
+            + "   • Others sum up face-up card values 💳.\n"
+            + "   💡 For 2 player game, a player needs to have 2 cards or more to be considered majority owner\n"
+            + "3️⃣ Total points; lowest score wins 🏆. In ties, fewer collected cards wins! 🎉\n" + DIVIDER;
+
     public static final List<String> EMOJIS = List.of("🌹", "💧", "☀️ ", "🪻 ", "🍀", "🕷️ ");
 
     public static final String PROMPT_ADD_TO_PARADE = " 📌 Which card do you want to place in the Parade?";
-    public static final String PROMPT_CANCEL_ACTION = " 📌 Enter '" + Display.colorString(Constants.CANCEL_ACTION) + "' to stop this action.";
+    public static final String PROMPT_CANCEL_ACTION = " 📌 Enter '" + Display.colorString(Constants.CANCEL_ACTION)
+            + "' to stop this action.";
 
     // Commands
-    public static final String CREATE_GAME = "c"; //"CREATE GAME";
-    public static final String JOIN_GAME = "j"; //"JOIN GAME";
-    public static final String ADD_CPU = "a"; //"ADD CPU";
+    public static final String CREATE_GAME = "c"; // "CREATE GAME";
+    public static final String JOIN_GAME = "j"; // "JOIN GAME";
+    public static final String ADD_CPU = "a"; // "ADD CPU";
     public static final String REMOVE_CPU = "REMOVE CPU";
-    public static final String START_GAME = "s"; //"START GAME";
-    public static final String LEAVE_GAME = "l"; //"LEAVE GAME";
+    public static final String START_GAME = "s"; // "START GAME";
+    public static final String LEAVE_GAME = "l"; // "LEAVE GAME";
     public static final String ENTER_KEY = "";
     public static final String CANCEL_ACTION = "CANCEL ACTION";
     public static final String GO_BACK = "GO BACK";
@@ -75,9 +119,9 @@ public class Constants {
     public static final String FULL_CAPACITY = "FULL CAPACITY";
 
     // Constants
-    public static final List<CardColour> CARD_COLOURS = List.of(CardColour.RED, CardColour.BLUE, CardColour.YELLOW, 
-                                                                CardColour.PURPLE, CardColour.GREEN, CardColour.BLACK);
-    
+    public static final List<CardColour> CARD_COLOURS = List.of(CardColour.RED, CardColour.BLUE, CardColour.YELLOW,
+            CardColour.PURPLE, CardColour.GREEN, CardColour.BLACK);
+
     public static final String DB_CONNECTION = "jdbc:sqlite:../parade.db";
 
     public static final int MIN_PLAYER_NO = 2;

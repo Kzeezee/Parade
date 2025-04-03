@@ -6,7 +6,9 @@ import java.util.InputMismatchException;
 
 import com.g2t2.db.dao.PlayerProfileDao;
 import com.g2t2.db.dao.impl.PlayerProfileDaoImpl;
+import com.g2t2.enums.CardColour;
 import com.g2t2.enums.PlayerProfileOptionInput;
+import com.g2t2.types.Card;
 import com.g2t2.types.PlayerProfile;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
@@ -19,10 +21,11 @@ import com.g2t2.util.Utility;
  * @author Oliver
  */
 public class StartMenu {
-    private static final String WELCOMEMESSAGE_STRING = " ⚜ Welcome to G2T2 Parade! Please select an option. (1, 3, 4 for now)";
+    private static final String WELCOMEMESSAGE_STRING = " ⚜ Welcome to G2T2 Parade! Please select an option. (1, 3, 4, 5 for now)";
     private static final String GAMEPLAY_OPTIONS = " 📌 Play local (1)\n" + " 📌 Play online (2)\n"
-            + " 📌 Change Profile (3)\n"
-            + " 📌 Exit application (4)\n"
+            + " 📌 Change profile (3)\n"
+            + " 📌 Learn how to play (4) \n"
+            + " 📌 Exit application (5)\n"
             + Display.colorString(" ⚜ Enter option ➢ ");
 
     /**
@@ -41,7 +44,7 @@ public class StartMenu {
      * Displays the console-based start menu and handles user input.
      */
     private static void consoleStartMenu() {
-        Utility.clearConsoleScreen();        
+        Utility.clearConsoleScreen();
         promptForGamePlayOptions();
     }
 
@@ -83,12 +86,47 @@ public class StartMenu {
             return;
         }
         if (optionChosen == 4) {
+            displayGameManual();
+            promptForGamePlayOptions();
+            return;
+        }
+        if (optionChosen == 5) {
             System.out.println(Constants.GOODBYE);
             System.exit(0);
             return;
         }
         throw new IllegalArgumentException(Display.errorColour(" ❌ Please choose a number 1 to 4"));
 
+    }
+
+    private static void displayGameManual() {
+        Utility.clearConsoleScreen();
+        System.out.println(Constants.DIVIDER);
+        System.out.println(Constants.GAME_INSTRUCTION_OBJ);
+
+        System.out.println(Constants.GAME_INSTRUCTION_COMPONENT);
+
+        System.out.println(Display.colorString("⚡︎ EXAMPLES ⚡︎"));
+        Display.displayCardsSideBySide(List.of(new Card(1, CardColour.BLACK), new Card(2, CardColour.BLUE),
+                new Card(3, CardColour.GREEN), new Card(4, CardColour.PURPLE),
+                new Card(1, CardColour.RED), new Card(5, CardColour.YELLOW)), true);
+
+        System.out.println(Constants.DIVIDER);
+
+        System.out.println(Constants.GAME_INSTRUCTION_SETUP);
+
+
+        System.out.println(Constants.GAME_INSTRUCTION_PLAY);
+
+        System.out.println(Constants.GAME_INSTRUCTION_SPECIAL_RULES);
+
+        System.out.println(Constants.GAME_INSTRUCTION_ENDGAME);
+
+        System.out.println(Constants.GAME_INSTRUCTION_SCORING);
+
+        Scanner sc = new Scanner(System.in);
+        System.out.print(Display.colorString(" ⚜ Enter any key to go back to the Menu ➢ "));
+        String input = sc.nextLine();
     }
 
     /**
@@ -182,7 +220,7 @@ public class StartMenu {
             if (profileToDelete > players.size() || profileToDelete <= 0) {
                 throw new IllegalArgumentException("No such player profile");
             }
-            System.out.printf(Display.errorColour("Are you sure you want to delete %s (%d)? ('y'/'N')"),
+            System.out.printf(Display.errorColour(" ⚜ Are you sure you want to delete %s (%d)? ('y'/'n') ➢ "),
                     players.get(profileToDelete - 1).getName(), profileToDelete);
             String deletionInput = sc.nextLine().toLowerCase();
 
