@@ -16,6 +16,7 @@ import com.g2t2.util.*;
 
 public class Client implements Runnable {
     private static final int portNumber = 1234;
+    private static final String serverAddress = "localhost";
     private Socket socket;
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
@@ -191,7 +192,7 @@ public class Client implements Runnable {
             Scanner sc = new Scanner(System.in);
             System.out.print("Enter your username for the game: "); 
             String username = sc.nextLine(); // TODO: to take profile name
-            Socket socket = new Socket("localhost", portNumber);
+            Socket socket = new Socket(serverAddress, portNumber);
             Client client = new Client(socket, username);
             StartMenu.showStartMenu();
 

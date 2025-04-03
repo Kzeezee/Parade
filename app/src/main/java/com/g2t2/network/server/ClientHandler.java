@@ -54,6 +54,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         game.removePlayer(NetworkUtility.findMyPlayer(game, myPlayerId));
         if (!game.setNewGameMaster()) {
             availableGames.remove(gameId);
+            clientHandlers.remove(gameId);
         }
         removePlayerFromGame();
     }
@@ -62,6 +63,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         NetworkUtility.findMyPlayer(game, myPlayerId).setCPU(true);
         if (!game.setNewGameMaster()) {
             availableGames.remove(gameId);
+            clientHandlers.remove(gameId);
         }
         removePlayerFromGame();
     }
@@ -171,7 +173,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     } 
 
     private void removePlayerFromGame() {
-        if (gameId != null) {
+        if (gameId != null && clientHandlers.get(gameId) != null) {
             clientHandlers.get(gameId).remove(this);
         }
         myPlayerId = 0;
