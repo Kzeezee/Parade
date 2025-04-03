@@ -314,7 +314,7 @@ public class Display {
         System.out.println(Constants.DIVIDER);
     }
 
-    public static void waitingLobbyHeader() {
+    public static void joiningGameLobbyHeader() {
         Utility.clearConsoleScreen();
         System.out.println(Constants.ONLINE_LOBBY_BANNER);
         System.out.println(Constants.DIVIDER);

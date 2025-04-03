@@ -1,1 +1,1 @@
-./gradlew clean && ./gradlew build && ./gradlew run -PmainClass=com.g2t2.network.Client
+./gradlew clean && ./gradlew build && ./gradlew run -PmainClass=com.g2t2.network.client.Client
