@@ -74,7 +74,7 @@ public class StartMenu {
             return;
         }
         if (optionChosen == 2) {
-            OnlineLobby.displayLobby(); // Start lobby
+            OnlineLobbyTemp.displayLobby(); // Start lobby
             return;
         }
 

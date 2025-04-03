@@ -18,7 +18,7 @@ import com.g2t2.util.Utility;
  * 
  * @author Ben
  */
-public class OnlineLobby {
+public class OnlineLobbyTemp {
     // public static List<Player> connectedPlayers = new ArrayList<>(); // A list of players currently connected to the online lobby.
 
 

@@ -23,4 +23,8 @@ public class NetworkUtility {
         }
         return null;
     }
+
+    public static void threadSleep(int duration) throws InterruptedException {
+        Thread.sleep(duration);
+    }
 }

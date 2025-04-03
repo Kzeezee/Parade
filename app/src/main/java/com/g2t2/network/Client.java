@@ -20,7 +20,6 @@ public class Client implements Runnable {
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
     private final BlockingQueue<Runnable> mainThreadTasks = new LinkedBlockingQueue<>();
-    private volatile boolean needToRefreshPage = false;
     private boolean isInGame = false;
     private String username;
     private int myPlayerId; // track player
@@ -35,135 +34,21 @@ public class Client implements Runnable {
             closeEverything(socket, objectInputStream, objectOutputStream);
         } 
     }
-
-    private void gameJoiningLobby() {
-        Display.waitingLobbyHeader();
-        Scanner sc = new Scanner(System.in);
-        boolean hasCorrectInput = false;
-        while (!hasCorrectInput) {
-            System.out.print(Display.colorString(" ➢ Enter your choice: "));
-
-            String[] userChoice = {username, "", ""};
-            userChoice[userChoice.length-1] = sc.nextLine();
-
-            if (userChoice[userChoice.length-1].equals(Constants.CREATE_GAME)) {
-                sendMessage(userChoice); // create game
-                hasCorrectInput = true;
-
-            } else if (userChoice[userChoice.length-1].equals(Constants.JOIN_GAME)) {
-                joinGamePrompt();
-                hasCorrectInput = true;
-
-            } else if (userChoice[userChoice.length-1].equals(Constants.GO_BACK)) {
-                // TODO (leave server and go to main menu)
-                continue;
-
-            } else if (userChoice[userChoice.length-1].equals(Constants.CLOSE_APP)) {
-                sendMessage(new String[] {Constants.CLOSE_APP});
-                hasCorrectInput = true;
-                closeEverything(socket, objectInputStream, objectOutputStream);
-
-            } else {
-                System.out.println(Display.errorColour(" ❌ Please input either a valid command"));
-                System.out.println();
-                continue; // reprompt the user
-            }
-        }
+    
+    private void joinGameLobby(String username) {
+        Display.joiningGameLobbyHeader();
+        String[] userInput = OnlineLobby.joinGamePrompt(username);
+        sendMessage(userInput);
     }
 
-    private void joinGamePrompt() {
-        Scanner sc = new Scanner(System.in);
-        String[] userChoice = {username, "", Constants.JOIN_GAME};
-
-        System.out.println();
-        System.out.println(" 📌 To join a game, enter the gameId");
-        System.out.print(Display.colorString(" ➢ Enter gameId: "));
-
-        userChoice[1] = sc.nextLine();
-        sendMessage(userChoice); // attempt to join game   
-    }
-
-    private void printWaitingRoomDetails(GameState game) {
-        boolean isGameMaster = game.getGameMaster().getPlayerId() == myPlayerId;
-        Utility.clearConsoleScreen();
-        System.out.println(Constants.WAITING_LOBBY_BANNER);
-        printWaitingRoomCommands(isGameMaster, game);
-        System.out.println(Constants.DIVIDER);
-        System.out.println(" 📌 GAME ID: " + game.getGameId());
-        game.printPlayerList();
-        activatingUserControlCommands(isGameMaster, game);
-    }
-
-    private void printWaitingRoomCommands(boolean isGameMaster, GameState game) {
-        System.out.println(Display.colorString("--- Here are some available commands you can use ---"));
-        System.out.println(" 📌 To leave the room, enter '" + Display.colorString(Constants.LEAVE_GAME) + "'");
-        if (isGameMaster) { // show available GameMaster Commands
-            System.out.println(Display.colorString("--- GameMaster Specific Commands ---"));
-            if (game.getNumOfPlayers() < Constants.MAX_PLAYER_NO) {
-                System.out.println(" 📌 To add CPU(s), enter '" + Display.colorString(Constants.ADD_CPU) + "'");
-            } 
-            if (game.getNumOfCPU() > 0) {
-                System.out.println(" 📌 To remove CPU(s), enter '" + Display.colorString(Constants.REMOVE_CPU) + "'");
-            } 
-            System.out.println(" 📌 To start the game, enter '" + Display.colorString(Constants.START_GAME) + "'");
-        }
-    }
-
-    private void activatingUserControlCommands(boolean isGameMaster, GameState game) {
-        Scanner sc = new Scanner(System.in);
-        boolean toContinue = true;
-        while (toContinue) {
-            toContinue = false;
-            System.out.print(Display.colorString(" ➢ Enter command: "));
-            String input = sc.nextLine();
-
-            if (needToRefreshPage) { // someone joins
-                needToRefreshPage = false;
-                System.out.println("📌 There is an update, refreshing page");
-                threadSleep(1000);
-                sendMessage(new String[] {Constants.ENTER_KEY}); // refresh page
-
-                // commands available to everyone
-            } else if (input.equals(Constants.LEAVE_GAME)) { 
-                sendMessage(new String[] {Constants.LEAVE_GAME}); 
-
-            } else if (input.equals(Constants.ENTER_KEY)) { // refresh page
-                sendMessage(new String[] {Constants.ENTER_KEY});
-
-            } else if (isGameMaster) { // commands available to gameMaster
-                if (input.equals(Constants.ADD_CPU)) {
-                    if (game.getNumOfPlayers() < Constants.MAX_PLAYER_NO) {
-                        String[] CPUInformation = {"", "", Constants.ADD_CPU};
-                        String[] userInput = Prompt.promptForCPUDetails(game.getNumOfPlayers());
-                        if (userInput[0].equals(Constants.CANCEL_ACTION)) { // user cancelled action
-                            sendMessage(new String[] {Constants.ENTER_KEY});
-                            break;
-                        }
-                        System.arraycopy(userInput, 0, CPUInformation, 0, 2);
-                        sendMessage(CPUInformation);
-                    }
-                } else if (game.getNumOfCPU() > 0 && input.equals(Constants.REMOVE_CPU)) {
-                    String[] idsToRemove = Prompt.promptForCPURemoval(game);
-                    if (idsToRemove[0].equals(Constants.CANCEL_ACTION)) {
-                        sendMessage(new String[] {Constants.ENTER_KEY});
-                        break;
-                    }
-                    sendMessage(idsToRemove);
-                } else if (input.equals(Constants.START_GAME)) {
-                    if (game.getNumOfPlayers() < Constants.MIN_PLAYER_NO) {
-                        System.out.println(Display.errorColour(" ❌ Insufficient Number of Players"));
-                        toContinue = true;
-                    } else  {
-                        sendMessage(new String[] {Constants.START_GAME});
-                    }
-                } else {
-                    System.out.println(Constants.INVALID_COMMAND);
-                    toContinue = true;
-                }
-            } else {
-                System.out.println(Constants.INVALID_COMMAND);
-                toContinue = true;
-            }   
+    private void gameWaitingLobby(GameState game) {
+        try {
+            OnlineLobby.printWaitingRoomDetails(game, myPlayerId);
+            boolean isGameMaster = game.getGameMaster().getPlayerId() == myPlayerId;
+            String[] userInput = OnlineLobby.activatingUserControlCommands(isGameMaster, game);
+            sendMessage(userInput);
+        } catch (InterruptedException e) {
+            closeEverything(socket, objectInputStream, objectOutputStream);
         }
     }
 
@@ -270,7 +155,7 @@ public class Client implements Runnable {
                 Object incomingObject = objectInputStream.readObject();
                 if (incomingObject instanceof GameState game) {
                     if (!game.getHasStarted()) {
-                        mainThreadTasks.add(() -> printWaitingRoomDetails(game));
+                        mainThreadTasks.add(() -> gameWaitingLobby(game));
 
                     // this is deal with the problem that the Scanner from activatingUserControlCommands is blocking the main thread
                     } else if (!isInGame && game.getGameMaster().getPlayerId() != myPlayerId) {
@@ -285,16 +170,19 @@ public class Client implements Runnable {
                     String command = incomingMessage.getMessage()[incomingMessage.getMessage().length-1];
                     if (command.equals(Constants.INVALID_GAME_ID)) { // wrong gameId
                         System.out.println(Constants.INVALID_GAME_ID);
-                        mainThreadTasks.add(() -> joinGamePrompt());
+                        NetworkUtility.threadSleep(1000);
+                        mainThreadTasks.add(() -> joinGameLobby(username));
                     } else if (command.equals(Constants.FULL_CAPACITY)) { // full capacity
                         System.out.println(Constants.FULL_CAPACITY);
-                        mainThreadTasks.add(() -> joinGamePrompt());
+                        NetworkUtility.threadSleep(1000);
+                        mainThreadTasks.add(() -> joinGameLobby(username));
 
                     } else if (command.equals(Constants.REFRESH_PAGE)) {
-                        needToRefreshPage = true;
+                        OnlineLobby.setRefreshPage(true);
 
                     } else if (command.equals(Constants.NEW_GAME)) {
-                        gameJoiningLobby();
+                        //gameJoiningLobby();
+                        joinGameLobby(username);
 
                     }
                 } else if (incomingObject instanceof Player player) {
@@ -306,6 +194,9 @@ public class Client implements Runnable {
             } catch (ClassNotFoundException e) {
                 closeEverything(socket, objectInputStream, objectOutputStream);
                 break;
+            } catch (InterruptedException e) {
+                closeEverything(socket, objectInputStream, objectOutputStream);
+                break;
             }
         }
     }
@@ -313,14 +204,6 @@ public class Client implements Runnable {
     @Override
     public void run() {
         listenForMessage();
-    }
-
-    private void threadSleep(int duration) {
-        try {
-            Thread.sleep(duration);
-        } catch (InterruptedException e) {
-            closeEverything(socket, objectInputStream, objectOutputStream);
-        }
     }
 
     private void closeEverything(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOuputStream) {
@@ -357,7 +240,7 @@ public class Client implements Runnable {
              // Starting the Thread
             Thread thread = new Thread(client);
             thread.start();
-            client.gameJoiningLobby();
+            client.joinGameLobby(username);
 
             while (socket.isConnected()) {
                 try {
@@ -370,7 +253,7 @@ public class Client implements Runnable {
             }
         } catch (IOException e) {
             System.out.println(Display.errorColour(" ❌ Server is closed"));
-        }
+        } 
 
         System.out.println(Constants.GOODBYE); // TODO: remove after combining with local
     }
