@@ -2,9 +2,14 @@ package com.g2t2.game.gameInit;
 
 import com.g2t2.util.Constants;
 import com.g2t2.util.Utility;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
 import com.g2t2.game.GamePlay;
 import com.g2t2.game.GameState;
 import com.g2t2.game.StateManager;
+import com.g2t2.network.networkUtility.NetworkUtility;
 import com.g2t2.types.Player;
 import com.g2t2.types.PlayerProfile;
 
@@ -87,6 +92,31 @@ public class GameInit {
         }
         System.out.println(Constants.DIVIDER);
         game.printPlayerList();
+    }
+
+    public static Player createPlayer(String name, GameState game) {
+        Player player = new Player(name);
+        player.setPlayerProfile(StateManager.getPlayerProfile());
+        game.addPlayer(player);
+        // clientHandlers.get(gameId).add(this);
+        // myPlayerId = player.getPlayerId();
+        //NetworkUtility.sendPlayer(player, objectOutputStream);
+        //NetworkUtility.sendGameState(game, objectOutputStream);
+        //broadcastMessage(new String[] {Constants.REFRESH_PAGE});
+        return player;
+    }
+
+    public static void createCPU(int numOfCPU, int difficulty, GameState game) {
+        for (int i = 0; i < numOfCPU; i++ ) {
+        Player cpu = new Player(true, difficulty);
+        game.addPlayer(cpu);
+        }
+    }
+
+    public static void removePlayers(String[] ids, GameState game) {
+        for (int i = 0; i < ids.length - 1; i++) {
+            game.removePlayer(NetworkUtility.findMyPlayer(game, Integer.parseInt(ids[i])));
+        }
     }
 
    

@@ -236,8 +236,6 @@ public class GameInitPrompt {
                     continue;
                 }
 
-                // promptForCPUIdToRemove();
-
                 int count = 0;
                 while (count < numOfCPUToRemove) {
                     System.out.println(" 📌 Which CPU(s) do you want to remove? (Enter the playerId of the CPU)");
@@ -260,7 +258,6 @@ public class GameInitPrompt {
                 System.out.println();
             }
         }
-
         idsToRemove.add(Constants.REMOVE_CPU);
         return idsToRemove.toArray(new String[0]);
     }

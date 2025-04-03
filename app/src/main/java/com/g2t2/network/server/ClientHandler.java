@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.util.*;
 
 import com.g2t2.game.*;
+import com.g2t2.game.gameInit.GameInit;
 import com.g2t2.game.gameutility.*;
 import com.g2t2.network.networkUtility.*;
 import com.g2t2.util.*;
@@ -33,36 +34,20 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         }
     }
 
-    private void createGame(String name) throws IOException {
+    private void createGame(String name) {
         GameState game = new GameState();
         gameId = game.getGameId();
         clientHandlers.put(gameId, new ArrayList<>());
         availableGames.put(gameId, game);
-        createPlayer(name, game);
     }
 
     private void createPlayer(String name, GameState game) throws IOException {
-        Player player = new Player(name);
-        player.setPlayerProfile(StateManager.getPlayerProfile());
-        game.addPlayer(player);
+        Player myPlayer = GameInit.createPlayer(name, game);
         clientHandlers.get(gameId).add(this);
-        myPlayerId = player.getPlayerId();
-        NetworkUtility.sendPlayer(player, objectOutputStream);
+        myPlayerId = myPlayer.getPlayerId();
+        NetworkUtility.sendPlayer(myPlayer, objectOutputStream);
         NetworkUtility.sendGameState(game, objectOutputStream);
         broadcastMessage(new String[] {Constants.REFRESH_PAGE});
-    }
-
-    private void createCPU(int numOfCPU, int difficulty, GameState game) {
-        for (int i = 0; i < numOfCPU; i++ ) {
-        Player cpu = new Player(true, difficulty);
-        game.addPlayer(cpu);
-        }
-    }
-
-    private void removeCPU(String[] ids, GameState game) {
-        for (int i = 0; i < ids.length - 1; i++) {
-            game.removePlayer(NetworkUtility.findMyPlayer(game, Integer.parseInt(ids[i])));
-        }
     }
 
     private void processPlayerLeaveLobby(GameState game) {
@@ -94,8 +79,6 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                 Object incomingObject = objectInputStream.readObject();
                 if (incomingObject instanceof Message messageToProcess) {
                     String command = messageToProcess.getMessage()[messageToProcess.getMessage().length - 1];
-                    System.out.println("command = " + command);
-                    System.out.println("gameid = " + gameId);
                     GameState game = null;
                     if (gameId != null) {
                         game = NetworkUtility.findGameState(gameId, availableGames);
@@ -103,6 +86,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
 
                     if (command.equals(Constants.CREATE_GAME)) { // create game
                         createGame(messageToProcess.getMessage()[0]);
+                        createPlayer(messageToProcess.getMessage()[0], NetworkUtility.findGameState(gameId, availableGames));
                     
                     } else if (command.equals(Constants.JOIN_GAME)) { // join game
                         // checking if gameId sent in is valid
@@ -118,12 +102,12 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         }
 
                     } else if (command.equals(Constants.ADD_CPU)) { // add cpu
-                        createCPU(Integer.parseInt(messageToProcess.getMessage()[0]), Integer.parseInt(messageToProcess.getMessage()[1]), game);
+                        GameInit.createCPU(Integer.parseInt(messageToProcess.getMessage()[0]), Integer.parseInt(messageToProcess.getMessage()[1]), game);
                         NetworkUtility.sendGameState(game, objectOutputStream);
                         broadcastMessage(new String[] {Constants.REFRESH_PAGE});
 
                     } else if (command.equals(Constants.REMOVE_CPU)) { // remove cpu
-                        removeCPU(messageToProcess.getMessage(), game);
+                        GameInit.removePlayers(messageToProcess.getMessage(), game);
                         NetworkUtility.sendGameState(game, objectOutputStream);
                         broadcastMessage(new String[] {Constants.REFRESH_PAGE});
 
