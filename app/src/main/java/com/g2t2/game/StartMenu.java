@@ -54,7 +54,7 @@ public class StartMenu {
         while (true) {
             System.out.println(Constants.BANNER);
             System.out.println(Constants.DIVIDER);
-            Display.delayPrint(WELCOMEMESSAGE_STRING, 20);
+            System.out.println(WELCOMEMESSAGE_STRING);
             System.out.print(GAMEPLAY_OPTIONS);
             String s = sc.nextLine();
             try {

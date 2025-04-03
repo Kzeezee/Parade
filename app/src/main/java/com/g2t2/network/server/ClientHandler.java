@@ -94,6 +94,8 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                 Object incomingObject = objectInputStream.readObject();
                 if (incomingObject instanceof Message messageToProcess) {
                     String command = messageToProcess.getMessage()[messageToProcess.getMessage().length - 1];
+                    System.out.println("command = " + command);
+                    System.out.println("gameid = " + gameId);
                     GameState game = null;
                     if (gameId != null) {
                         game = NetworkUtility.findGameState(gameId, availableGames);

@@ -21,6 +21,7 @@ public class Client implements Runnable {
     private ObjectInputStream objectInputStream;
     private final BlockingQueue<Runnable> mainThreadTasks = new LinkedBlockingQueue<>();
     private boolean isInGame = false;
+    private boolean hasLeftGame = false;
     private String username;
     private int myPlayerId; // track player
 
@@ -50,6 +51,9 @@ public class Client implements Runnable {
             OnlineLobby.printWaitingRoomDetails(game, myPlayerId);
             boolean isGameMaster = game.getGameMaster().getPlayerId() == myPlayerId;
             String[] userInput = OnlineLobby.activatingUserControlCommands(isGameMaster, game);
+            if (userInput[0].equals(Constants.START_GAME)) {
+                isInGame = true;
+            }
             NetworkUtility.sendMessage(userInput, objectOutputStream);
         } catch (InterruptedException e) {
             closeEverything(socket, objectInputStream, objectOutputStream);
@@ -81,77 +85,26 @@ public class Client implements Runnable {
             GameRenderer.displayRoundInformation(game);
             GameRenderer.displayHandCards(NetworkUtility.findMyPlayer(game, myPlayerId));
             if (game.isPut2CollectionRound()) { // put 2 to collection round
-                messageToSendBack = processPut2CollectionRound(currentPlayer, game);
+                messageToSendBack = OnlineGameProcessor.processPut2CollectionRound(currentPlayer, game, myPlayerId, this);
             } else { // normal rounds
-                messageToSendBack = processNormalRound(currentPlayer, game);
+                messageToSendBack = OnlineGameProcessor.processNormalRound(currentPlayer, game, myPlayerId, this);
             }
             if (messageToSendBack != null) {
                 NetworkUtility.sendMessage(messageToSendBack, objectOutputStream);
+            } 
+            if (!isInGame ) { // player has left
+                NetworkUtility.sendMessage(new String[] {Constants.LEAVE_GAME}, objectOutputStream);
+                hasLeftGame = true;
             }
+
+            
         } catch (IOException e) {
             closeEverything(socket, objectInputStream, objectOutputStream);
         }
     }
 
-    private String[] processPut2CollectionRound(Player currentPlayer, GameState game) throws IOException {
-        String[] messageToSendBack = {"", "", Constants.PUT_TO_COLLECTION};
-        if (currentPlayer.getCPU()) { // CPU turn
-            CPUGameAction.displayCPUTurnAction(currentPlayer);
-            if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
-                String[] indexOfChosenCard = CPUGameAction.CPUSelectTwoToCollections(currentPlayer, game);
-                messageToSendBack[0] = indexOfChosenCard[0];
-                messageToSendBack[1] = indexOfChosenCard[1];
-            } else { // the rest don't do anything
-                System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
-                return null;
-            }
-        } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
-                String[] indexOfChosenCard = Prompt.promptToCollectTwo(currentPlayer);
-                if (indexOfChosenCard[0].equals(Constants.LEAVE_GAME)) {
-                    leaveGame();
-                    // bot to take over the turn
-                    String[] temp = CPUGameAction.CPUSelectTwoToCollections(currentPlayer, game);
-                    indexOfChosenCard[0] = temp[0];
-                    indexOfChosenCard[1] = temp[1];
-                }
-                messageToSendBack[0] = indexOfChosenCard[0];
-                messageToSendBack[1] = indexOfChosenCard[1];
-        } else {
-            System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
-            return null;
-        }
-        return messageToSendBack;
-    }
-
-    private String[] processNormalRound(Player currentPlayer, GameState game) throws IOException {
-        String[] messageToSendBack = {"", "", Constants.COMPLETE_TURN};
-        if (currentPlayer.getCPU()) { // CPU turn
-            CPUGameAction.displayCPUTurnAction(currentPlayer);
-            if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
-                int indexOfChosenCard = CPUGameAction.chooseCPUCardIdx(currentPlayer, game, -1);
-                messageToSendBack[0] = indexOfChosenCard + "";
-            } else { // the rest don't do anything
-                System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
-                return null;
-            }
-        } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
-            String indexOfChosenCard = Prompt.promptForCard(currentPlayer, Constants.PROMPT_ADD_TO_PARADE);
-            if (indexOfChosenCard.equals(Constants.LEAVE_GAME)) {
-                leaveGame();
-                // bot to take over the turn
-                indexOfChosenCard = CPUGameAction.chooseCPUCardIdx(currentPlayer, game, -1) + "";
-            }
-            messageToSendBack[0] = indexOfChosenCard; 
-        } else {
-            System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
-            return null;
-        }
-        return messageToSendBack;
-    }
-
-    private void leaveGame() throws IOException {
-        isInGame = false;
-        NetworkUtility.sendMessage(new String[] {Constants.LEAVE_GAME}, objectOutputStream);
+    public void setIsInGame(boolean isInGame) {
+        this.isInGame = isInGame;
     }
      
     private void listenForMessage() {
@@ -159,7 +112,9 @@ public class Client implements Runnable {
             try {
                 Object incomingObject = objectInputStream.readObject();
                 if (incomingObject instanceof GameState game) {
-                    if (!game.getHasStarted()) {
+                    if (hasLeftGame) {
+                        hasLeftGame = false;
+                    } else if (!game.getHasStarted()) {
                         mainThreadTasks.add(() -> gameWaitingLobby(game));
 
                     // this is deal with the problem that the Scanner from activatingUserControlCommands is blocking the main thread
