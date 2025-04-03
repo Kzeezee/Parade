@@ -1,8 +1,10 @@
-package com.g2t2.game;
+package com.g2t2.game.gameInit;
 
 import com.g2t2.util.Constants;
 import com.g2t2.util.Utility;
-
+import com.g2t2.game.GamePlay;
+import com.g2t2.game.GameState;
+import com.g2t2.game.StateManager;
 import com.g2t2.types.Player;
 import com.g2t2.types.PlayerProfile;
 
@@ -22,7 +24,6 @@ import com.g2t2.types.PlayerProfile;
 public class GameInit {
     private static int numOfPlayers; // The total number of players in the game (including human and CPU players).
     private static int numOfCPU; // The number of CPU-controlled players in the game.
-
 
 
     /**

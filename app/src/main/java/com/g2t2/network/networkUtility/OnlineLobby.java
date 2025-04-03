@@ -3,7 +3,7 @@ package com.g2t2.network.networkUtility;
 import java.util.Scanner;
 
 import com.g2t2.game.GameState;
-import com.g2t2.game.gameutility.Prompt;
+import com.g2t2.game.gameInit.GameInitPrompt;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 import com.g2t2.util.Utility;
@@ -111,7 +111,7 @@ public class OnlineLobby {
                 if (input.equals(Constants.ADD_CPU)) {
                     if (game.getNumOfPlayers() < Constants.MAX_PLAYER_NO) {
                         String[] CPUInformation = {"", "", Constants.ADD_CPU};
-                        String[] userInput = Prompt.promptForCPUDetails(game.getNumOfPlayers());
+                        String[] userInput = GameInitPrompt.promptForCPUDetails(game.getNumOfPlayers());
                         if (userInput[0].equals(Constants.CANCEL_ACTION)) { // user cancelled action
                             return new String[] {Constants.ENTER_KEY};
                         }
@@ -119,7 +119,7 @@ public class OnlineLobby {
                         return CPUInformation;
                     }
                 } else if (game.getNumOfCPU() > 0 && input.equals(Constants.REMOVE_CPU)) {
-                    String[] idsToRemove = Prompt.promptForCPURemoval(game);
+                    String[] idsToRemove = GameInitPrompt.promptForCPURemoval(game);
                     if (idsToRemove[0].equals(Constants.CANCEL_ACTION)) {
                         return new String[] {Constants.ENTER_KEY};
                     }

@@ -96,8 +96,6 @@ public class Client implements Runnable {
                 NetworkUtility.sendMessage(new String[] {Constants.LEAVE_GAME}, objectOutputStream);
                 hasLeftGame = true;
             }
-
-            
         } catch (IOException e) {
             closeEverything(socket, objectInputStream, objectOutputStream);
         }
@@ -112,7 +110,7 @@ public class Client implements Runnable {
             try {
                 Object incomingObject = objectInputStream.readObject();
                 if (incomingObject instanceof GameState game) {
-                    if (hasLeftGame) {
+                    if (hasLeftGame) { // to deal with the problem if not CPU will keep playing
                         hasLeftGame = false;
                     } else if (!game.getHasStarted()) {
                         mainThreadTasks.add(() -> gameWaitingLobby(game));
