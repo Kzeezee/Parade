@@ -1,4 +1,4 @@
-package com.g2t2.network;
+package com.g2t2.network.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;

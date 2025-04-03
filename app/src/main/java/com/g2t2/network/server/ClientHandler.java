@@ -1,4 +1,4 @@
-package com.g2t2.network;
+package com.g2t2.network.server;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -33,7 +33,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         }
     }
 
-    private void createGame(String name) {
+    private void createGame(String name) throws IOException {
         GameState game = new GameState();
         gameId = game.getGameId();
         clientHandlers.put(gameId, new ArrayList<>());
@@ -41,14 +41,14 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         createPlayer(name, game);
     }
 
-    private void createPlayer(String name, GameState game) {
+    private void createPlayer(String name, GameState game) throws IOException {
         Player player = new Player(name);
         player.setPlayerProfile(StateManager.getPlayerProfile());
         game.addPlayer(player);
         clientHandlers.get(gameId).add(this);
         myPlayerId = player.getPlayerId();
-        sendPlayer(player);
-        sendGameState(game);
+        NetworkUtility.sendPlayer(player, objectOutputStream);
+        NetworkUtility.sendGameState(game, objectOutputStream);
         broadcastMessage(new String[] {Constants.REFRESH_PAGE});
     }
 
@@ -57,16 +57,12 @@ public class ClientHandler implements Runnable { // allows instances to be execu
         Player cpu = new Player(true, difficulty);
         game.addPlayer(cpu);
         }
-        sendGameState(game);
-        broadcastMessage(new String[] {Constants.REFRESH_PAGE});
     }
 
     private void removeCPU(String[] ids, GameState game) {
         for (int i = 0; i < ids.length - 1; i++) {
             game.removePlayer(NetworkUtility.findMyPlayer(game, Integer.parseInt(ids[i])));
         }
-        sendGameState(game);
-        broadcastMessage(new String[] {Constants.REFRESH_PAGE});
     }
 
     private void processPlayerLeaveLobby(GameState game) {
@@ -110,9 +106,9 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         // checking if gameId sent in is valid
                         game = NetworkUtility.findGameState(messageToProcess.getMessage()[1], availableGames);
                         if (game == null) {
-                            sendMessage(new String[] {Constants.INVALID_GAME_ID});
+                            NetworkUtility.sendMessage(new String[] {Constants.INVALID_GAME_ID}, objectOutputStream);
                         } else if (game.getNumOfPlayers() >= 6) {
-                            sendMessage(new String[] {Constants.FULL_CAPACITY});
+                            NetworkUtility.sendMessage(new String[] {Constants.FULL_CAPACITY}, objectOutputStream);
                         }
                         else {
                             gameId = messageToProcess.getMessage()[1];
@@ -121,9 +117,13 @@ public class ClientHandler implements Runnable { // allows instances to be execu
 
                     } else if (command.equals(Constants.ADD_CPU)) { // add cpu
                         createCPU(Integer.parseInt(messageToProcess.getMessage()[0]), Integer.parseInt(messageToProcess.getMessage()[1]), game);
+                        NetworkUtility.sendGameState(game, objectOutputStream);
+                        broadcastMessage(new String[] {Constants.REFRESH_PAGE});
 
                     } else if (command.equals(Constants.REMOVE_CPU)) { // remove cpu
                         removeCPU(messageToProcess.getMessage(), game);
+                        NetworkUtility.sendGameState(game, objectOutputStream);
+                        broadcastMessage(new String[] {Constants.REFRESH_PAGE});
 
                     } else if (command.equals(Constants.START_GAME)) { // start game
                         GameFlow.startGame(game);
@@ -135,7 +135,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         } else { // leave from lobby
                             processPlayerLeaveLobby(game);
                         }
-                        sendMessage(new String[] {Constants.NEW_GAME});
+                        NetworkUtility.sendMessage(new String[] {Constants.NEW_GAME}, objectOutputStream);
 
                     }  else if (command.equals(Constants.NEW_GAME)) { // player wants to play again
                         createPlayer(messageToProcess.getMessage()[0], game);
@@ -149,7 +149,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         broadcastGameStatus(game);
 
                     } else if (command.equals(Constants.ENTER_KEY)) { // refresh page for that player only
-                        sendGameState(NetworkUtility.findGameState(gameId, availableGames)); 
+                        NetworkUtility.sendGameState(game, objectOutputStream); 
                     
                     } else if (command.equals(Constants.GAME_ENDED)) { // reset game setting
                         resetGame(game);
@@ -169,48 +169,20 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     }
     
     // send gameState to all players in the game
-    private void broadcastGameStatus(GameState game) {
+    private void broadcastGameStatus(GameState game) throws IOException {
         for (ClientHandler clientHandler : clientHandlers.get(gameId)) {
-            clientHandler.sendGameState(game);
+            NetworkUtility.sendGameState(game, clientHandler.objectOutputStream);
         }
     }
 
     // broadcoast a message to all players less the sender
-    private void broadcastMessage(String[] message) {
+    private void broadcastMessage(String[] message) throws IOException {
         for (ClientHandler clientHandler : clientHandlers.get(gameId)) {
             if (clientHandler.myPlayerId != this.myPlayerId) {
-                clientHandler.sendMessage(message);
+                NetworkUtility.sendMessage(message, clientHandler.objectOutputStream);
             }
         }
     } 
-
-    private void sendGameState(GameState game) {
-        GameState snapshot = game.deepCopy(); // Create a snapshot
-        try {
-            objectOutputStream.writeObject(snapshot);
-            objectOutputStream.flush();
-        } catch (IOException e) {
-            closeEverything(socket, objectInputStream, objectOutputStream);
-        }
-    }
-
-    private void sendPlayer(Player player) {
-        try {
-            objectOutputStream.writeObject(player);
-            objectOutputStream.flush();
-        } catch (IOException e) {
-            closeEverything(socket, objectInputStream, objectOutputStream);
-        }
-    }
-
-    private void sendMessage(String message[]) {
-        try {
-            objectOutputStream.writeObject(new Message(message));
-            objectOutputStream.flush();
-        } catch (IOException e) {
-            closeEverything(socket, objectInputStream, objectOutputStream);
-        }
-    }
 
     private void removePlayerFromGame() {
         if (gameId != null) {

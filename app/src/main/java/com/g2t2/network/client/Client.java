@@ -1,4 +1,4 @@
-package com.g2t2.network;
+package com.g2t2.network.client;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -34,11 +34,15 @@ public class Client implements Runnable {
             closeEverything(socket, objectInputStream, objectOutputStream);
         } 
     }
-    
+
     private void joinGameLobby(String username) {
-        Display.joiningGameLobbyHeader();
-        String[] userInput = OnlineLobby.joinGamePrompt(username);
-        sendMessage(userInput);
+        try {
+            Display.joiningGameLobbyHeader();
+            String[] userInput = OnlineLobby.joinGamePrompt(username);
+            NetworkUtility.sendMessage(userInput, objectOutputStream);
+        } catch (IOException e) {
+            closeEverything(socket, objectInputStream, objectOutputStream);
+        } 
     }
 
     private void gameWaitingLobby(GameState game) {
@@ -46,42 +50,51 @@ public class Client implements Runnable {
             OnlineLobby.printWaitingRoomDetails(game, myPlayerId);
             boolean isGameMaster = game.getGameMaster().getPlayerId() == myPlayerId;
             String[] userInput = OnlineLobby.activatingUserControlCommands(isGameMaster, game);
-            sendMessage(userInput);
+            NetworkUtility.sendMessage(userInput, objectOutputStream);
         } catch (InterruptedException e) {
+            closeEverything(socket, objectInputStream, objectOutputStream);
+        } catch (IOException e) {
+            closeEverything(socket, objectInputStream, objectOutputStream);
+        } 
+    }
+
+    private void renderGame(GameState game) {
+        try {
+            Display.gameHeader();
+            Player currentPlayer = game.getCurrentPlayer();
+            String[] messageToSendBack = {"", "", Constants.COMPLETE_TURN};
+
+            if (game.isEndOfGame()) {
+                GameRenderer.displayScores(game.getPlayers());
+                NetworkUtility.sendMessage(new String[] {Constants.GAME_ENDED}, objectOutputStream); // signal to clienthandler to reset server side things
+                isInGame = false;
+
+                String userChoice = Prompt.promptForNewGame();
+                if (userChoice.equals("y")) {
+                    NetworkUtility.sendMessage(new String[] {username, Constants.NEW_GAME}, objectOutputStream);
+                } else {
+                    NetworkUtility.sendMessage(new String[] {Constants.LEAVE_GAME}, objectOutputStream);
+                }
+                return;
+            }
+
+            GameRenderer.displayRoundInformation(game);
+            GameRenderer.displayHandCards(NetworkUtility.findMyPlayer(game, myPlayerId));
+            if (game.isPut2CollectionRound()) { // put 2 to collection round
+                messageToSendBack = processPut2CollectionRound(currentPlayer, game);
+            } else { // normal rounds
+                messageToSendBack = processNormalRound(currentPlayer, game);
+            }
+            if (messageToSendBack != null) {
+                NetworkUtility.sendMessage(messageToSendBack, objectOutputStream);
+            }
+        } catch (IOException e) {
             closeEverything(socket, objectInputStream, objectOutputStream);
         }
     }
 
-    private void renderGame(GameState game) {
-        Display.gameHeader();
-        Player currentPlayer = game.getCurrentPlayer();
-        String[] messageToSendBack = {"", "", Constants.COMPLETE_TURN};
-
-        if (game.isEndOfGame()) {
-            GameRenderer.displayScores(game.getPlayers());
-            sendMessage(new String[] {Constants.GAME_ENDED}); // signal to clienthandler to reset server side things
-            isInGame = false;
-
-            String userChoice = Prompt.promptForNewGame();
-            if (userChoice.equals("y")) {
-                sendMessage(new String[] {username, Constants.NEW_GAME});
-            } else {
-                sendMessage(new String[] {Constants.LEAVE_GAME});
-            }
-            return;
-        }
-
-        GameRenderer.displayRoundInformation(game);
-        GameRenderer.displayHandCards(NetworkUtility.findMyPlayer(game, myPlayerId));
-        if (game.isPut2CollectionRound()) { // put 2 to collection round
-            messageToSendBack[2] = Constants.PUT_TO_COLLECTION;
-            processPut2CollectionRound(messageToSendBack, currentPlayer, game);
-        } else { // normal rounds
-            processNormalRound(messageToSendBack, currentPlayer, game);
-            }
-    }
-
-    private void processPut2CollectionRound(String[] messageToSendBack, Player currentPlayer, GameState game) {
+    private String[] processPut2CollectionRound(Player currentPlayer, GameState game) throws IOException {
+        String[] messageToSendBack = {"", "", Constants.PUT_TO_COLLECTION};
         if (currentPlayer.getCPU()) { // CPU turn
             CPUGameAction.displayCPUTurnAction(currentPlayer);
             if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
@@ -90,7 +103,7 @@ public class Client implements Runnable {
                 messageToSendBack[1] = indexOfChosenCard[1];
             } else { // the rest don't do anything
                 System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
-                return;
+                return null;
             }
         } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
                 String[] indexOfChosenCard = Prompt.promptToCollectTwo(currentPlayer);
@@ -105,12 +118,13 @@ public class Client implements Runnable {
                 messageToSendBack[1] = indexOfChosenCard[1];
         } else {
             System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
-            return;
+            return null;
         }
-        sendMessage(messageToSendBack);
+        return messageToSendBack;
     }
 
-    private void processNormalRound(String[] messageToSendBack, Player currentPlayer, GameState game) {
+    private String[] processNormalRound(Player currentPlayer, GameState game) throws IOException {
+        String[] messageToSendBack = {"", "", Constants.COMPLETE_TURN};
         if (currentPlayer.getCPU()) { // CPU turn
             CPUGameAction.displayCPUTurnAction(currentPlayer);
             if (game.getGameMaster().getPlayerId() == myPlayerId) { // only gameMaster sends back to server
@@ -118,7 +132,7 @@ public class Client implements Runnable {
                 messageToSendBack[0] = indexOfChosenCard + "";
             } else { // the rest don't do anything
                 System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
-                return;
+                return null;
             }
         } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
             String indexOfChosenCard = Prompt.promptForCard(currentPlayer, Constants.PROMPT_ADD_TO_PARADE);
@@ -130,23 +144,14 @@ public class Client implements Runnable {
             messageToSendBack[0] = indexOfChosenCard; 
         } else {
             System.out.println("It is " + currentPlayer.getName() + "'s turn. Not Your Turn.");
-            return;
+            return null;
         }
-        sendMessage(messageToSendBack);
+        return messageToSendBack;
     }
 
-    private void sendMessage(String msg[]) {
-        try {
-            objectOutputStream.writeObject(new Message(msg));
-            objectOutputStream.flush();
-        } catch (IOException e) {
-            closeEverything(socket, objectInputStream, objectOutputStream);
-        } 
-    }
-
-    private void leaveGame() {
+    private void leaveGame() throws IOException {
         isInGame = false;
-        sendMessage(new String[] {Constants.LEAVE_GAME});
+        NetworkUtility.sendMessage(new String[] {Constants.LEAVE_GAME}, objectOutputStream);
     }
      
     private void listenForMessage() {
