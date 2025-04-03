@@ -4,6 +4,7 @@ import com.g2t2.types.Player;
 import com.g2t2.types.PlayerProfile;
 import com.g2t2.types.ScoreCalculation;
 import com.g2t2.util.Constants;
+import com.g2t2.util.Display;
 import com.g2t2.db.dao.impl.PlayerProfileDaoImpl;
 import com.g2t2.game.gameutility.CPUGameAction;
 import com.g2t2.game.gameutility.GameFlow;
@@ -72,7 +73,12 @@ public class GamePlay {
             new PlayerProfileDaoImpl().updatePlayerProfile(pp);
         }
 
-        Prompt.promptForNewGame();
+        if ("y".equals(Prompt.promptForNewGame())) {
+            StartMenu.showStartMenu();
+        } else {
+            Display.sayGoodBye();
+        }
+
     }
 
     /**

@@ -6,8 +6,6 @@ import java.util.List;
 import com.g2t2.game.GameState;
 import com.g2t2.types.Card;
 import com.g2t2.types.Player;
-import com.g2t2.util.Constants;
-import com.g2t2.util.Display;
 
 /**
  * Utility class for handling game actions such as playing turns,

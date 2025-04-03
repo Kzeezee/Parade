@@ -84,7 +84,7 @@ public class GameInit {
         for (int i = 0; i < numOfCPU; i++) {
             GameInitPrompt.promptForCPUDifficulty(game);
         }
-
+        System.out.println(Constants.DIVIDER);
         game.printPlayerList();
     }
 

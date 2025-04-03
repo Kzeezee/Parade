@@ -45,7 +45,7 @@ public class Prompt {
      * @param prompt The message displayed to the player.
      * @param player The player selecting a card.
      * @return The index of the selected card in the player's hand.
-     */ 
+     */
     public static String promptForCard(Player player, String prompt) {
         String chosenCardString = null;
         Scanner sc = new Scanner(System.in);
@@ -58,7 +58,12 @@ public class Prompt {
                 chosenCardString = sc.nextLine();
 
                 if (chosenCardString.equals(Constants.LEAVE_GAME)) {
-                    return Constants.LEAVE_GAME;
+                    if (confirmsChoice()) {
+                        return Constants.LEAVE_GAME;
+                    } else {
+                        System.out.println();
+                        continue;
+                    }
                 }
 
                 int chosenCardIndex = Integer.parseInt(chosenCardString);
@@ -67,16 +72,10 @@ public class Prompt {
                     throw new IndexOutOfBoundsException();
                 }
 
-                // Confirmation on card choice
-                System.out.println(Constants.ANSI_RESET + "      Chosen Card Number: " + (chosenCardIndex));
-                System.out.print(Display.colorString(" ⚜ Enter 'y' to confirm ➢ "));
-
-                String confirmation = sc.nextLine();
-                if (confirmation.length() > 1 || !Character.isLetter(confirmation.charAt(0))
-                        || Character.toLowerCase(confirmation.charAt(0)) != 'y') {
+                System.out.println("\t ➢ Chosen Card Number: " + (chosenCardIndex));
+                if (!confirmsChoice()) {
                     System.out.println();
                     continue;
-
                 }
                 chosenCardString = chosenCardIndex - 1 + "";
                 break;
@@ -84,13 +83,25 @@ public class Prompt {
                 System.out.println(Display.errorColour(" ❌ Please input a number"));
                 System.out.println();
             } catch (IndexOutOfBoundsException e) {
-                System.out.println(Display.errorColour(" ❌ Please input a card number (1 to " + numOfCards + "): "));
+                System.out.println(Display.errorColour(" ❌ Please input a card number (1 to " + numOfCards + ")"));
                 System.out.println();
             } catch (InputMismatchException e) {
                 System.out.println();
             }
         }
         return chosenCardString;
+    }
+
+    private static boolean confirmsChoice() {
+        Scanner sc = new Scanner(System.in);
+        System.out.print(Display.colorString(" ⚜ Enter 'y' to confirm ➢ "));
+
+        String confirmation = sc.nextLine();
+        if (confirmation.length() > 0 && confirmation.toLowerCase().charAt(0) == 'y') {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -108,6 +119,7 @@ public class Prompt {
         System.out.println(" ⚜ You need to select " + Display.colorString("TWO")
                 + " cards from your hand to add to the collection.");
         System.out.println(Constants.DIVIDER);
+        GameRenderer.displayHandCards(player);
 
         boolean isReprompting = false;
         while (choosenCardsIdx[0].equals(choosenCardsIdx[1])) {
@@ -116,11 +128,12 @@ public class Prompt {
                 System.out.println();
             }
             for (int i = 0; i < 2; i++) {
-                String prompt = Display.colorString(" 📌 Which card do you want to place in the Collection?\n" +
-                        " 📌 You need to choose TWO different cards \n" +
-                        " ⚜ Card " + (i + 1) + ": ");
+                String prompt = " 📌 Which card do you want to place in the Collection?\n"
+                        + " 📌 You need to choose TWO different cards \n"
+                        + Display.colorString(" ⚜ Card " + (i + 1) + ": ");
                 String cardIdx = Prompt.promptForCard(player, prompt);
-                if (cardIdx.equals(Constants.LEAVE_GAME)) {
+
+                if (cardIdx.equals(Constants.LEAVE_GAME) && confirmsChoice()) {
                     choosenCardsIdx = new String[] { Constants.LEAVE_GAME };
                     break;
                 }
@@ -144,7 +157,6 @@ public class Prompt {
                 System.out.println(" 📌 The game has ended. 📌 ");
                 System.out.println(Display.colorString(" ⚜ Do you want to play another game? (y/n) ➢ "));
                 String confirmation = sc.nextLine();
-                System.out.println(Constants.ANSI_RESET);
                 return confirmation;
             } catch (InputMismatchException e) {
                 System.out.println();
@@ -179,8 +191,8 @@ public class Prompt {
                 }
                 numOfCPU = Integer.parseInt(input);
                 if (numOfCPU < 0 || numOfCPU > maxNumOfCPU) {
-                    throw new InputMismatchException(Display.errorColour(" ❌ Please enter a number between 0 to " 
-                    + maxNumOfCPU + ". Maximum number of players = " + Constants.MAX_PLAYER_NO));
+                    throw new InputMismatchException(Display.errorColour(" ❌ Please enter a number between 0 to "
+                            + maxNumOfCPU + ". Maximum number of players = " + Constants.MAX_PLAYER_NO));
                 }
                 break;
             } catch (IllegalArgumentException e) {
@@ -195,7 +207,6 @@ public class Prompt {
         int difficulty = 0;
         while (true) {
             try {
-                System.out.print(Constants.ANSI_RESET);
                 System.out.println(Constants.DIVIDER);
                 System.out.println(Constants.PROMPT_CANCEL_ACTION);
                 System.out.print(Prompt.GAME_DIFFICULTY_OPTIONS);
@@ -205,10 +216,9 @@ public class Prompt {
                 }
 
                 difficulty = Integer.parseInt(input);
-                System.out.print(Constants.ANSI_RESET);
                 if (difficulty < Constants.MIN_CPU_DIFFICULTY || difficulty > Constants.MAX_CPU_DIFFICULTY) {
                     throw new InputMismatchException(Display.errorColour(" ❌ Please enter a number between " +
-                    Constants.MIN_CPU_DIFFICULTY + " to " + Constants.MAX_CPU_DIFFICULTY));
+                            Constants.MIN_CPU_DIFFICULTY + " to " + Constants.MAX_CPU_DIFFICULTY));
                 }
                 break;
             } catch (IllegalArgumentException e) {
@@ -228,18 +238,19 @@ public class Prompt {
         List<String> idsToRemove = new ArrayList<>();
         int currentNumOfCPU = game.getNumOfCPU();
         while (true) {
-            try {        
+            try {
                 System.out.println(Constants.DIVIDER);
                 System.out.println(Constants.PROMPT_CANCEL_ACTION);
-                System.out.println(" 📌 How many CPU(s) do you want to remove?: "); 
+                System.out.println(" 📌 How many CPU(s) do you want to remove?: ");
                 System.out.print(Display.colorString(" ➢ Enter a number: "));
                 input = sc.nextLine();
                 if (input.equals(Constants.CANCEL_ACTION)) {
-                    return new String[] {input};
+                    return new String[] { input };
                 }
                 int numOfCPUToRemove = Integer.parseInt(input);
                 if (numOfCPUToRemove < 1 || numOfCPUToRemove > currentNumOfCPU) {
-                    System.out.println(Display.errorColour(" ❌ Please input a valid number. There are currently only " + currentNumOfCPU + " CPU(s)"));
+                    System.out.println(Display.errorColour(
+                            " ❌ Please input a valid number. There are currently only " + currentNumOfCPU + " CPU(s)"));
                     continue;
                 }
 
@@ -247,11 +258,11 @@ public class Prompt {
 
                 int count = 0;
                 while (count < numOfCPUToRemove) {
-                    System.out.println(" 📌 Which CPU(s) do you want to remove? (Enter the playerId of the CPU)"); 
+                    System.out.println(" 📌 Which CPU(s) do you want to remove? (Enter the playerId of the CPU)");
                     System.out.print(Display.colorString(" ➢ Enter CPU's playerId: "));
                     input = sc.nextLine();
                     if (input.equals(Constants.CANCEL_ACTION)) {
-                        return new String[] {input};
+                        return new String[] { input };
                     }
                     int cpuId = Integer.parseInt(input);
                     if (game.checkPlayerIsCPU(cpuId)) {

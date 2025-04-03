@@ -41,17 +41,17 @@ public class StartMenu {
      * Displays the console-based start menu and handles user input.
      */
     private static void consoleStartMenu() {
-        Utility.clearConsoleScreen();
-        System.out.println(Constants.BANNER);
-        System.out.println(Constants.DIVIDER);
-        System.out.println(WELCOMEMESSAGE_STRING);
-
+        Utility.clearConsoleScreen();        
         promptForGamePlayOptions();
     }
 
     private static void promptForGamePlayOptions() {
         Scanner sc = new Scanner(System.in);
+        Utility.clearConsoleScreen();
         while (true) {
+            System.out.println(Constants.BANNER);
+            System.out.println(Constants.DIVIDER);
+            Display.delayPrint(WELCOMEMESSAGE_STRING, 20);
             System.out.print(GAMEPLAY_OPTIONS);
             String s = sc.nextLine();
             try {
@@ -70,14 +70,14 @@ public class StartMenu {
 
     private static void processGamePlayOptions(int optionChosen) {
         if (optionChosen == 1) {
-            GameInit.displayGameOptions();  // Start options of game
+            GameInit.displayGameOptions(); // Start options of game
             return;
         }
         if (optionChosen == 2) {
             OnlineLobby.displayLobby(); // Start lobby
             return;
         }
-        
+
         if (optionChosen == 3) {
             checkForPlayerProfiles(); // check player profile to allow chaning profile
             return;
@@ -99,7 +99,7 @@ public class StartMenu {
         Utility.clearConsoleScreen();
         System.out.println(Constants.BANNER);
         System.out.println(Constants.DIVIDER);
-        Display.delayPrint("Loading in progress...", 30);
+        Display.delayPrint("Loading in progress...", 20);
 
         // DB search what profiles exist
         List<PlayerProfile> players = new PlayerProfileDaoImpl().getAllPlayerProfiles();

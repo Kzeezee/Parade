@@ -6,6 +6,7 @@ import com.g2t2.game.GameState;
 import com.g2t2.types.Card;
 import com.g2t2.types.Player;
 import com.g2t2.types.ScoreCalculation;
+import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 
 /**
@@ -26,8 +27,9 @@ public class CPUGameAction {
      * @param game   The current game state.
      */
     public static String CPUSelectCard(Player player, GameState game) {
+        System.out.println(Constants.DIVIDER);
         Display.delayPrint(" 📌 Player " + Display.colorString(player.getName())
-                + " is choosing their cards.", 30);
+                + " is choosing their cards.", 20);
         int cardIdx = chooseCPUCardIdx(player, game, -1);
         return String.valueOf(cardIdx);
     }
@@ -45,7 +47,7 @@ public class CPUGameAction {
         while (cardIdxList[0] == cardIdxList[1]) {
             for (int i = 0; i < cardIdxList.length; i++) {
                 cardIdxList[i] = chooseCPUCardIdx(player, game, cardIdxList[0]);
-                System.out.println("Index of " + i + " card: " + cardIdxList[i]);
+                // System.out.println("Index of " + i + " card: " + cardIdxList[i]);
 
             }
         }
@@ -134,7 +136,7 @@ public class CPUGameAction {
     // temp things for networking
     public static void displayCPUTurnAction(Player player) {
         Display.delayPrint(" 📌 Player " + Display.colorString(player.getName())
-                + " is choosing their cards.", 5);
+                + " is choosing their cards.", 20);
     }
 }
 

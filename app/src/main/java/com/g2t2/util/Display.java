@@ -231,22 +231,6 @@ public class Display {
         String ansi = card.getColour().getAnsiCode();
         String emoji = Constants.EMOJIS.get(card.getColour().ordinal());
 
-        // cardLines[0] = ansi + " ________ ";
-        // cardLines[1] = ansi + "|" + value + " |";
-
-        // if (value == 10) {
-        // cardLines[1] = ansi + "|" + value + " |";
-        // }
-
-        // cardLines[2] = ansi + "| |";
-        // cardLines[3] = ansi + "| " + emoji + " |";
-        // cardLines[4] = ansi + "| |";
-        // cardLines[5] = ansi + "|_______" + value + "|";
-
-        // if (value == 10) {
-        // cardLines[5] = ansi + "|______" + value + "|";
-        // }
-
         cardLines[0] = ansi + "┌────────┐";
 
         cardLines[1] = ansi + "│" + value + "       │";
