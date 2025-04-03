@@ -97,7 +97,8 @@ public class Constants {
     // Commands
     public static final String CREATE_GAME = "c"; // "CREATE GAME";
     public static final String JOIN_GAME = "j"; // "JOIN GAME";
-    public static final String ADD_CPU = "a"; // "ADD CPU";
+    public static final String ADD_CPU = "ADD CPU"; 
+    public static final String ADD_PLAYER = "ADD PLAYER"; 
     public static final String REMOVE_CPU = "REMOVE CPU";
     public static final String START_GAME = "s"; // "START GAME";
     public static final String LEAVE_GAME = "l"; // "LEAVE GAME";

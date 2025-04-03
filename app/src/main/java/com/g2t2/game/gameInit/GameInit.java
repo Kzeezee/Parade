@@ -1,13 +1,16 @@
 package com.g2t2.game.gameInit;
 
 import com.g2t2.util.Constants;
+import com.g2t2.util.Display;
 import com.g2t2.util.Utility;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import com.g2t2.game.GamePlay;
 import com.g2t2.game.GameState;
+import com.g2t2.game.StartMenu;
 import com.g2t2.game.StateManager;
 import com.g2t2.network.networkUtility.NetworkUtility;
 import com.g2t2.types.Player;
@@ -27,8 +30,7 @@ import com.g2t2.types.PlayerProfile;
  * @author Ben
  */
 public class GameInit {
-    private static int numOfPlayers; // The total number of players in the game (including human and CPU players).
-    private static int numOfCPU; // The number of CPU-controlled players in the game.
+   
 
 
     /**
@@ -38,11 +40,14 @@ public class GameInit {
      * 
      */
     public static void displayGameOptions() {
-        // Console configuration
         GameState game = new GameState();
-        displayConsoleGameOptions(game);
-        initialiseGame(game);
-        GamePlay.startGame(game);
+        // add host first
+        PlayerProfile pp = StateManager.getPlayerProfile();
+        Player player = new Player(pp.getName());
+        player.setPlayerProfile(pp);
+        game.addPlayer(player);
+
+        displayWaitingRoomOptions(game);
     }
 
     /**
@@ -54,45 +59,71 @@ public class GameInit {
      * 
      * @author Oliver
      */
-    private static void displayConsoleGameOptions(GameState game) {
-        numOfPlayers = 0;
-        numOfCPU = 0;
-        Utility.clearConsoleScreen();
-        System.out.println(Constants.BANNER);
-        System.out.println(Constants.DIVIDER);
-        numOfPlayers = GameInitPrompt.promptForNumberofPlayers();
-        numOfCPU = GameInitPrompt.promptForCPUPlayerNumber(numOfPlayers);
+    private static void displayWaitingRoomOptions(GameState game) {
+        boolean startGame = false;
+        // keep returning to lobby until game starts
+        while (!startGame){
+            printWaitingRoomDetails(game);
+            startGame = activatingUserControlCommands(game);
+        }
+        GamePlay.startGame(game);
     }
 
-    /**
-     * Initializes the players and parade board for the game.
-     * 
-     * 
-     *
-     * @param game the current game state
-     */
-    private static void initialiseGame(GameState game) {
+    
+    public static void printWaitingRoomDetails(GameState game) {
         Utility.clearConsoleScreen();
-        System.out.println(Constants.BANNER);
-
-        // Get first player name from player profile
-        PlayerProfile pp = StateManager.getPlayerProfile();
-        Player player = new Player(pp.getName());
-        player.setPlayerProfile(pp);
-        game.addPlayer(player); // User's player
-
-        // Handle rest of the local players name input
-        for (int i = 2; i <= numOfPlayers - numOfCPU; i++) {
-            GameInitPrompt.promptForPlayerName(game, i);
-        }
-
-        // choosing difficulty level and adding the cpu players
-        for (int i = 0; i < numOfCPU; i++) {
-            GameInitPrompt.promptForCPUDifficulty(game);
-        }
+        System.out.println(Constants.WAITING_LOBBY_BANNER);
+        printWaitingRoomCommands(game);
         System.out.println(Constants.DIVIDER);
         game.printPlayerList();
     }
+    
+    private static void printWaitingRoomCommands(GameState game) {
+        System.out.println(Display.colorString("--- Here are some available commands you can use ---"));
+        if (game.getNumOfPlayers() < Constants.MAX_PLAYER_NO) {
+            System.out.println(" 📌 To add player(s), enter '" + Display.colorString(Constants.ADD_PLAYER) + "'");
+            System.out.println(" 📌 To add CPU(s), enter '" + Display.colorString(Constants.ADD_CPU) + "'");
+        } 
+        if (game.getNumOfCPU() > 0) {
+            System.out.println(" 📌 To remove CPU(s), enter '" + Display.colorString(Constants.REMOVE_CPU) + "'");
+        } 
+        System.out.println(" 📌 To start the game, enter '" + Display.colorString(Constants.START_GAME) + "'");
+        System.out.println(" 📌 To exit the lobby, enter '" + Display.colorString(Constants.LEAVE_GAME) + "'");
+     
+    }
+
+    public static boolean activatingUserControlCommands(GameState game) /*throws InterruptedException*/ {
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            System.out.print(Display.colorString(" ➢ Enter command: "));
+            String input = sc.nextLine();
+            if (input.equals(Constants.LEAVE_GAME)){
+                StartMenu.showStartMenu();
+            } else if (input.equals(Constants.ADD_PLAYER) && game.getNumOfPlayers() < Constants.MAX_PLAYER_NO){
+                    createPlayer(GameInitPrompt.promptForPlayerName(), game);
+                    return false;
+            } else if (input.equals(Constants.ADD_CPU) && game.getNumOfPlayers() < Constants.MAX_PLAYER_NO) {
+                    String[] userInput = GameInitPrompt.promptForCPUDetails(game.getNumOfPlayers());
+                    createCPU(Integer.parseInt(userInput[0]), Integer.parseInt(userInput[1]), game);
+                    return false;
+            } else if (game.getNumOfCPU() > 0 && input.equals(Constants.REMOVE_CPU)) {
+                    String[] idsToRemove = GameInitPrompt.promptForCPURemoval(game);
+                    removeCPU(idsToRemove, game);
+                    return false;
+            } else if (input.equals(Constants.START_GAME)) {
+                    if (game.getNumOfPlayers() < Constants.MIN_PLAYER_NO) {
+                        System.out.println(Display.errorColour(" ❌ Insufficient Number of Players"));
+                        continue;
+                    } else  {
+                        return true;
+                    }
+            }
+            
+            System.out.println(Display.errorColour(" ❌Invalid Command"));
+            continue;
+        }
+    }
+   
 
     public static Player createPlayer(String name, GameState game) {
         Player player = new Player(name);
@@ -103,7 +134,7 @@ public class GameInit {
         //NetworkUtility.sendPlayer(player, objectOutputStream);
         //NetworkUtility.sendGameState(game, objectOutputStream);
         //broadcastMessage(new String[] {Constants.REFRESH_PAGE});
-        return player;
+         return player;
     }
 
     public static void createCPU(int numOfCPU, int difficulty, GameState game) {
@@ -119,6 +150,21 @@ public class GameInit {
         }
     }
 
-   
+    public static void removeCPU(String[] ids, GameState game){
+        for (int i = 0; i < ids.length - 1; i++) {
+            for (int j = 0; j < game.getNumOfPlayers(); j++){
+                if (game.getPlayers().get(j).getPlayerId() == Integer.parseInt(ids[i])){
+                    game.removePlayer(game.getPlayers().get(j));
+                }
+            }
+        }
+    }
+
+ 
+    
+
+
+
+
  
 }
