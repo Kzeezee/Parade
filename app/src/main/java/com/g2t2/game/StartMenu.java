@@ -23,11 +23,12 @@ import com.g2t2.util.Utility;
  */
 public class StartMenu {
     private static final String WELCOMEMESSAGE_STRING = " ⚜ Welcome to G2T2 Parade! Please select an option. (1, 3, 4, 5 for now)";
-    private static final String GAMEPLAY_OPTIONS = " 📌 Play local (1)\n" + " 📌 Play online (2)\n"
-            + " 📌 Change profile (3)\n"
-            + " 📌 Learn how to play (4) \n"
-            + " 📌 Exit application (5)\n"
-            + Display.colorString(" ⚜ Enter option ➢ ");
+    private static final String GAMEPLAY_OPTIONS = " 📌 Play local (1)\n" 
+                                                 + " 📌 Play online (2)\n"
+                                                 + " 📌 Change profile (3)\n"
+                                                 + " 📌 Learn how to play (4) \n"
+                                                 + " 📌 Exit application (5)\n"
+                                                 + Display.colorString(" ⚜ Enter option ➢ ");
 
     /**
      * Displays the start menu of the application based on the current mode (GUI or
@@ -94,8 +95,7 @@ public class StartMenu {
             return;
         }
         if (optionChosen == 5) {
-            System.out.println(Constants.GOODBYE);
-            System.exit(0);
+            Utility.exitGame();
             return;
         }
         throw new IllegalArgumentException(Display.errorColour(" ❌ Please choose a number 1 to 4"));
@@ -137,10 +137,10 @@ public class StartMenu {
      * creation if none exist.
      */
     private static void checkForPlayerProfiles() {
-        Utility.clearConsoleScreen();
-        System.out.println(Constants.BANNER);
-        System.out.println(Constants.DIVIDER);
-        Display.delayPrint("Loading in progress...", 20);
+        // Utility.clearConsoleScreen();
+        // System.out.println(Constants.BANNER);
+        // System.out.println(Constants.DIVIDER);
+        // Display.delayPrint("Loading in progress...", 20);
 
         // DB search what profiles exist
         List<PlayerProfile> players = new PlayerProfileDaoImpl().getAllPlayerProfiles();
@@ -180,16 +180,32 @@ public class StartMenu {
         Scanner sc = new Scanner(System.in);
         while (true) {
             try {
+                System.out.println(Constants.CLOSE_APP_PROMPT);
                 System.out.print(Display.colorString(" ⚜ Select profile (1 to " + numOfProfiles
                         + ", OR 'c' to create, OR 'd' to delete instead) ➢ "));
                 String input = sc.nextLine();
+
+                // handling input errors
+                if (input.equals(Constants.CLOSE_APP)) {
+                    Utility.exitGame();
+                } else if (input.length() < 1) {
+                    continue;
+                } else if (input.toLowerCase().charAt(0) != 'c' || input.toLowerCase().charAt(0) != 'd') {
+                    continue;
+                }
+                int intInput = Integer.parseInt(input);
+                if (intInput < 1 || intInput > numOfProfiles) {
+                    System.out.println(Display.errorColour(" ❌ Please enter a number betwwen 1 to ")  + numOfProfiles);
+                    System.out.println();
+                    continue;
+                }
+
                 PlayerProfileOptionInput option = determineUserProfileOptionInput(input);
                 processUserProfileOptionInput(playerProfiles, option, input);
                 break;
-            } catch (NumberFormatException e) {
-                System.out.println(Display.errorColour(" ❌ Invalid input"));
             } catch (IllegalArgumentException e) {
-                System.out.println(Display.errorColour(e.getMessage()));
+                System.out.println(Display.errorColour(" ❌ Please enter a valid 'c' / 'd'"));
+                System.out.println();
             }
         }
     }

@@ -80,7 +80,7 @@ public class GamePlayPrompt {
         System.out.print(Display.colorString(" ⚜ Enter 'y' to confirm ➢ "));
 
         String confirmation = sc.nextLine();
-        if (confirmation.length() > 0 && confirmation.toLowerCase().charAt(0) == 'y') {
+        if (confirmation.length() == 1 && confirmation.toLowerCase().charAt(0) == 'y') {
             return true;
         }
 

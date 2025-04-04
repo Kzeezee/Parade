@@ -35,4 +35,9 @@ public class Utility {
             System.out.flush();
         }
     }
+
+    public static void exitGame() {
+        System.out.println(Constants.GOODBYE);
+        System.exit(0);
+    }
 }

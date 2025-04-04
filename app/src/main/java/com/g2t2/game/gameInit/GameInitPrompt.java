@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.g2t2.game.GameState;
-import com.g2t2.game.gameutility.*;
-import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 
@@ -24,19 +22,18 @@ public class GameInitPrompt {
     /**
      * Options for selecting the difficulty level for CPU players.
      */
-    public static final String GAME_DIFFICULTY_OPTIONS = " 📌 Choose the difficulty level for your CPU\n"
-            + //
-            " 📌 Easy (1)\n" + //
-            " 📌 Medium (2)\n" + //
-            " 📌 Difficult (3)\n" + //
-            Display.colorString(" ⚜ Enter option ➢ ");
+    public static final String GAME_DIFFICULTY_OPTIONS = " 📌 Choose the difficulty level for your CPU\n" 
+                                                       + " 📌 Easy (1)\n" 
+                                                       + " 📌 Medium (2)\n" 
+                                                       + " 📌 Difficult (3)\n" 
+                                                       + Display.colorString(" ⚜ Enter option ➢ ");
 
     /**
      * Error message displayed when an invalid number of players is entered.
      */
     public static final String PLAYER_NO_ERROR_MESSAGE = Display
             .errorColour(" ❌ A minimum of 2 players and a maximum of 6 players are allowed."
-                    + "Please enter a number between 2 to 6.");
+                        + "Please enter a number between 2 to 6.");
 
 
     /**

@@ -72,7 +72,7 @@ public class GameInit {
     
     public static void printWaitingRoomDetails(GameState game) {
         Utility.clearConsoleScreen();
-        System.out.println(Constants.WAITING_LOBBY_BANNER);
+        System.out.println(Constants.LOCAL_WAITING_LOBBY_BANNER);
         printWaitingRoomCommands(game);
         System.out.println(Constants.DIVIDER);
         game.printPlayerList();
@@ -129,13 +129,13 @@ public class GameInit {
         Player player = new Player(name);
         player.setPlayerProfile(StateManager.getPlayerProfile());
         game.addPlayer(player);
-         return player;
+        return player;
     }
 
     public static void createCPU(int numOfCPU, int difficulty, GameState game) {
         for (int i = 0; i < numOfCPU; i++ ) {
-        Player cpu = new Player(true, difficulty);
-        game.addPlayer(cpu);
+            Player cpu = new Player(true, difficulty);
+            game.addPlayer(cpu);
         }
     }
 

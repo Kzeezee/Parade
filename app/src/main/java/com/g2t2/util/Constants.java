@@ -34,10 +34,15 @@ public class Constants {
             "                              │   ONLINE  LOBBY  │\n" + //
             "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
 
-    public static final String WAITING_LOBBY_BANNER = String.format(CardColour.BLUE.getAnsiCode() +
-            "                              ┌──────── ⚜ ───────┐\n" + //
-            "                              │  WAITING  LOBBY  │\n" + //
-            "                              └──────── ⚜ ───────┘\n" + ANSI_RESET);
+    public static final String ONLINE_WAITING_LOBBY_BANNER = String.format(CardColour.BLUE.getAnsiCode() +
+            "                              ┌─────────── ⚜ ──────────┐\n" + //
+            "                              │  ONLINE WAITING LOBBY  │\n" + //
+            "                              └─────────── ⚜ ──────────┘\n" + ANSI_RESET);
+
+    public static final String LOCAL_WAITING_LOBBY_BANNER = String.format(CardColour.BLUE.getAnsiCode() +
+            "                              ┌─────────── ⚜ ─────────┐\n" + //
+            "                              │  LOCAL WAITING LOBBY  │\n" + //
+            "                              └─────────── ⚜ ─────────┘\n" + ANSI_RESET);
 
     public static final String GOODBYE = BLUE_ANSI + "\n" +
             "                    ┌──────────────────── ⚜ ───────────────────────┐\n" + //
@@ -92,7 +97,7 @@ public class Constants {
 
     public static final String PROMPT_ADD_TO_PARADE = " 📌 Which card do you want to place in the Parade?";
     public static final String PROMPT_CANCEL_ACTION = " 📌 Enter '" + Display.colorString(Constants.CANCEL_ACTION)
-            + "' to stop this action.";
+                                                        + "' to stop this action.";
 
     // Commands
     public static final String CREATE_GAME = "c"; // "CREATE GAME";
@@ -113,6 +118,16 @@ public class Constants {
     public static final String REFRESH_PAGE = "$refresh_page$";
     public static final String NEW_GAME = "$new_game$";
     public static final String GAME_ENDED = "$game_ended$";
+
+    // Available Commands To Users
+    public static final String LEAVE_GAME_PROMPT =" 📌 To leave the game, enter '" + Display.colorString(Constants.LEAVE_GAME) + "'";
+    public static final String CLOSE_APP_PROMPT = " 📌 To leave the application, enter: '" + Display.colorString(Constants.CLOSE_APP) + "'";
+    public static final String GO_BACK_PROMPT = " 📌 To go back, enter: '" + Display.colorString(Constants.GO_BACK) + "'";
+    public static final String CREATE_GAME_PROMPT = " 📌 To create a game, enter: '" + Display.colorString(Constants.CREATE_GAME) + "'";
+    public static final String JOIN_GAME_PROMPT = " 📌 To join a game, enter: '" + Display.colorString(Constants.JOIN_GAME) + "'";
+    public static final String START_GAME_PROMPT = " 📌 To start the game, enter '" + Display.colorString(Constants.START_GAME) + "'";
+    public static final String REMOVE_CPU_PROMPT = " 📌 To remove CPU(s), enter '" + Display.colorString(Constants.REMOVE_CPU) + "'";
+    public static final String ADD_CPU_PROMPT = " 📌 To add CPU(s), enter '" + Display.colorString(Constants.ADD_CPU) + "'";
 
     // ERRORS
     public static final String INVALID_GAME_ID = "INVALID GAME ID";

@@ -1,5 +1,6 @@
 package com.g2t2.network.networkUtility;
 
+import java.net.ContentHandler;
 import java.util.Scanner;
 
 import com.g2t2.game.GameState;
@@ -66,7 +67,7 @@ public class OnlineLobby {
     public static void printWaitingRoomDetails(GameState game, int myPlayerId) {
         boolean isGameMaster = game.getGameMaster().getPlayerId() == myPlayerId;
         Utility.clearConsoleScreen();
-        System.out.println(Constants.WAITING_LOBBY_BANNER);
+        System.out.println(Constants.ONLINE_WAITING_LOBBY_BANNER);
         printWaitingRoomCommands(isGameMaster, game);
         System.out.println(Constants.DIVIDER);
         System.out.println(" 📌 GAME ID: " + game.getGameId());
@@ -75,16 +76,16 @@ public class OnlineLobby {
 
     private static void printWaitingRoomCommands(boolean isGameMaster, GameState game) {
         System.out.println(Display.colorString("--- Here are some available commands you can use ---"));
-        System.out.println(" 📌 To leave the room, enter '" + Display.colorString(Constants.LEAVE_GAME) + "'");
+        System.out.println(Constants.LEAVE_GAME_PROMPT);
         if (isGameMaster) { // show available GameMaster Commands
             System.out.println(Display.colorString("--- GameMaster Specific Commands ---"));
             if (game.getNumOfPlayers() < Constants.MAX_PLAYER_NO) {
-                System.out.println(" 📌 To add CPU(s), enter '" + Display.colorString(Constants.ADD_CPU) + "'");
+                System.out.println(Constants.ADD_CPU_PROMPT);
             } 
             if (game.getNumOfCPU() > 0) {
-                System.out.println(" 📌 To remove CPU(s), enter '" + Display.colorString(Constants.REMOVE_CPU) + "'");
+                System.out.println(Constants.REMOVE_CPU_PROMPT);
             } 
-            System.out.println(" 📌 To start the game, enter '" + Display.colorString(Constants.START_GAME) + "'");
+            System.out.println(Constants.START_GAME_PROMPT);
         }
     }
 
