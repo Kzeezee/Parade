@@ -82,6 +82,15 @@ public class GameState implements Serializable { // to allow it to be sent over
         numOfPlayers--;
     }
 
+    public Player findMyPlayer(int yourPlayerId) {
+        for (Player player : players) {
+            if (player.getPlayerId() == yourPlayerId) {
+                return player;
+            }
+        }
+        return null;
+    }
+
     /**
      * Retrieves a list of all players in the game.
      *

@@ -108,7 +108,7 @@ public class GameInit {
                     return false;
             } else if (game.getNumOfCPU() > 0 && input.equals(Constants.REMOVE_CPU)) {
                     String[] idsToRemove = GameInitPrompt.promptForCPURemoval(game);
-                    removeCPU(idsToRemove, game);
+                    removePlayers(idsToRemove, game);
                     return false;
             } else if (input.equals(Constants.START_GAME)) {
                     if (game.getNumOfPlayers() < Constants.MIN_PLAYER_NO) {
@@ -119,7 +119,7 @@ public class GameInit {
                     }
             }
             
-            System.out.println(Display.errorColour(" ❌Invalid Command"));
+            System.out.println(Display.errorColour(" ❌ Invalid Command"));
             continue;
         }
     }
@@ -129,11 +129,6 @@ public class GameInit {
         Player player = new Player(name);
         player.setPlayerProfile(StateManager.getPlayerProfile());
         game.addPlayer(player);
-        // clientHandlers.get(gameId).add(this);
-        // myPlayerId = player.getPlayerId();
-        //NetworkUtility.sendPlayer(player, objectOutputStream);
-        //NetworkUtility.sendGameState(game, objectOutputStream);
-        //broadcastMessage(new String[] {Constants.REFRESH_PAGE});
          return player;
     }
 
@@ -146,25 +141,7 @@ public class GameInit {
 
     public static void removePlayers(String[] ids, GameState game) {
         for (int i = 0; i < ids.length - 1; i++) {
-            game.removePlayer(NetworkUtility.findMyPlayer(game, Integer.parseInt(ids[i])));
+            game.removePlayer(game.findMyPlayer(Integer.parseInt(ids[i])));
         }
     }
-
-    public static void removeCPU(String[] ids, GameState game){
-        for (int i = 0; i < ids.length - 1; i++) {
-            for (int j = 0; j < game.getNumOfPlayers(); j++){
-                if (game.getPlayers().get(j).getPlayerId() == Integer.parseInt(ids[i])){
-                    game.removePlayer(game.getPlayers().get(j));
-                }
-            }
-        }
-    }
-
- 
-    
-
-
-
-
- 
 }

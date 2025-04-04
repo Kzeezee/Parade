@@ -51,7 +51,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     }
 
     private void processPlayerLeaveLobby(GameState game) {
-        game.removePlayer(NetworkUtility.findMyPlayer(game, myPlayerId));
+        game.removePlayer(game.findMyPlayer(myPlayerId));
         if (!game.setNewGameMaster()) {
             availableGames.remove(gameId);
             clientHandlers.remove(gameId);
@@ -60,7 +60,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
     }
     
     private void processPlayerLeaveGame(GameState game) {
-        NetworkUtility.findMyPlayer(game, myPlayerId).setCPU(true);
+        game.findMyPlayer(myPlayerId).setCPU(true);
         if (!game.setNewGameMaster()) {
             availableGames.remove(gameId);
             clientHandlers.remove(gameId);
@@ -126,7 +126,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                         NetworkUtility.sendMessage(new String[] {Constants.NEW_GAME}, objectOutputStream);
 
                     }  else if (command.equals(Constants.NEW_GAME)) { // player wants to play again
-                        createPlayer(messageToProcess.getMessage()[0], game);
+                        createPlayer(messageToProcess.getMessage()[0], game);   
 
                     } else if (command.equals(Constants.COMPLETE_TURN)) { // player finish his turn
                         GameFlow.processTurn(messageToProcess.getMessage(), game);

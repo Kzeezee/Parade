@@ -17,15 +17,6 @@ public class NetworkUtility {
         return null;
     }
 
-    public static Player findMyPlayer(GameState game, int yourPlayerId) {
-        for (Player player : game.getPlayers()) {
-            if (player.getPlayerId() == yourPlayerId) {
-                return player;
-            }
-        }
-        return null;
-    }
-
     public static void sendGameState(GameState game, ObjectOutputStream objectOutputStream) throws IOException {
         GameState snapshot = game.deepCopy(); // Create a snapshot
         objectOutputStream.writeObject(snapshot);

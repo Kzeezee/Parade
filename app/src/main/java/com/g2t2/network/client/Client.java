@@ -84,7 +84,7 @@ public class Client implements Runnable {
             }
 
             GameRenderer.displayRoundInformation(game);
-            GameRenderer.displayHandCards(NetworkUtility.findMyPlayer(game, myPlayerId));
+            GameRenderer.displayHandCards(game.findMyPlayer(myPlayerId));
             if (game.isPut2CollectionRound()) { // put 2 to collection round
                 messageToSendBack = OnlineGameProcessor.processPut2CollectionRound(currentPlayer, game, myPlayerId, this);
             } else { // normal rounds
@@ -184,6 +184,30 @@ public class Client implements Runnable {
             e.printStackTrace();
         }
     }
+
+    public static void createClient(String username) {
+        try {
+            Socket socket = new Socket(serverAddress, portNumber);
+            Client client = new Client(socket, username);
+
+            // Starting the Thread
+            Thread thread = new Thread(client);
+            thread.start();
+            client.joinGameLobby(username);
+
+            while (socket.isConnected()) {
+                try {
+                    Runnable task = client.mainThreadTasks.take(); // Blocks until a task is available
+                    task.run();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }  
+        } catch (IOException e) {
+            System.out.println(Display.errorColour(" ❌ Server is closed"));
+        }
+    } 
 
     public static void main(String[] args) throws IOException {
         // TODO settle exceptions for username input
