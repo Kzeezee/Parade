@@ -189,22 +189,26 @@ public class StartMenu {
                 if (input.equals(Constants.CLOSE_APP)) {
                     Utility.exitGame();
                 } else if (input.length() < 1) {
-                    continue;
-                } else if (input.toLowerCase().charAt(0) != 'c' || input.toLowerCase().charAt(0) != 'd') {
-                    continue;
-                }
-                int intInput = Integer.parseInt(input);
-                if (intInput < 1 || intInput > numOfProfiles) {
-                    System.out.println(Display.errorColour(" ❌ Please enter a number betwwen 1 to ")  + numOfProfiles);
+                    System.out.println(Display.errorColour(" ❌ Please enter something"));
                     System.out.println();
                     continue;
                 }
-
+    
                 PlayerProfileOptionInput option = determineUserProfileOptionInput(input);
+
+                // handling wrong profile number
+                if (option.equals(PlayerProfileOptionInput.SELECT_PROFILE)) {
+                    int intInput = Integer.parseInt(input);
+                    if (intInput < 1 || intInput > numOfProfiles) {
+                        System.out.println(Display.errorColour(" ❌ No such player profile. Please enter a number between 1 to " + numOfProfiles));
+                        System.out.println();
+                        continue;
+                    }
+                }   
                 processUserProfileOptionInput(playerProfiles, option, input);
                 break;
             } catch (IllegalArgumentException e) {
-                System.out.println(Display.errorColour(" ❌ Please enter a valid 'c' / 'd'"));
+                System.out.println(Display.errorColour(" ❌ Please enter a valid command ('c' / 'd')"));
                 System.out.println();
             }
         }
@@ -219,11 +223,8 @@ public class StartMenu {
             promptForProfileDeletion(playerProfiles);
         } else {
             int profileSelect = Integer.parseInt(input.trim());
-            if (profileSelect > playerProfiles.size() || profileSelect <= 0) {
-                throw new IllegalArgumentException(" ❌ No such player profile");
-            }
-
             PlayerProfile pp = playerProfiles.get(profileSelect - 1);
+
             // Set StateManager's current player profile
             StateManager.setPlayerProfile(pp);
             // Show start menu
