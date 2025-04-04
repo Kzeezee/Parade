@@ -75,7 +75,7 @@ public class GamePlayPrompt {
         return chosenCardString;
     }
 
-    private static boolean confirmsChoice() {
+    public static boolean confirmsChoice() {
         Scanner sc = new Scanner(System.in);
         System.out.print(Display.colorString(" ⚜ Enter 'y' to confirm ➢ "));
 

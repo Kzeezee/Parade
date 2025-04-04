@@ -9,6 +9,8 @@ import com.g2t2.db.dao.impl.PlayerProfileDaoImpl;
 import com.g2t2.enums.CardColour;
 import com.g2t2.enums.PlayerProfileOptionInput;
 import com.g2t2.game.gameInit.GameInit;
+import com.g2t2.game.gameInit.GameInitPrompt;
+import com.g2t2.game.gameutility.GamePlayPrompt;
 import com.g2t2.types.Card;
 import com.g2t2.types.PlayerProfile;
 import com.g2t2.util.Constants;
@@ -137,9 +139,9 @@ public class StartMenu {
      * creation if none exist.
      */
     private static void checkForPlayerProfiles() {
-        // Utility.clearConsoleScreen();
-        // System.out.println(Constants.BANNER);
-        // System.out.println(Constants.DIVIDER);
+        Utility.clearConsoleScreen();
+        System.out.println(Constants.BANNER);
+        System.out.println(Constants.DIVIDER);
         // Display.delayPrint("Loading in progress...", 20);
 
         // DB search what profiles exist
@@ -147,7 +149,7 @@ public class StartMenu {
 
         // Show Player Profile Creation if empty
         if (players.isEmpty()) {
-            showPlayerProfileCreation(true);
+            showPlayerProfileCreation(true, players);
         } else {
             promptForProfileActions(players);
         }
@@ -156,7 +158,7 @@ public class StartMenu {
     /**
      * Prompts the user to create a new player profile.
      */
-    private static void showPlayerProfileCreation(boolean hasNoProfiles) {
+    private static void showPlayerProfileCreation(boolean hasNoProfiles, List<PlayerProfile> playerProfiles) {
         Utility.clearConsoleScreen();
         System.out.println(Constants.BANNER);
         System.out.println(Constants.DIVIDER);
@@ -164,14 +166,21 @@ public class StartMenu {
         // Prompt user to create new user profile
         String message = hasNoProfiles ? "No player profile was detected. " : "Create a new profile?";
         System.out.println(message);
-        String name = promptForName();
-        System.out.println(Display.colorString("Creating player profile: " + name));
-
-        // Create new value in DB
-        PlayerProfileDao ppd = new PlayerProfileDaoImpl();
-        if (ppd.createPlayerProfile(name) != null) {
-            promptForProfileActions(ppd.getAllPlayerProfiles());
+        String name = GameInitPrompt.promptForPlayerName();
+        if (name.equals(Constants.CANCEL_ACTION)) {
+            promptForProfileActions(playerProfiles);
         }
+
+        if (GamePlayPrompt.confirmsChoice()) {
+            System.out.println(Display.colorString("Creating player profile: " + name));
+
+            // Create new value in DB
+            PlayerProfileDao ppd = new PlayerProfileDaoImpl();
+            if (ppd.createPlayerProfile(name) != null) {
+                promptForProfileActions(ppd.getAllPlayerProfiles());
+            }
+        }
+        promptForProfileActions(playerProfiles);
     }
 
     private static void promptForProfileActions(List<PlayerProfile> playerProfiles) {
@@ -217,7 +226,7 @@ public class StartMenu {
     private static void processUserProfileOptionInput(List<PlayerProfile> playerProfiles,
             PlayerProfileOptionInput option, String input) {
         if (option == PlayerProfileOptionInput.CREATE_PROFILE) {
-            showPlayerProfileCreation(false);
+            showPlayerProfileCreation(false, playerProfiles);
         }
         if (option == PlayerProfileOptionInput.DELETE_PROFILE) {
             promptForProfileDeletion(playerProfiles);
@@ -232,20 +241,26 @@ public class StartMenu {
         }
     }
 
-    private static void promptForProfileDeletion(List<PlayerProfile> players) {
+    private static void promptForProfileDeletion(List<PlayerProfile> playerProfiles) {
         Scanner sc = new Scanner(System.in);
+        System.out.println();
+        System.out.println(Constants.PROMPT_CANCEL_ACTION);
         System.out.print(Display.errorColour(" ⚜ Select profile to delete ➢ "));
         try {
-            int profileToDelete = Integer.parseInt(sc.nextLine());
-            if (profileToDelete > players.size() || profileToDelete <= 0) {
-                throw new IllegalArgumentException("No such player profile");
+            String input = sc.nextLine();
+            if (input.equals(Constants.CANCEL_ACTION)) {
+                promptForProfileActions(playerProfiles);
+            }
+            int profileToDelete = Integer.parseInt(input);
+            if (profileToDelete > playerProfiles.size() || profileToDelete <= 0) {
+                throw new IllegalArgumentException(" ❌ No such player profile");
             }
             System.out.printf(Display.errorColour(" ⚜ Are you sure you want to delete %s (%d)? ('y'/'n') ➢ "),
-                    players.get(profileToDelete - 1).getName(), profileToDelete);
+                                                playerProfiles.get(profileToDelete - 1).getName(), profileToDelete);
             String deletionInput = sc.nextLine().toLowerCase();
 
             if (deletionInput.equals("y")) {
-                new PlayerProfileDaoImpl().deletePlayerProfile(players.get(profileToDelete - 1));
+                new PlayerProfileDaoImpl().deletePlayerProfile(playerProfiles.get(profileToDelete - 1));
                 checkForPlayerProfiles();
             }
         } catch (NumberFormatException e) {
@@ -253,24 +268,6 @@ public class StartMenu {
         } catch (IllegalArgumentException e) {
             System.out.println(Display.errorColour(e.getMessage()));
         }
-    }
-
-    private static String promptForName() {
-        Scanner sc = new Scanner(System.in);
-        String name = "";
-        while (true) {
-            try {
-                System.out.print(Display.colorString(" ⚜ Enter your name: "));
-                name = sc.nextLine();
-                if (name.isEmpty()) {
-                    throw new InputMismatchException(Display.errorColour(" ❌ Please enter an appropriate name."));
-                }
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-        return name;
     }
 
     private static PlayerProfileOptionInput determineUserProfileOptionInput(String input) {

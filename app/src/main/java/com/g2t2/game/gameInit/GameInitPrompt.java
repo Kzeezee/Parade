@@ -146,19 +146,16 @@ public class GameInitPrompt {
         Scanner sc = new Scanner(System.in);
         String name = "";
         while (true) {
-            try {
-                System.out.println(Constants.DIVIDER);
-                System.out.println(Constants.PROMPT_CANCEL_ACTION);
-                System.out.print(Display.colorString(" ➢ Enter the name of player: "));
-                name = sc.nextLine();
-                if (name.equals("")) {
-                    throw new InputMismatchException(Display.errorColour(" 📌 Please enter an appropriate name."));
-                }
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println(e.getMessage());
-                sc.nextLine();
+            System.out.println(Constants.DIVIDER);
+            System.out.println(Constants.PROMPT_CANCEL_ACTION);
+            System.out.print(Display.colorString(" ➢ Enter the name of player: "));
+            name = sc.nextLine();
+            if (name.length() < 1) {
+                System.out.println(Display.errorColour(" ❌ Please enter something as your name."));
+                System.out.println();
+                continue;
             }
+            break;
         }
         return name;
     }
