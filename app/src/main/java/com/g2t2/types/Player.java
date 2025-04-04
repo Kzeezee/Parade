@@ -11,6 +11,7 @@ import java.util.*;
 
 public class Player implements Serializable {
     private static int counter = 1;  // autoincrement
+    private static int CPUCounter = 1;
     private int playerId;
     private String name;
     private List<Card> cardsOnHand = new ArrayList<>();
@@ -42,7 +43,7 @@ public class Player implements Serializable {
      */
     public Player(boolean isCPU, int difficulty) {
         playerId = counter++;
-        name = "CPU" + playerId;
+        name = "CPU" + CPUCounter++;
         this.isCPU = isCPU;
         this.difficulty = difficulty;
         cardsInCollection = new ArrayList<>();
