@@ -142,7 +142,7 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                     } else if (command.equals(Constants.GAME_ENDED)) { // reset game setting
                         resetGame(game);
 
-                    } else if (command.equals(Constants.CLOSE_APP)) {
+                    } else if (command.equals(Constants.GO_BACK) || command.equals(Constants.CLOSE_APP)) {
                         throw new IOException();
                     }
                 }

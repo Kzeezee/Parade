@@ -10,8 +10,8 @@ import java.util.*;
  */
 
 public class Player implements Serializable {
-    private static int counter = 1;  // autoincrement
-    private static int CPUCounter = 1;
+    private static int counter = 1;  // autoincrement everything a Player player object is created (non-cpu)
+    private static int CPUCounter = 1; // autoincrement everything a Player CPU object is created (cpu)
     private int playerId;
     private String name;
     private List<Card> cardsOnHand = new ArrayList<>();

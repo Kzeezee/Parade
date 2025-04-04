@@ -100,13 +100,13 @@ public class Constants {
                                                         + "' to stop this action.";
 
     // Commands
-    public static final String CREATE_GAME = "c"; // "CREATE GAME";
-    public static final String JOIN_GAME = "j"; // "JOIN GAME";
+    public static final String CREATE_GAME = "CREATE GAME";
+    public static final String JOIN_GAME = "JOIN GAME";
     public static final String ADD_CPU = "ADD CPU"; 
     public static final String ADD_PLAYER = "ADD PLAYER"; 
     public static final String REMOVE_CPU = "REMOVE CPU";
-    public static final String START_GAME = "s"; // "START GAME";
-    public static final String LEAVE_GAME = "l"; // "LEAVE GAME";
+    public static final String START_GAME = "START GAME";
+    public static final String LEAVE_GAME = "LEAVE GAME";
     public static final String ENTER_KEY = "";
     public static final String CANCEL_ACTION = "CANCEL ACTION";
     public static final String GO_BACK = "GO BACK";

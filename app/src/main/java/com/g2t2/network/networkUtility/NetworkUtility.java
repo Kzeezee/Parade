@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 
+import org.checkerframework.checker.units.qual.t;
+
 import com.g2t2.game.GameState;
 import com.g2t2.types.Player;
 
@@ -33,7 +35,12 @@ public class NetworkUtility {
         objectOutputStream.flush();
     }
 
-    public static void threadSleep(int duration) throws InterruptedException {
-        Thread.sleep(duration);
+    public static void threadSleep(int duration) throws IOException {
+        try {
+            Thread.sleep(duration);
+        } catch (InterruptedException e) {
+            throw new IOException();
+        }
+        
     }
 }

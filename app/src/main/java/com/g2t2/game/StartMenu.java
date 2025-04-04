@@ -2,7 +2,8 @@ package com.g2t2.game;
 
 import java.util.Scanner;
 import java.util.List;
-import java.util.InputMismatchException;
+import java.net.Socket;
+import java.io.IOException;
 
 import com.g2t2.db.dao.PlayerProfileDao;
 import com.g2t2.db.dao.impl.PlayerProfileDaoImpl;
@@ -11,6 +12,8 @@ import com.g2t2.enums.PlayerProfileOptionInput;
 import com.g2t2.game.gameInit.GameInit;
 import com.g2t2.game.gameInit.GameInitPrompt;
 import com.g2t2.game.gameutility.GamePlayPrompt;
+import com.g2t2.network.client.Client;
+import com.g2t2.network.networkUtility.NetworkUtility;
 import com.g2t2.types.Card;
 import com.g2t2.types.PlayerProfile;
 import com.g2t2.util.Constants;
@@ -24,6 +27,8 @@ import com.g2t2.util.Utility;
  * @author Oliver
  */
 public class StartMenu {
+    private static final int portNumber = 1234;
+    private static final String serverAddress = "localhost";
     private static final String WELCOMEMESSAGE_STRING = " ⚜ Welcome to G2T2 Parade! Please select an option. (1, 3, 4, 5 for now)";
     private static final String GAMEPLAY_OPTIONS = " 📌 Play local (1)\n" 
                                                  + " 📌 Play online (2)\n"
@@ -81,14 +86,20 @@ public class StartMenu {
             return;
         }
         if (optionChosen == 2) {
-            // START CLIENT
-            
-            OnlineLobbyTemp.displayLobby(); // Start lobby
+            try {
+                Socket socket = new Socket(serverAddress, portNumber);
+                Client client = new Client(socket, StateManager.getPlayerProfile().getName());
+                client.start();
+            } catch (IOException e) {
+                System.out.println(Display.errorColour(" ❌ Server is closed"));
+                GamePlay.temporaryPauseScreen(" ⚜ Enter any key to continue ➢ ");
+            }
+            consoleStartMenu();
             return;
         }
 
         if (optionChosen == 3) {
-            checkForPlayerProfiles(); // check player profile to allow chaning profile
+            checkForPlayerProfiles(); // check player profile to allow changing of profile
             return;
         }
         if (optionChosen == 4) {
@@ -129,9 +140,7 @@ public class StartMenu {
 
         System.out.println(Constants.GAME_INSTRUCTION_SCORING);
 
-        Scanner sc = new Scanner(System.in);
-        System.out.print(Display.colorString(" ⚜ Enter any key to go back to the Menu ➢ "));
-        String input = sc.nextLine();
+        GamePlay.temporaryPauseScreen(" ⚜ Enter any key to go back to the Menu ➢ ");
     }
 
     /**
@@ -142,7 +151,7 @@ public class StartMenu {
         Utility.clearConsoleScreen();
         System.out.println(Constants.BANNER);
         System.out.println(Constants.DIVIDER);
-        // Display.delayPrint("Loading in progress...", 20);
+        Display.delayPrint("Loading in progress...", 20);
 
         // DB search what profiles exist
         List<PlayerProfile> players = new PlayerProfileDaoImpl().getAllPlayerProfiles();

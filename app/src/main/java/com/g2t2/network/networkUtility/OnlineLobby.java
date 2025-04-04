@@ -1,5 +1,6 @@
 package com.g2t2.network.networkUtility;
 
+import java.io.IOException;
 import java.net.ContentHandler;
 import java.util.Scanner;
 
@@ -40,7 +41,7 @@ public class OnlineLobby {
                 return promptForGameId(username);
 
             } else if (userChoice[userChoice.length-1].equals(Constants.GO_BACK)) {
-                // TODO (leave server and go to main menu)
+                return new String[] {Constants.GO_BACK};
 
             } else if (userChoice[userChoice.length-1].equals(Constants.CLOSE_APP)) {
                 return new String[] {Constants.CLOSE_APP};
@@ -89,7 +90,7 @@ public class OnlineLobby {
         }
     }
 
-    public static String[] activatingUserControlCommands(boolean isGameMaster, GameState game) throws InterruptedException {
+    public static String[] activatingUserControlCommands(boolean isGameMaster, GameState game) throws IOException {
         Scanner sc = new Scanner(System.in);
         while (true) {
             System.out.print(Display.colorString(" ➢ Enter command: "));

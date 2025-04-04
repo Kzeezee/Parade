@@ -11,6 +11,7 @@ import com.g2t2.game.gameutility.GameRenderer;
 import com.g2t2.game.gameutility.GamePlayPrompt;
 
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Class responsible for managing the gameplay flow.
@@ -77,6 +78,12 @@ public class GamePlay {
             Display.sayGoodBye();
         }
 
+    }
+
+    public static void temporaryPauseScreen(String message) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print(Display.colorString(message));
+        sc.nextLine();
     }
 
     /**
