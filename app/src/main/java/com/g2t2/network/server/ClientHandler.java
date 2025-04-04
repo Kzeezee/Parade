@@ -128,11 +128,11 @@ public class ClientHandler implements Runnable { // allows instances to be execu
                     }  else if (command.equals(Constants.NEW_GAME)) { // player wants to play again
                         createPlayer(messageToProcess.getMessage()[0], game);
 
-                    } else if (command.equals(Constants.COMPLETE_TURN) && game != null) { // player finish his turn
+                    } else if (command.equals(Constants.COMPLETE_TURN)) { // player finish his turn
                         GameFlow.processTurn(messageToProcess.getMessage(), game);
                         broadcastGameStatus(game);
 
-                    } else if (command.equals(Constants.PUT_TO_COLLECTION) && game != null) { // put 2 collection phase
+                    } else if (command.equals(Constants.PUT_TO_COLLECTION)) { // put 2 collection phase
                         GameFlow.processPut2Collection(messageToProcess.getMessage(), game);
                         broadcastGameStatus(game);
 
