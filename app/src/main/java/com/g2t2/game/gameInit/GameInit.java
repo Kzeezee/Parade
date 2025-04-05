@@ -50,7 +50,7 @@ public class GameInit {
      * assign CPU players, and set the difficulty level for CPU-controlled players.
      * It validates user input to ensure proper configuration.
      * 
-     * @author Oliver
+     * @param game the current game state
      */
     private static void displayWaitingRoomOptions(GameState game) {
         boolean startGame = false;
@@ -62,6 +62,15 @@ public class GameInit {
         GamePlay.startGame(game);
     }
 
+    /**
+     * Displays configurable game options in the console.
+     * 
+     * This method allows users to specify the total number of players,
+     * assign CPU players, and set the difficulty level for CPU-controlled players.
+     * It validates user input to ensure proper configuration.
+     * 
+     * @param game the current game state
+     */
     public static void printWaitingRoomDetails(GameState game) {
         Utility.clearConsoleScreen();
         System.out.println(Constants.LOCAL_WAITING_LOBBY_BANNER);
@@ -70,6 +79,16 @@ public class GameInit {
         game.printPlayerList();
     }
 
+    /**
+     * Displays available commands that the user can enter in the waiting room.
+     * 
+     * This method shows different commands based on the current game state:
+     * - ADD_PLAYER and ADD_CPU options are shown only if the maximum player limit hasn't been reached
+     * - REMOVE_CPU option is shown only if there are CPU players in the game
+     * - START_GAME and LEAVE_GAME options are always available
+     * 
+     * @param game the current game state
+     */
     private static void printWaitingRoomCommands(GameState game) {
         System.out.println(Display.colorString("--- Here are some available commands you can use ---"));
         if (game.getNumOfPlayers() < Constants.MAX_PLAYER_NO) {
@@ -84,6 +103,22 @@ public class GameInit {
 
     }
 
+    /**
+     * Processes user commands in the waiting room and performs the corresponding actions.
+     * 
+     * This method handles various user commands including:
+     * - LEAVE_GAME: Resets player counters and returns to the start menu
+     * - ADD_PLAYER: Prompts for a player name and adds the player to the game
+     * - ADD_CPU: Prompts for CPU details and adds CPU players to the game
+     * - REMOVE_CPU: Prompts for CPU IDs to remove and removes them from the game
+     * - START_GAME: Validates player count and starts the game if sufficient
+     * 
+     * Each command performs its action and returns a boolean indicating whether
+     * the game should start ({@code true}) or return to the waiting room ({@code false}).
+     * 
+     * @param game the current game state
+     * @return boolean value indicating whether to start the game (true) or return to waiting room (false)
+     */
     public static boolean activatingUserControlCommands(GameState game) /* throws InterruptedException */ {
         Scanner sc = new Scanner(System.in);
         while (true) {
@@ -127,6 +162,17 @@ public class GameInit {
         }
     }
 
+    /**
+     * Creates a new player with the given name and adds them to the game.
+     * 
+     * This method initializes a new Player object with the specified name,
+     * sets the player's profile to the current player profile from StateManager,
+     * and adds the player to the current game state.
+     * 
+     * @param name the name of the player
+     * @param game the current game state
+     * @return the newly created Player object
+     */
     public static Player createPlayer(String name, GameState game) {
         Player player = new Player(name);
         player.setPlayerProfile(StateManager.getPlayerProfile());
@@ -134,6 +180,17 @@ public class GameInit {
         return player;
     }
 
+    /**
+     * Creates the specified number of CPU players with the given difficulty level.
+     * 
+     * This method creates multiple CPU players and adds them to the game. Each CPU
+     * is initialized with the specified difficulty level and automatically assigned
+     * a unique name based on the CPU counter.
+     * 
+     * @param numOfCPU the number of CPU players to create
+     * @param difficulty the difficulty level for the CPU players (1=easy, 2=medium, 3=hard)
+     * @param game the current game state
+     */
     public static void createCPU(int numOfCPU, int difficulty, GameState game) {
         for (int i = 0; i < numOfCPU; i++) {
             Player cpu = new Player(true, difficulty);
@@ -141,6 +198,15 @@ public class GameInit {
         }
     }
 
+    /**
+     * Removes multiple players from the game based on their player IDs.
+     * 
+     * This method processes an array of player IDs and removes each corresponding player
+     * from the game state.
+     * 
+     * @param ids an array of player ID strings
+     * @param game the current game state
+     */
     public static void removePlayers(String[] ids, GameState game) {
         for (int i = 0; i < ids.length - 1; i++) {
             game.removePlayer(game.findMyPlayer(Integer.parseInt(ids[i])));

@@ -78,6 +78,11 @@ public class GamePlay {
 
     }
 
+    /**
+     * Creates a temporary pause in the game flow, waiting for user input to continue.
+     *
+     * @param message The message to display to the user during the pause
+     */
     public static void temporaryPauseScreen(String message) {
         Scanner sc = new Scanner(System.in);
         System.out.print(Display.colorString(message));

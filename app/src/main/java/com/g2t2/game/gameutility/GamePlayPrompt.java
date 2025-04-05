@@ -75,6 +75,15 @@ public class GamePlayPrompt {
         return chosenCardString;
     }
 
+    /**
+     * Prompts the user to confirm their current selection or action.
+     * 
+     * This method displays a confirmation prompt asking the user to enter 'y' to confirm
+     * their selection. Return {@code true} if the user enters 'y' (case-insensitive), else 
+     * returns {@code false}.
+     * 
+     * @return true if the user confirms by entering 'y', false otherwise
+     */
     public static boolean confirmsChoice() {
         Scanner sc = new Scanner(System.in);
         System.out.print(Display.colorString(" ⚜ Enter 'y' to confirm ➢ "));

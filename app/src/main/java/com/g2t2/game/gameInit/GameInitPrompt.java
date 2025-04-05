@@ -233,6 +233,19 @@ public class GameInitPrompt {
         return new String[] { "" + numOfCPU, "" + difficulty };
     }
 
+    /**
+     * Prompts the user to select CPU players to remove from the game.
+     * 
+     * This method handles the process of removing CPU players by:
+     * 1. Asking the user how many CPU players they want to remove
+     * 2. Validating that the number is between 1 and the current number of CPUs
+     * 3. Prompting the user to specify the player IDs of the CPUs to remove
+     * 4. Validating that each ID belongs to a CPU player
+     * 
+     * @param game the current game state containing CPU players
+     * @return a String array containing the IDs of CPUs to remove, or an array with
+     *         a single element containing the cancel action if the user cancels
+     */
     public static String[] promptForCPURemoval(GameState game) {
         Scanner sc = new Scanner(System.in);
         String input = null;

@@ -57,6 +57,9 @@ public class StartMenu {
         promptForGamePlayOptions();
     }
 
+    /**
+     * Displays the main game menu and prompts the user to select a gameplay option.
+     */
     private static void promptForGamePlayOptions() {
         Scanner sc = new Scanner(System.in);
         Utility.clearConsoleScreen();
@@ -80,6 +83,19 @@ public class StartMenu {
         }
     }
 
+    /**
+     * Processes the user's selection from the main game menu.
+     * 
+     * This method handles the following options:
+     * 1. Play local game - Initializes a local game with configuration options
+     * 2. Play online game - Attempts to connect to the server and start an online game session
+     * 3. Change profile - Displays profile management options
+     * 4. Learn how to play - Displays the game manual
+     * 5. Exit application - Terminates the application
+     * 
+     * @param optionChosen the numeric option selected by the user
+     * @throws IllegalArgumentException if the selected option is not within the valid range (1-5)
+     */
     private static void processGamePlayOptions(int optionChosen) {
         if (optionChosen == 1) {
             GameInit.displayGameOptions(); // Start options of game
@@ -112,9 +128,11 @@ public class StartMenu {
             return;
         }
         throw new IllegalArgumentException(Display.errorColour(" ❌ Please choose a number 1 to 5"));
-
     }
 
+    /**
+     * Displays the game manual, providing detailed instructions on how to play the game.
+     */
     private static void displayGameManual() {
         Utility.clearConsoleScreen();
         System.out.println(Constants.DIVIDER);
@@ -165,7 +183,19 @@ public class StartMenu {
     }
 
     /**
-     * Prompts the user to create a new player profile.
+     * Displays the profile creation interface and handles the creation of new player profiles.
+     * 
+     * The user can:
+     * - Enter a name for the new profile
+     * - Cancel the operation by entering the cancel action command
+     * - Confirm or reject the profile creation
+     * 
+     * If profile creation is successful, the method updates the player profile list
+     * and returns to the profile actions menu.
+     * 
+     * @param hasNoProfiles  boolean indicating whether this is the first profile {@code true} 
+     *                       or an additional profile {@code false}
+     * @param playerProfiles list of existing player profiles to return to if operation is cancelled
      */
     private static void showPlayerProfileCreation(boolean hasNoProfiles, List<PlayerProfile> playerProfiles) {
         Utility.clearConsoleScreen();
@@ -192,6 +222,21 @@ public class StartMenu {
         promptForProfileActions(playerProfiles);
     }
 
+    /**
+     * Displays available player profiles and prompts the user to select a profile 
+     * or perform profile management actions.
+     * 
+     * This method presents a list of existing player profiles and offers the following options:
+     * - Select a profile (by entering its number)
+     * - Create a new profile (by entering 'c')
+     * - Delete an existing profile (by entering 'd')
+     * - Exit the application (by entering the exit command)
+     * 
+     * When a profile is successfully selected, it is set as the current player 
+     * profile in the StateManager.
+     * 
+     * @param playerProfiles the list of available player profiles to display and manage
+     */
     private static void promptForProfileActions(List<PlayerProfile> playerProfiles) {
         MenuRenderer.displayPlayerProfiles(playerProfiles);
         int numOfProfiles = playerProfiles.size();
@@ -232,6 +277,21 @@ public class StartMenu {
         }
     }
 
+    /**
+     * Processes the user's profile management action based on their selection.
+     * 
+     * This method handles the following profile management options:
+     * - Creating a new profile when the CREATE_PROFILE option is selected
+     * - Deleting an existing profile when the DELETE_PROFILE option is selected
+     * - Selecting and setting a profile as the current active profile
+     * 
+     * When a profile is selected, it is set as the current profile in the StateManager
+     * and the start menu is displayed.
+     * 
+     * @param playerProfiles the list of available player profiles
+     * @param option         the profile action option
+     * @param input          the original user input string
+     */
     private static void processUserProfileOptionInput(List<PlayerProfile> playerProfiles,
             PlayerProfileOptionInput option, String input) {
         if (option == PlayerProfileOptionInput.CREATE_PROFILE) {
@@ -250,6 +310,16 @@ public class StartMenu {
         }
     }
 
+    /**
+     * Displays a prompt for selecting and deleting a player profile.
+     * 
+     * This method allows users to:
+     * - Select a profile for deletion by entering its number
+     * - Cancel the deletion operation by entering the cancel action command
+     * - Confirm or reject the deletion with a secondary confirmation prompt
+     * 
+     * @param playerProfiles the list of available player profiles
+     */
     private static void promptForProfileDeletion(List<PlayerProfile> playerProfiles) {
         Scanner sc = new Scanner(System.in);
         System.out.println();
@@ -279,6 +349,18 @@ public class StartMenu {
         }
     }
 
+    /**
+     * Determines the profile management action based on the user's input.
+     * 
+     * This method analyzes the the user's input to identify which profile 
+     * action they intend to take:
+     * - 'c': Create a new profile
+     * - 'd': Delete an existing profile
+     * - Any other input: Select a profile (assumed to be a numeric profile index)
+     * 
+     * @param input the user's input string
+     * @return a PlayerProfileOptionInput enum value representing the determined action
+     */
     private static PlayerProfileOptionInput determineUserProfileOptionInput(String input) {
         input = input.trim().toLowerCase();
         char operation = input.charAt(0);
