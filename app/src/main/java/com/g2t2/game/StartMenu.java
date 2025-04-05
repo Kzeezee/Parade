@@ -29,7 +29,7 @@ import com.g2t2.util.Utility;
 public class StartMenu {
     private static final int portNumber = 1234;
     private static final String serverAddress = "localhost";
-    private static final String WELCOMEMESSAGE_STRING = " ⚜ Welcome to G2T2 Parade! Please select an option. (1, 3, 4, 5 for now)";
+    private static final String WELCOMEMESSAGE_STRING = " ⚜ Welcome to G2T2 Parade! Please select an option.";
     private static final String GAMEPLAY_OPTIONS = " 📌 Play local (1)\n" 
                                                  + " 📌 Play online (2)\n"
                                                  + " 📌 Change profile (3)\n"
@@ -111,7 +111,7 @@ public class StartMenu {
             Utility.exitGame();
             return;
         }
-        throw new IllegalArgumentException(Display.errorColour(" ❌ Please choose a number 1 to 4"));
+        throw new IllegalArgumentException(Display.errorColour(" ❌ Please choose a number 1 to 5"));
 
     }
 

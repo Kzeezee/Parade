@@ -14,8 +14,6 @@ import com.g2t2.types.Player;
 import com.g2t2.util.*;
 
 public class Client implements Runnable {
-    // private static final int portNumber = 1234;
-    // private static final String serverAddress = "localhost";
     private Socket socket;
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
@@ -110,7 +108,7 @@ public class Client implements Runnable {
     }
      
     private void listenForMessage() {
-        while (socket.isConnected()) {
+        while (!socket.isClosed()) {
             try {
                 Object incomingObject = objectInputStream.readObject();
                 if (incomingObject instanceof GameState game) {
@@ -143,7 +141,7 @@ public class Client implements Runnable {
                         OnlineLobby.setRefreshPage(true);
 
                     } else if (command.equals(Constants.NEW_GAME)) {
-                        joinGameLobby(username);
+                        mainThreadTasks.add(() -> joinGameLobby(username));
 
                     }
                 } else if (incomingObject instanceof Player player) {
@@ -151,10 +149,8 @@ public class Client implements Runnable {
                 }
             } catch (IOException e) {
                 closeEverything(socket, objectInputStream, objectOutputStream);
-                break;
             } catch (ClassNotFoundException e) {
                 closeEverything(socket, objectInputStream, objectOutputStream);
-                break;
             }
         }
     }
@@ -167,7 +163,7 @@ public class Client implements Runnable {
     private void closeEverything(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOuputStream) {
         try {
             if (objectInputStream != null) {
-                objectInputStream.close(); // closing the outer wrapper will close all inner wrapers
+                objectInputStream.close();
             }
             if (objectOutputStream != null) {
                 objectOutputStream.close();
@@ -176,7 +172,6 @@ public class Client implements Runnable {
                 socket.close();
             }
             mainThreadTasks.add(() -> {
-                System.out.println("Closing main client...");
                 Thread.currentThread().interrupt(); 
             });
         } catch (IOException e) {

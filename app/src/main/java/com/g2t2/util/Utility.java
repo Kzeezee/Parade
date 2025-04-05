@@ -37,6 +37,7 @@ public class Utility {
     }
 
     public static void exitGame() {
+        Utility.clearConsoleScreen();
         System.out.println(Constants.GOODBYE);
         System.exit(0);
     }
