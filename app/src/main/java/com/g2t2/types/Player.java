@@ -120,6 +120,14 @@ public class Player implements Serializable {
     }
 
     /**
+     * Resets the counter to 1
+     */
+    public static void resetCounter() {
+        counter = 1;
+        CPUCounter = 1;
+    }
+
+    /**
      * Sets the player's collection to the specified collection.
      * 
      * @param cardsInCollection the collection to be set to

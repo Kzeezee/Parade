@@ -70,6 +70,7 @@ public class GamePlay {
         updatePlayerWinsInDB(players);
 
         if (GamePlayPrompt.promptForNewGame()) {
+            Player.resetCounter();
             StartMenu.showStartMenu();
         } else {
             Display.sayGoodBye();

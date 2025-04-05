@@ -150,6 +150,9 @@ public class GameInitPrompt {
             System.out.println(Constants.PROMPT_CANCEL_ACTION);
             System.out.print(Display.colorString(" ➢ Enter the name of player: "));
             name = sc.nextLine();
+            if (name.equals(Constants.CANCEL_ACTION)) {
+                return name;
+            }
             if (name.length() < 1) {
                 System.out.println(Display.errorColour(" ❌ Please enter something as your name."));
                 System.out.println();

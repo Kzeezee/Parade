@@ -90,16 +90,27 @@ public class GameInit {
             System.out.print(Display.colorString(" ➢ Enter command: "));
             String input = sc.nextLine();
             if (input.equals(Constants.LEAVE_GAME)) {
+                Player.resetCounter();
                 StartMenu.showStartMenu();
             } else if (input.equals(Constants.ADD_PLAYER) && game.getNumOfPlayers() < Constants.MAX_PLAYER_NO) {
-                createPlayer(GameInitPrompt.promptForPlayerName(), game);
+                String name = GameInitPrompt.promptForPlayerName();
+                if (name.equals(Constants.CANCEL_ACTION)) {
+                    return false;
+                }
+                createPlayer(name, game);
                 return false;
             } else if (input.equals(Constants.ADD_CPU) && game.getNumOfPlayers() < Constants.MAX_PLAYER_NO) {
                 String[] userInput = GameInitPrompt.promptForCPUDetails(game.getNumOfPlayers());
+                if (userInput[0].equals(Constants.CANCEL_ACTION)) {
+                    return false;
+                }
                 createCPU(Integer.parseInt(userInput[0]), Integer.parseInt(userInput[1]), game);
                 return false;
             } else if (game.getNumOfCPU() > 0 && input.equals(Constants.REMOVE_CPU)) {
                 String[] idsToRemove = GameInitPrompt.promptForCPURemoval(game);
+                if (idsToRemove[0].equals(Constants.CANCEL_ACTION)) {
+                    return false;
+                }
                 removePlayers(idsToRemove, game);
                 return false;
             } else if (input.equals(Constants.START_GAME)) {
