@@ -133,15 +133,22 @@ public class GamePlayPrompt {
      * Prompts the user to decide whether they want to start a new game after the
      * current game ends.
      */
-    public static String promptForNewGame() {
+    public static boolean promptForNewGame() {
         Scanner sc = new Scanner(System.in);
+        System.out.println(" 📌 The game has ended. 📌 ");
         while (true) {
             try {
-                System.out.println(" 📌 The game has ended. 📌 ");
-                System.out.println(Display.colorString(" ⚜ Do you want to play another game? (y/n) ➢ "));
-                String confirmation = sc.nextLine();
-                return confirmation;
-            } catch (InputMismatchException e) {
+                // Capital letters is default if entered without anything
+                System.out.println(Display.colorString(" ⚜ Do you want to play another game? (Y/n) ➢ "));
+                String input = sc.nextLine().trim().toLowerCase();
+                if (input.equals("y") || input.isEmpty()) {
+                    return true;
+                } else if (input.equals("n")) {
+                    return false;
+                }
+                throw new IllegalArgumentException(Display.errorColour(" ❌ Please enter a valid command."));
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
                 System.out.println();
             }
         }

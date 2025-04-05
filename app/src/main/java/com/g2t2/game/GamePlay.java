@@ -10,6 +10,7 @@ import com.g2t2.game.gameutility.GameFlow;
 import com.g2t2.game.gameutility.GameRenderer;
 import com.g2t2.game.gameutility.GamePlayPrompt;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -64,15 +65,11 @@ public class GamePlay {
             GameFlow.processPut2Collection(cardsChosen, game);
         }
 
-        
         GameRenderer.displayScores(players);
-        // Update wins in DB for player
-        PlayerProfile pp = players.get(0).getPlayerProfile();
-        if (pp != null) {
-            new PlayerProfileDaoImpl().updatePlayerProfile(pp);
-        }
 
-        if ("y".equals(GamePlayPrompt.promptForNewGame())) {
+        updatePlayerWinsInDB(players);
+
+        if (GamePlayPrompt.promptForNewGame()) {
             StartMenu.showStartMenu();
         } else {
             Display.sayGoodBye();
@@ -84,6 +81,23 @@ public class GamePlay {
         Scanner sc = new Scanner(System.in);
         System.out.print(Display.colorString(message));
         sc.nextLine();
+    }
+
+    /**
+     * Updates the number of wins that the player with the
+     * highest score have, and save it to the database.
+     * @param players
+     */
+    private static void updatePlayerWinsInDB(List<Player> players) {
+        List<Player> sortedPlayers = players.stream()
+                .sorted(Comparator.comparingInt(Player::getScore))
+                .toList();
+        PlayerProfile winnerProfile = sortedPlayers.get(0).getPlayerProfile();
+        if (winnerProfile != null) {
+            System.out.println(winnerProfile.getName());
+            winnerProfile.setWins(winnerProfile.getWins() + 1);
+            new PlayerProfileDaoImpl().updatePlayerProfile(winnerProfile);
+        }
     }
 
     /**

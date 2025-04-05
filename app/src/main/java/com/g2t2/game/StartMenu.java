@@ -280,14 +280,12 @@ public class StartMenu {
     }
 
     private static PlayerProfileOptionInput determineUserProfileOptionInput(String input) {
-        input = input.trim();
+        input = input.trim().toLowerCase();
         char operation = input.charAt(0);
         switch (operation) {
             case 'c':
-            case 'C':
                 return PlayerProfileOptionInput.CREATE_PROFILE;
             case 'd':
-            case 'D':
                 return PlayerProfileOptionInput.DELETE_PROFILE;
             default:
                 return PlayerProfileOptionInput.SELECT_PROFILE;

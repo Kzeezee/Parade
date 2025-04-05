@@ -34,6 +34,19 @@ public class Player implements Serializable {
     }
 
     /**
+     * Creates a new Player with the specified player profile.
+     * This constructor auto-fills the player's name using the player profile.
+     * 
+     * @param pp the player profile of the player
+     */
+    public Player(PlayerProfile pp) {
+        playerId = counter++;
+        this.name = pp.getName();
+        this.playerProfile = pp;
+        cardsInCollection = new ArrayList<>();
+    }
+
+    /**
      * Creates a new Player, specifying if they are a CPU and their CPU difficulty
      * level.
      * 
