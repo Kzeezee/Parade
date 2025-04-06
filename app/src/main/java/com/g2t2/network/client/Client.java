@@ -13,6 +13,14 @@ import com.g2t2.network.networkUtility.*;
 import com.g2t2.types.Player;
 import com.g2t2.util.*;
 
+/**
+ * This class represents a player in an online game.
+ * It communicates with the server and decides what to displays to the player based on player's input.
+ * This class is only activated when the users wants to play online (option 2 in the start menu)
+ * It also requires the server to be running before an instance of this class can be created
+ * 
+ * @author Ben
+ */
 public class Client implements Runnable {
     private Socket socket;
     private ObjectOutputStream objectOutputStream;
@@ -64,8 +72,10 @@ public class Client implements Runnable {
     } 
 
     /**
-     * This function is running a separate thread.
-     * This allows the client to listen for information from the server and take appropriate actions
+     * Listens for messages from the server on a separate thread.
+     * Handles different object types such as GameState, Message, and Player.
+     * Executes corresponding UI updates or logic based on the command or state received.
+     * This method ensures smooth interaction between the client and server during the game.
      */
     private void listenForMessage() {
         while (!socket.isClosed()) { // means client is connected to the server
@@ -121,10 +131,11 @@ public class Client implements Runnable {
     }
 
     /**
-     * Puts the client in a lobby where they can specify if they want to
-     * join an existing game or create a new game
-     * 
-     * @param username Name of the client
+     * Places the client in the online game lobby interface.
+     * Allows the client to choose between creating a new game or joining an existing one.
+     * Sends the user's intent to the server and handles application exit or return to the main menu.
+     *
+     * @param username Name of the client using the lobby.
      */
     private void joinGameLobby(String username) {
         try {
@@ -146,10 +157,12 @@ public class Client implements Runnable {
     }
 
     /**
-     * Puts the client in the game waiting lobby where they can see the status of the participants in the game
-     * GameMaster can also add CPUs during this stage
+     * Displays the game waiting room interface to the client.
+     * Shows the status of all players in the room and enables the gameMaster
+     * to start the game or add CPU players. Other players wait for the game to begin.
+     * Sends the chosen user action to the server.
      *
-     * @param game Represents the current Parade game
+     * @param game Current game state representing the game waiting lobby.
      */
     private void gameWaitingLobby(GameState game) {
         try {
@@ -167,11 +180,12 @@ public class Client implements Runnable {
     }
 
     /**
-     * This renders the current GameState to the client.
-     * More specifically, it shows the Parade board, the Collection of each player,
-     * the cards on the their hand, who's turn it is and the current stage of the game
-     * 
-     * @param game Represents the current Parade Game
+     * Renders the current state of the game to the client.
+     * Displays board layout, player hands, player collections, game round information,
+     * and prompts the user to make decisions based on the stage of the game.
+     * Handles end-of-game events and prompts players to restart or leave.
+     *
+     * @param game The current state of the Parade game.
      */
     private void renderGame(GameState game) {
         try {
@@ -214,16 +228,18 @@ public class Client implements Runnable {
     }
 
     /**
-     * Used when a player leaves the game during his turn.
-     * 
-     * @param isInGame true represents that the client is currently in a game
+     * Sets the state of whether the client is currently in a game.
+     * Used primarily to update internal logic when a player leaves or joins a game.
+     *
+     * @param isInGame true if the client is currently in a game; false otherwise.
      */
     public void setIsInGame(boolean isInGame) {
         this.isInGame = isInGame;
     }
 
     /**
-     * To execute the listening of message from the server on another thread
+     * Starts the client handler's execution by invoking the listener method in a separate thread.
+     * This method enables asynchronous communication with the server.
      */
     @Override
     public void run() {
@@ -240,7 +256,7 @@ public class Client implements Runnable {
     private void closeEverything(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOuputStream) {
         try {
             if (objectInputStream != null) {
-                objectInputStream.close();
+                objectInputStream.close(); // closing the outer wrapper will close all inner wrapers
             }
             if (objectOutputStream != null) {
                 objectOutputStream.close();
