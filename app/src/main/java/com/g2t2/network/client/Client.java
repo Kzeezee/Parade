@@ -17,12 +17,19 @@ public class Client implements Runnable {
     private Socket socket;
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
-    private final BlockingQueue<Runnable> mainThreadTasks = new LinkedBlockingQueue<>();
+    private final BlockingQueue<Runnable> mainThreadTasks = new LinkedBlockingQueue<>(); // gather things to do for the main thread
     private boolean isInGame = false;
     private boolean hasLeftGame = false;
     private String username;
-    private int myPlayerId; // track player
+    private int myPlayerId; // track player in game
 
+    /**
+     * Client Constructor.
+     * Each client needs to have an object out/inputstream to communicate with the server
+     *
+     * @param socket Represents the connection between the server and the client
+     * @param username Name of the client (chosen from the player profile)
+     */
     public Client(Socket socket, String username) {
         try {
             this.socket = socket;
@@ -34,29 +41,124 @@ public class Client implements Runnable {
         } 
     }
 
+    /**
+     * Contains the things that the client will do once a client is created
+     * 1. Start listening for message from the server
+     * 2. Send the client to the Join Game Lobby
+     * 3. Listen for task to do on the main thread
+     */
+    public void start() {
+        // executes the run() method, allowing the client to listen to the server
+        Thread thread = new Thread(this);
+        thread.start();
+
+        joinGameLobby(username);
+        while (!socket.isClosed()) {
+            try {
+                Runnable task = mainThreadTasks.take(); // blocks until a task is available
+                task.run(); // executes the task once available
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }  
+    } 
+
+    /**
+     * This function is running a separate thread.
+     * This allows the client to listen for information from the server and take appropriate actions
+     */
+    private void listenForMessage() {
+        while (!socket.isClosed()) { // means client is connected to the server
+            try {
+                Object incomingObject = objectInputStream.readObject();
+                if (incomingObject instanceof GameState game) {
+                    if (hasLeftGame) { // to deal with the problem when there is no more players playing. If not CPU will keep playing
+                        hasLeftGame = false;
+                        
+                    } else if (!game.getHasStarted()) { // players are joining the game
+                        mainThreadTasks.add(() -> gameWaitingLobby(game));
+
+                    // this is used to deal with the problem that the Scanner from activatingUserControlCommands is blocking the main thread,
+                    // preventing the rendering of the game
+                    } else if (!isInGame && game.getGameMaster().getPlayerId() != myPlayerId) {
+                        Utility.clearConsoleScreen();
+                        System.out.print(Display.colorString(" ➢ Press ENTER KEY to show game!"));
+                        isInGame = true;
+
+                    } else { // the game has started
+                        mainThreadTasks.add(() -> renderGame(game));
+                    }
+                } else if (incomingObject instanceof Message incomingMessage) {
+                    // the last index of Message always contains the purpose of the Message
+                    String command = incomingMessage.getMessage()[incomingMessage.getMessage().length-1];
+
+                    if (command.equals(Constants.INVALID_GAME_ID)) { // wrong gameId
+                        System.out.println(Display.errorColour(" ❌ " + Constants.INVALID_GAME_ID));
+                        NetworkUtility.threadSleep(1000); // to show users the error message before the page clears
+                        mainThreadTasks.add(() -> joinGameLobby(username));
+
+                    } else if (command.equals(Constants.FULL_CAPACITY)) { // full capacity
+                        System.out.println(Display.errorColour(" ❌ " + Constants.FULL_CAPACITY));
+                        NetworkUtility.threadSleep(1000); // to show users the error message before the page clears
+                        mainThreadTasks.add(() -> joinGameLobby(username));
+
+                    } else if (command.equals(Constants.REFRESH_PAGE)) {
+                        OnlineLobby.setRefreshPage(true);
+
+                    } else if (command.equals(Constants.NEW_GAME)) {
+                        mainThreadTasks.add(() -> joinGameLobby(username));
+                    }
+
+                } else if (incomingObject instanceof Player player) {
+                    myPlayerId = player.getPlayerId(); // allows the client to know their player through their playerID
+                }
+            } catch (IOException e) {
+                closeEverything(socket, objectInputStream, objectOutputStream);
+            } catch (ClassNotFoundException e) {
+                closeEverything(socket, objectInputStream, objectOutputStream);
+            }
+        }
+    }
+
+    /**
+     * Puts the client in a lobby where they can specify if they want to
+     * join an existing game or create a new game
+     * 
+     * @param username Name of the client
+     */
     private void joinGameLobby(String username) {
         try {
             Display.joiningGameLobbyHeader();
-            String[] userInput = OnlineLobby.joinGamePrompt(username);
+            // get what the user wants to do (join/create)
+            String[] userInput = OnlineLobby.joinGamePrompt(username); 
             NetworkUtility.sendMessage(userInput, objectOutputStream);
+
+            // if clients wants to back to start menu or close the application
             if (userInput[0].equals(Constants.GO_BACK) || userInput[0].equals(Constants.CLOSE_APP)) { 
                 throw new IOException(userInput[0]);
             }
         } catch (IOException e) {
             closeEverything(socket, objectInputStream, objectOutputStream);
             if (e.getMessage().equals(Constants.CLOSE_APP)) {
-                Utility.exitGame();
+                Utility.exitGame(); // close the application
             }
         } 
     }
 
+    /**
+     * Puts the client in the game waiting lobby where they can see the status of the participants in the game
+     * GameMaster can also add CPUs during this stage
+     *
+     * @param game Represents the current Parade game
+     */
     private void gameWaitingLobby(GameState game) {
         try {
             OnlineLobby.printWaitingRoomDetails(game, myPlayerId);
             boolean isGameMaster = game.getGameMaster().getPlayerId() == myPlayerId;
+            // get what the users want to do
             String[] userInput = OnlineLobby.activatingUserControlCommands(isGameMaster, game);
             if (userInput[0].equals(Constants.START_GAME)) {
-                isInGame = true;
+                isInGame = true; // only set for the gameMaster as normal players' will be set later
             }
             NetworkUtility.sendMessage(userInput, objectOutputStream);
         } catch (IOException e) {
@@ -64,6 +166,13 @@ public class Client implements Runnable {
         } 
     }
 
+    /**
+     * This renders the current GameState to the client.
+     * More specifically, it shows the Parade board, the Collection of each player,
+     * the cards on the their hand, who's turn it is and the current stage of the game
+     * 
+     * @param game Represents the current Parade Game
+     */
     private void renderGame(GameState game) {
         try {
             Display.gameHeader();
@@ -72,9 +181,11 @@ public class Client implements Runnable {
 
             if (game.isEndOfGame()) {
                 GameRenderer.displayScores(game.getPlayers());
-                NetworkUtility.sendMessage(new String[] {Constants.GAME_ENDED}, objectOutputStream); // signal to clienthandler to reset server side things
                 isInGame = false;
-
+                // signal to the server to reset things on their side
+                NetworkUtility.sendMessage(new String[] {Constants.GAME_ENDED}, objectOutputStream); 
+                
+                // prompt the player if they want to play again
                 if (GamePlayPrompt.promptForNewGame()) {
                     NetworkUtility.sendMessage(new String[] {username, Constants.NEW_GAME}, objectOutputStream);
                 } else {
@@ -93,7 +204,7 @@ public class Client implements Runnable {
             if (messageToSendBack != null) {
                 NetworkUtility.sendMessage(messageToSendBack, objectOutputStream);
             } 
-            if (!isInGame ) { // player has left
+            if (!isInGame ) { // the player has decided to leave the game on his turn
                 NetworkUtility.sendMessage(new String[] {Constants.LEAVE_GAME}, objectOutputStream);
                 hasLeftGame = true;
             }
@@ -102,63 +213,30 @@ public class Client implements Runnable {
         }
     }
 
+    /**
+     * Used when a player leaves the game during his turn.
+     * 
+     * @param isInGame true represents that the client is currently in a game
+     */
     public void setIsInGame(boolean isInGame) {
         this.isInGame = isInGame;
     }
-     
-    private void listenForMessage() {
-        while (!socket.isClosed()) {
-            try {
-                Object incomingObject = objectInputStream.readObject();
-                if (incomingObject instanceof GameState game) {
-                    if (hasLeftGame) { // to deal with the problem if not CPU will keep playing
-                        hasLeftGame = false;
-                    } else if (!game.getHasStarted()) {
-                        mainThreadTasks.add(() -> gameWaitingLobby(game));
 
-                    // this is deal with the problem that the Scanner from activatingUserControlCommands is blocking the main thread
-                    } else if (!isInGame && game.getGameMaster().getPlayerId() != myPlayerId) {
-                        Utility.clearConsoleScreen();
-                        System.out.print(Display.colorString(" ➢ Press ENTER KEY to show game!"));
-                        isInGame = true;
-                    } else {
-                        mainThreadTasks.add(() -> renderGame(game));
-                    }
-
-                } else if (incomingObject instanceof Message incomingMessage) {
-                    String command = incomingMessage.getMessage()[incomingMessage.getMessage().length-1];
-                    if (command.equals(Constants.INVALID_GAME_ID)) { // wrong gameId
-                        System.out.println(Constants.INVALID_GAME_ID);
-                        NetworkUtility.threadSleep(1000);
-                        mainThreadTasks.add(() -> joinGameLobby(username));
-                    } else if (command.equals(Constants.FULL_CAPACITY)) { // full capacity
-                        System.out.println(Constants.FULL_CAPACITY);
-                        NetworkUtility.threadSleep(1000);
-                        mainThreadTasks.add(() -> joinGameLobby(username));
-
-                    } else if (command.equals(Constants.REFRESH_PAGE)) {
-                        OnlineLobby.setRefreshPage(true);
-
-                    } else if (command.equals(Constants.NEW_GAME)) {
-                        mainThreadTasks.add(() -> joinGameLobby(username));
-
-                    }
-                } else if (incomingObject instanceof Player player) {
-                    myPlayerId = player.getPlayerId();
-                }
-            } catch (IOException e) {
-                closeEverything(socket, objectInputStream, objectOutputStream);
-            } catch (ClassNotFoundException e) {
-                closeEverything(socket, objectInputStream, objectOutputStream);
-            }
-        }
-    }
-
+    /**
+     * To execute the listening of message from the server on another thread
+     */
     @Override
     public void run() {
         listenForMessage();
     }
 
+    /**
+     * Close all connections between the client and the server
+     * 
+     * @param socket Represents the connection between the server and the client
+     * @param objectInputStream Represents the pipe for the user to read information to the server
+     * @param objectOutputStream Represents the pipe for the user to write information to the server
+     */
     private void closeEverything(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOuputStream) {
         try {
             if (objectInputStream != null) {
@@ -170,6 +248,8 @@ public class Client implements Runnable {
             if (socket != null) {
                 socket.close();
             }
+            
+            // signal to the main thread to stop listening for new task
             mainThreadTasks.add(() -> {
                 Thread.currentThread().interrupt(); 
             });
@@ -177,21 +257,4 @@ public class Client implements Runnable {
             e.printStackTrace();
         }
     }
-
-    public void start() {
-        // Starting the Thread
-        Thread thread = new Thread(this);
-        thread.start();
-        joinGameLobby(username);
-
-        while (socket.isConnected()) {
-            try {
-                Runnable task = mainThreadTasks.take(); // Blocks until a task is available
-                task.run();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
-            }
-        }  
-    } 
 }

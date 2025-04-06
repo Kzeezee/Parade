@@ -55,7 +55,7 @@ public class GamePlayPrompt {
                     throw new IndexOutOfBoundsException();
                 }
 
-                System.out.println("\t ➢ Chosen Card Number: " + (chosenCardIndex));
+                System.out.println("\t   ➢ Chosen Card Number: " + (chosenCardIndex));
                 if (!confirmsChoice()) {
                     System.out.println();
                     continue;

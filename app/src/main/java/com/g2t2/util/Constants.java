@@ -20,6 +20,7 @@ public class Constants {
     public static final String BLACK_ANSI = "\033[38;5;251m"; // \033[38;5;251m
     public static final String ANSI_RESET = "\033[0m";
     public static final String INVALID_OPTION_ERROR_MSG = " ❌ Please enter a number or an appropriate command";
+    public static final String INVALID_COMMAND = Display.errorColour(" ❌ " + "INVALID COMMAND");
     public static final String DIVIDER = "\033[90m" + "───────────────────────────────────────"
             + " ⚜ ──────────────────────────────────────────" + ANSI_RESET;
 
@@ -118,6 +119,10 @@ public class Constants {
     public static final String NEW_GAME = "$new_game$";
     public static final String GAME_ENDED = "$game_ended$";
 
+    // Error Message Indicators
+    public static final String INVALID_GAME_ID = "INVALID GAME ID";
+    public static final String FULL_CAPACITY = "FULL CAPACITY";
+
     // Available Commands To Users
     public static final String LEAVE_GAME_PROMPT =" 📌 To leave the game, enter '" + Display.colorString(Constants.LEAVE_GAME) + "'";
     public static final String CLOSE_APP_PROMPT = " 📌 To leave the application, enter: '" + Display.colorString(Constants.CLOSE_APP) + "'";
@@ -127,11 +132,6 @@ public class Constants {
     public static final String START_GAME_PROMPT = " 📌 To start the game, enter '" + Display.colorString(Constants.START_GAME) + "'";
     public static final String REMOVE_CPU_PROMPT = " 📌 To remove CPU(s), enter '" + Display.colorString(Constants.REMOVE_CPU) + "'";
     public static final String ADD_CPU_PROMPT = " 📌 To add CPU(s), enter '" + Display.colorString(Constants.ADD_CPU) + "'";
-
-    // ERRORS
-    public static final String INVALID_GAME_ID = "INVALID GAME ID";
-    public static final String INVALID_COMMAND = "INVALID COMMAND";
-    public static final String FULL_CAPACITY = "FULL CAPACITY";
 
     // Constants
     public static final List<CardColour> CARD_COLOURS = List.of(CardColour.RED, CardColour.BLUE, CardColour.YELLOW,
