@@ -18,7 +18,7 @@ import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
 
 /**
- * This class acts as the server for client.
+ * This ClientHandler class acts as the server for client.
  * Each instance of the client will be communicating to an instance of a clientHandler. 
  * 
  * This class represents the server and will update the GameState of the current game that their client is in
@@ -48,8 +48,8 @@ public class ClientHandler implements Runnable {
      * ClientHandler Constructor.
      * Each clientHandler needs to have an object out/inputstream to communicate with the client
      *
-     * @param socket Represents the connection between the server and the client
-     * @param username Name of the client (chosen from the player profile)
+     * @param socket represents the connection between the server and the client
+     * @param username name of the client (chosen from the player profile)
      */
     public ClientHandler(Socket socket) {
         try {
@@ -152,7 +152,7 @@ public class ClientHandler implements Runnable {
      * Creates a new game by generating an instance of GameState
      * Adds the game to the list of available games and initialises a list of client handlers for that game.
      *
-     * @param name Name of the client (chosen from the player profile)
+     * @param name name of the client (chosen from the player profile)
      */
     private void createGame(String name) {
         GameState game = new GameState();
@@ -166,8 +166,8 @@ public class ClientHandler implements Runnable {
      * Sends the player's data and the current game state back to the client.
      * Adds this ClientHandler to the game's client handler list.
      *
-     * @param name Name of the player.
-     * @param game The game the player is joining.
+     * @param name name of the player.
+     * @param game the game the player is joining.
      * @throws IOException If an I/O error occurs during communication.
      */
     private void createPlayer(String name, GameState game) throws IOException {
@@ -196,7 +196,7 @@ public class ClientHandler implements Runnable {
     * Removes the player from the game and checks if a new game master needs to be assigned.
     * If the game has no players left, it removes the game entirely.
     *
-    * @param game The game that the player is leaving.
+    * @param game the game that the player is leaving.
     */
     private void processPlayerLeaveLobby(GameState game) {
         game.removePlayer(game.findMyPlayer(myPlayerId));
@@ -212,7 +212,7 @@ public class ClientHandler implements Runnable {
      * Sets the player's status to CPU and assigns a new game master if necessary.
      * Removes the game if there are no players left.
      *
-     * @param game The game that the player is leaving.
+     * @param game the game that the player is leaving.
      */
     private void processPlayerLeaveGame(GameState game) {
         game.findMyPlayer(myPlayerId).setCPU(true);
@@ -227,7 +227,7 @@ public class ClientHandler implements Runnable {
      * Resets the game by clearing all clientHandlers that are mapped to that game
      * Invokes the game reset logic in the GameState
      *
-     * @param game The game to reset.
+     * @param game the game to reset.
      */
     private void resetGame(GameState game) {
         game.resetGame();
@@ -238,7 +238,7 @@ public class ClientHandler implements Runnable {
      * Sends the current GameState to all clientHandlers in the same game, which will send them to their respective clients.
      * Used to ensure all players see the most updated state of the game.
      *
-     * @param game The current game to broadcast.
+     * @param game the current game to broadcast.
      * @throws IOException If an I/O error occurs during communication.
     */
     private void broadcastGameStatus(GameState game) throws IOException {
@@ -250,7 +250,7 @@ public class ClientHandler implements Runnable {
     /**
      * Sends a specified message to all clients in the same game, excluding the sender.
      *
-     * @param message The message to be sent to other players.
+     * @param message the message to be sent to other players.
      * @throws IOException If an I/O error occurs during communication.
     */
     private void broadcastMessage(String[] message) throws IOException {
@@ -264,9 +264,9 @@ public class ClientHandler implements Runnable {
      /**
      * Close all connections between the client and the server
      * 
-     * @param socket Represents the connection between the server and the client
-     * @param objectInputStream Represents the pipe for the user to read information to the server
-     * @param objectOutputStream Represents the pipe for the user to write information to the server
+     * @param socket represents the connection between the server and the client
+     * @param objectInputStream represents the pipe for the user to read information to the server
+     * @param objectOutputStream represents the pipe for the user to write information to the server
      */
     private void closeEverything(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOuputStream) {
         removePlayerFromGame();

@@ -1,7 +1,6 @@
 package com.g2t2.network.networkUtility;
 
 import java.io.IOException;
-import java.net.ContentHandler;
 import java.util.Scanner;
 
 import com.g2t2.game.GameState;
@@ -11,21 +10,44 @@ import com.g2t2.util.Display;
 import com.g2t2.util.Utility;
 
 /**
- * Represents an online lobby for players to connect and interact before starting a game.
- *
- * This class provides methods to display the lobby and update player information.
- * It serves as the entry point for players in an online multiplayer environment.
+ * This OnlineLobby class represents an online lobby for players to connect and interact before starting a game.
+ * It provides methods for users to join or create games, interact in the waiting room, 
+ * and allows the GameMaster to manage players (e.g., adding/removing CPUs).
+ * 
+ * This class is used before the actual gameplay begins and serves as an interface 
+ * for multiplayer setup and configuration.
+ * 
+ * Features:
+ * - Displaying waiting room details
+ * - Prompting users for commands
+ * - GameMaster command control (start game, add/remove CPUs)
+ * - Support for dynamic lobby updates via refresh flag
  * 
  * @author Ben
  */
 
 public class OnlineLobby {
+    // flag indicating whether the lobby page needs to be refreshed (e.g. a player joined/left)
     private static volatile boolean needToRefreshPage = false; 
 
+    /**
+     * Sets the refresh page flag. 
+     * If set to true, the page will refresh before user can execute any commands due to lobby updates.
+     * 
+     * @param setRefreshPage true if the lobby should refresh; false otherwise
+     */
     public static void setRefreshPage(boolean setRefreshPage) {
         needToRefreshPage = setRefreshPage;
     }   
 
+    /**
+     * Prompts the user to choose between creating a game, joining an existing game,
+     * going back, or closing the application.
+     *
+     * @param username the name of the current user
+     * @return a String array representing the user's choice and additional data:
+     *         [username, gameId (if joining), command]
+     */
     public static String[] joinGamePrompt(String username) {
         Scanner sc = new Scanner(System.in);
         while (true) {
@@ -53,6 +75,12 @@ public class OnlineLobby {
         }
     }
 
+    /**
+     * Prompts the user to enter the game ID when they choose to join an existing game.
+     *
+     * @param username the name of the current user
+     * @return a String array containing: [username, entered gameID, JOIN_GAME command]
+     */
     private static String[] promptForGameId(String username) {
         Scanner sc = new Scanner(System.in);
         String[] userChoice = {username, "", Constants.JOIN_GAME};
@@ -65,6 +93,12 @@ public class OnlineLobby {
         return userChoice;
     }
 
+    /**
+     * Displays the current state of the waiting room, including the list of players and available commands. 
+     *
+     * @param game the current game state
+     * @param myPlayerId the playerID of the current user
+     */
     public static void printWaitingRoomDetails(GameState game, int myPlayerId) {
         boolean isGameMaster = game.getGameMaster().getPlayerId() == myPlayerId;
         Utility.clearConsoleScreen();
@@ -75,6 +109,13 @@ public class OnlineLobby {
         game.printPlayerList();
     }
 
+    /**
+     * Displays all available commands in the waiting room.
+     * If the user is the gameMaster, additional commands (add/remove CPU, start game) are shown.
+     *
+     * @param isGameMaster true if the current user is the gameMaster
+     * @param game the current game state
+     */
     private static void printWaitingRoomCommands(boolean isGameMaster, GameState game) {
         System.out.println(Display.colorString("--- Here are some available commands you can use ---"));
         System.out.println(Constants.LEAVE_GAME_PROMPT);
@@ -90,26 +131,36 @@ public class OnlineLobby {
         }
     }
 
+    /**
+     * Continuously scans for user's commands, such as starting the game, adding/removing CPU players.
+     * Reacts to updates if there are any updates to the lobby that is done by other clients
+     *
+     * @param isGameMaster true if the current user is the gameMaster
+     * @param game the current game state
+     * @return a String array indicating the selected action and user input data
+     * @throws IOException if there is InterruptException caused by threadSleep()
+     */
     public static String[] activatingUserControlCommands(boolean isGameMaster, GameState game) throws IOException {
         Scanner sc = new Scanner(System.in);
         while (true) {
             System.out.print(Display.colorString(" ➢ Enter command: "));
             String input = sc.nextLine();
 
-            if (needToRefreshPage) { // someone joins
+            if (needToRefreshPage) { // there is an update to the lobby done by other clients
                 needToRefreshPage = false;
                 System.out.println("📌 There is an update, refreshing page");
                 NetworkUtility.threadSleep(1000);
                 return new String[] {Constants.ENTER_KEY};
 
-                // commands available to everyone
+            // commands available to everyone
             } else if (input.equals(Constants.LEAVE_GAME)) { 
                 return new String[] {Constants.LEAVE_GAME};
 
-            } else if (input.equals(Constants.ENTER_KEY)) { // refresh page
+            } else if (input.equals(Constants.ENTER_KEY)) { // user can manually refresh page
                 return new String[] {Constants.ENTER_KEY};
 
-            } else if (isGameMaster) { // commands available to gameMaster
+            // commands available to gameMaster only
+            } else if (isGameMaster) { 
                 if (input.equals(Constants.ADD_CPU)) {
                     if (game.getNumOfPlayers() < Constants.MAX_PLAYER_NO) {
                         String[] CPUInformation = {"", "", Constants.ADD_CPU};
@@ -139,6 +190,4 @@ public class OnlineLobby {
             System.out.println(Constants.INVALID_COMMAND);
         }
     }
-
-    
 }

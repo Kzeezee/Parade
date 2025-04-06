@@ -14,7 +14,7 @@ import com.g2t2.types.Player;
 import com.g2t2.util.*;
 
 /**
- * This class represents a player in an online game.
+ * This Client class represents a player in an online game.
  * It communicates with the server and decides what to displays to the player based on player's input.
  * This class is only activated when the users wants to play online (option 2 in the start menu)
  * It also requires the server to be running before an instance of this class can be created
@@ -35,8 +35,8 @@ public class Client implements Runnable {
      * Client Constructor.
      * Each client needs to have an object out/inputstream to communicate with the server
      *
-     * @param socket Represents the connection between the server and the client
-     * @param username Name of the client (chosen from the player profile)
+     * @param socket represents the connection between the server and the client
+     * @param username name of the client (chosen from the player profile)
      */
     public Client(Socket socket, String username) {
         try {
@@ -135,7 +135,7 @@ public class Client implements Runnable {
      * Allows the client to choose between creating a new game or joining an existing one.
      * Sends the user's intent to the server and handles application exit or return to the main menu.
      *
-     * @param username Name of the client using the lobby.
+     * @param username name of the client using the lobby.
      */
     private void joinGameLobby(String username) {
         try {
@@ -162,7 +162,7 @@ public class Client implements Runnable {
      * to start the game or add CPU players. Other players wait for the game to begin.
      * Sends the chosen user action to the server.
      *
-     * @param game Current game state representing the game waiting lobby.
+     * @param game current game state representing the game waiting lobby.
      */
     private void gameWaitingLobby(GameState game) {
         try {
@@ -185,7 +185,7 @@ public class Client implements Runnable {
      * and prompts the user to make decisions based on the stage of the game.
      * Handles end-of-game events and prompts players to restart or leave.
      *
-     * @param game The current state of the Parade game.
+     * @param game the current state of the Parade game.
      */
     private void renderGame(GameState game) {
         try {
@@ -249,9 +249,9 @@ public class Client implements Runnable {
     /**
      * Close all connections between the client and the server
      * 
-     * @param socket Represents the connection between the server and the client
-     * @param objectInputStream Represents the pipe for the user to read information to the server
-     * @param objectOutputStream Represents the pipe for the user to write information to the server
+     * @param socket represents the connection between the server and the client
+     * @param objectInputStream represents the pipe for the user to read information to the server
+     * @param objectOutputStream represents the pipe for the user to write information to the server
      */
     private void closeEverything(Socket socket, ObjectInputStream objectInputStream, ObjectOutputStream objectOuputStream) {
         try {

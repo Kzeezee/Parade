@@ -13,7 +13,6 @@ import com.g2t2.game.gameInit.GameInit;
 import com.g2t2.game.gameInit.GameInitPrompt;
 import com.g2t2.game.gameutility.GamePlayPrompt;
 import com.g2t2.network.client.Client;
-import com.g2t2.network.networkUtility.NetworkUtility;
 import com.g2t2.types.Card;
 import com.g2t2.types.PlayerProfile;
 import com.g2t2.util.Constants;
@@ -21,14 +20,23 @@ import com.g2t2.util.Display;
 import com.g2t2.util.Utility;
 
 /**
- * Handles the main menu of the application.
- * Provides methods for both GUI and console-based menu interactions.
+ * 
+ * The StartMenu class is responsible for displaying and managing the initial user interface 
+ * of the game application. It acts as the main entry point for players, allowing them to 
+ * navigate between various gameplay and profile management options.
+ * 
+ * This class handles input validation, profile loading from the database, and the appropriate 
+ * redirection based on the selected option. It ensures that a valid player profile is set 
+ * before allowing gameplay to begin.
+ * 
+ * This class is the first to be invoked when the application starts, and it guides 
+ * the user through the necessary setup before entering gameplay.
  * 
  * @author Oliver
  */
 public class StartMenu {
-    private static final int portNumber = 1234;
-    private static final String serverAddress = "localhost";
+    private static final int portNumber = 1234; // ensure that this portNumber matches the one of the server
+    private static final String serverAddress = "localhost"; // to execute on different devices, change to the IP address of the server
     private static final String WELCOMEMESSAGE_STRING = " ⚜ Welcome to G2T2 Parade! Please select an option.";
     private static final String GAMEPLAY_OPTIONS = " 📌 Play local (1)\n" 
                                                  + " 📌 Play online (2)\n"
@@ -38,8 +46,7 @@ public class StartMenu {
                                                  + Display.colorString(" ⚜ Enter option ➢ ");
 
     /**
-     * Displays the start menu of the application based on the current mode (GUI or
-     * console).
+     * Displays the start menu of the application based on the current mode (GUI or console).
      */
     public static void showStartMenu() {
         if (StateManager.getPlayerProfile() == null) { // no host for the game is found
@@ -148,7 +155,6 @@ public class StartMenu {
         System.out.println(Constants.DIVIDER);
 
         System.out.println(Constants.GAME_INSTRUCTION_SETUP);
-
 
         System.out.println(Constants.GAME_INSTRUCTION_PLAY);
 
