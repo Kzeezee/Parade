@@ -42,6 +42,10 @@ public class GamePlay {
     public static void startGame(GameState game) {
         GameFlow.startGame(game);   
         List<Player> players = game.getPlayers();
+        if (game.getCurrentPlayer().getCPU()) { // starting player is a bot
+            GameRenderer.displayRoundInformation(game);
+        }
+
         while (!game.isPut2CollectionRound()) {
             String cardChosen = null;
             if(!game.getCurrentPlayer().getCPU()){
