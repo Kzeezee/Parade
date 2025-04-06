@@ -47,8 +47,7 @@ public class Player implements Serializable {
     }
 
     /**
-     * Creates a new Player, specifying if they are a CPU and their CPU difficulty
-     * level.
+     * Creates a new CPU Player, specifying their CPU difficulty evel.
      * 
      * @param isCPU      boolean value describing if the player is a CPU
      * @param difficulty difficulty level of the CPU
@@ -60,6 +59,14 @@ public class Player implements Serializable {
         this.isCPU = isCPU;
         this.difficulty = difficulty;
         cardsInCollection = new ArrayList<>();
+    }
+
+    /**
+     * Resets the counter to 1
+     */
+    public static void resetCounter() { // ARE WE USING THIS?
+        counter = 1;
+        CPUCounter = 1;
     }
 
     /**
@@ -97,7 +104,7 @@ public class Player implements Serializable {
      * 
      * @return the player's name
      */
-    public String getName() {
+    public String getName() { // ARE WE USING THIS?
         return name;
     }
 
@@ -117,14 +124,6 @@ public class Player implements Serializable {
      */
     public List<Card> getCardsInCollection() {
         return cardsInCollection;
-    }
-
-    /**
-     * Resets the counter to 1
-     */
-    public static void resetCounter() {
-        counter = 1;
-        CPUCounter = 1;
     }
 
     /**
@@ -157,12 +156,18 @@ public class Player implements Serializable {
     /**
      * Returns whether or not the player is a CPU as a boolean.
      * 
-     * @return {@code true} if the player is CPu, else {@code false}
+     * @return {@code true} if the player is CPU, else {@code false}
      */
     public boolean getCPU() {
         return isCPU;
     }
 
+    /**
+     * Change a Player status to become a CPU
+     * This is used when a player leaves the game and becomes CPU
+     * 
+     * @param isCPU flag indicating whether a player is a CPU
+     */
     public void setCPU(boolean isCPU) {
         this.isCPU = isCPU;
         difficulty = 1;
@@ -187,7 +192,6 @@ public class Player implements Serializable {
 
     /**
      * Update the collection size based on player's cardsInCollection
-     * 
      */
     public void updateCollectionSize() {
         collectionSize = cardsInCollection.size();

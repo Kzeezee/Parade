@@ -39,7 +39,7 @@ public class GameState implements Serializable { // to allow it to be sent over
     private boolean isEndOfGame = false;
 
     /**
-     * Constructs a new `GameState` instance and generates a unique game ID.
+     * Constructs a new GameState instance and generates a unique game ID.
      */
     public GameState() {
         gameId = generateGameId();
@@ -63,6 +63,15 @@ public class GameState implements Serializable { // to allow it to be sent over
     }
 
     /**
+     * Gets the unique identifier for this game session.
+     *
+     * @return the game ID string that uniquely identifies this game
+     */
+    public String getGameId() {
+        return gameId;
+    }
+
+    /**
      * Adds a player to the game. The first player added becomes the game master.
      *
      * @param player the player to add to the game
@@ -70,8 +79,6 @@ public class GameState implements Serializable { // to allow it to be sent over
     public void addPlayer(Player player) {
         numOfPlayers++;
         players.add(player);
-        // System.out.println(player.getPlayerProfile());
-
         if (numOfPlayers == 1) { // first person becomes gameMaster
             gameMaster = players.get(0);
         }
@@ -88,21 +95,6 @@ public class GameState implements Serializable { // to allow it to be sent over
     }
 
     /**
-     * Finds and returns a player based on their player ID.
-     *
-     * @param yourPlayerId the ID of the player to find
-     * @return the Player object with the matching ID, or null if no match is found
-     */
-    public Player findMyPlayer(int yourPlayerId) {
-        for (Player player : players) {
-            if (player.getPlayerId() == yourPlayerId) {
-                return player;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Retrieves a list of all players in the game.
      *
      * @return a list of players participating in the game
@@ -111,35 +103,7 @@ public class GameState implements Serializable { // to allow it to be sent over
         return players;
     }
 
-    /**
-     * Prints a list of all players, including their roles (e.g., GameMaster or
-     * CPU).
-     */
-    public void printPlayerList() {
-        for (int i = 0; i < players.size(); i++) {
-            Player player = players.get(i);
-            // printing depending on role
-            if (player.getCPU()) {
-                System.out.println(" " + (i + 1) + ") " + player.getName() + " (id=" + player.getPlayerId()
-                        + ") (CPU, difficulty = " + player.getDifficulty() + ")");
-            } else {
-                String playerRole = gameMaster.equals(player) ? "GameMaster" : "Player";
-                System.out.println(" " + (i + 1) + ") " + player.getName() + " (id=" + player.getPlayerId()
-                        + ") (" + playerRole + ")");
-            }
-        }
-    }
-
-    /**
-     * Gets the unique identifier for this game session.
-     *
-     * @return the game ID string that uniquely identifies this game
-     */
-    public String getGameId() {
-        return gameId;
-    }
-
-    /**
+        /**
      * Gets the total number of players in the game.
      *
      * @return the total number of players in the game
@@ -178,6 +142,116 @@ public class GameState implements Serializable { // to allow it to be sent over
             }
         }
         return false;
+    }
+
+    /**
+     * Finds and returns a player based on their player ID.
+     *
+     * @param yourPlayerId the ID of the player to find
+     * @return the Player object with the matching ID, or null if no match is found
+     */
+    public Player findMyPlayer(int yourPlayerId) {
+        for (Player player : players) {
+            if (player.getPlayerId() == yourPlayerId) {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Prints a list of all players, including their roles (e.g., GameMaster or CPU).
+     */
+    public void printPlayerList() {
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
+            // printing depending on role
+            if (player.getCPU()) {
+                System.out.println(" " + (i + 1) + ") " + player.getName() + " (id=" + player.getPlayerId()
+                        + ") (CPU, difficulty = " + player.getDifficulty() + ")");
+            } else {
+                String playerRole = gameMaster.equals(player) ? "GameMaster" : "Player";
+                System.out.println(" " + (i + 1) + ") " + player.getName() + " (id=" + player.getPlayerId()
+                        + ") (" + playerRole + ")");
+            }
+        }
+    }
+
+    /**
+     * Gets the deck of cards in the game.
+     *
+     * @return the deck of cards in the game
+     */
+    public CardDeck getDeck() {
+        return deck;
+    }
+
+    /**
+     * Gets the parade board in the game.
+     *
+     * @return the parade board in the game
+     */
+    public List<Card> getParade() {
+        return paradeBoard;
+    }
+
+    /**
+     * Sets the parade board in the game.
+     *
+     * @param parardeBoard the parade board in the game
+     */
+    public void setParade(List<Card> parardeBoard) {
+        this.paradeBoard = parardeBoard;
+    }
+
+    /**
+     * Distributes initial cards to all players and sets up the parade board.
+     *
+     * This method is responsible for initialising the game by:
+     * - Giving each player their starting hand of cards from the deck.
+     * - Setting up the parade board with six cards drawn from the deck.
+     * It ensures that players and the parade board are ready for gameplay.
+     */
+    public void giveOutInitialCards() {
+        for (Player player : players) {
+            player.drawStartingCards(deck);
+        }
+        // set parade board
+        for (int i = 0; i < 6; i++) {
+            paradeBoard.add(deck.drawCard());
+        }
+    }
+
+    /**
+     * Starts the game and shuffle the list of players and first player of the list starts.
+     */
+    public void startGame() {
+        hasStarted = true;
+        Collections.shuffle(players);
+        currentPlayer = players.get(0);
+    }
+
+    /**
+     * Passes the turn to the next player in the game.
+     */
+    public void passTurnToNextPlayer() {
+        int indexOfNextPlayer = (players.indexOf(currentPlayer) + 1) % numOfPlayers;
+        currentPlayer = players.get(indexOfNextPlayer);
+    }
+
+    /**
+     * Prints the number of cards left in the deck.
+     */
+    public void printNumOfCardsLeft() {
+        System.out.println(" 📌 Number of Cards Left in the Deck: " + deck.getCardsInDeck().size());
+    }
+
+    /**
+     * Prints the current player's turn.
+     */
+    public void printPlayerTurn() {
+        System.out.println(" 📌 Currently, it is player " + Display.colorString(currentPlayer.getName()
+                + "(" + currentPlayer.getPlayerId() + ")" + Constants.ANSI_RESET + " turn."));
     }
 
     /**
@@ -304,61 +378,6 @@ public class GameState implements Serializable { // to allow it to be sent over
     }
 
     /**
-     * Gets the deck of cards in the game.
-     *
-     * @return the deck of cards in the game
-     */
-    public CardDeck getDeck() {
-        return deck;
-    }
-
-    /**
-     * Gets the parade board in the game.
-     *
-     * @return the parade board in the game
-     */
-    public List<Card> getParade() {
-        return paradeBoard;
-    }
-
-    /**
-     * Sets the parade board in the game.
-     *
-     * @param parardeBoard the parade board in the game
-     */
-    public void setParade(List<Card> parardeBoard) {
-        this.paradeBoard = parardeBoard;
-    }
-
-    /**
-     * Distributes initial cards to all players and sets up the parade board.
-     *
-     * This method is responsible for initializing the game by:
-     * - Giving each player their starting hand of cards from the deck.
-     * - Setting up the parade board with six cards drawn from the deck.
-     * It ensures that players and the parade board are ready for gameplay.
-     */
-    public void giveOutInitialCards() {
-        for (Player player : players) {
-            player.drawStartingCards(deck);
-        }
-        // set parade board
-        for (int i = 0; i < 6; i++) {
-            paradeBoard.add(deck.drawCard());
-        }
-    }
-
-    /**
-     * Starts the game and sets the current player to a random player.
-     */
-    public void startGame() {
-        hasStarted = true;
-        // finding a random person to start the game
-        int currentPlayerIndex = (int) (Math.random() * players.size());
-        currentPlayer = players.get(currentPlayerIndex);
-    }
-
-    /**
      * Resets the game state to its initial conditions.
      * 
      * This method clears all game progress and returns the game to its starting state by:
@@ -376,30 +395,6 @@ public class GameState implements Serializable { // to allow it to be sent over
         players = new ArrayList<>();
         paradeBoard = new ArrayList<>();
         deck = new CardDeck();
-
-    }
-
-    /**
-     * Passes the turn to the next player in the game.
-     */
-    public void passTurnToNextPlayer() {
-        int indexOfNextPlayer = (players.indexOf(currentPlayer) + 1) % numOfPlayers;
-        currentPlayer = players.get(indexOfNextPlayer);
-    }
-
-    /**
-     * Prints the number of cards left in the deck.
-     */
-    public void printNumOfCardsLeft() {
-        System.out.println(" 📌 Number of Cards Left in the Deck: " + deck.getCardsInDeck().size());
-    }
-
-    /**
-     * Prints the current player's turn.
-     */
-    public void printPlayerTurn() {
-        System.out.println(" 📌 Currently, it is player " + Display.colorString(currentPlayer.getName()
-                + "(" + currentPlayer.getPlayerId() + ")" + Constants.ANSI_RESET + " turn."));
     }
 
     /**

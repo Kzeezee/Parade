@@ -1,20 +1,15 @@
 package com.g2t2.game.gameInit;
 
+import java.util.Scanner;
+
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 import com.g2t2.util.Utility;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
-
 import com.g2t2.game.GamePlay;
 import com.g2t2.game.GameState;
 import com.g2t2.game.StartMenu;
 import com.g2t2.game.StateManager;
-import com.g2t2.network.networkUtility.NetworkUtility;
 import com.g2t2.types.Player;
-import com.g2t2.types.PlayerProfile;
 
 /**
  * Class responsible for initializing the game settings, players, and parade
