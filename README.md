@@ -1,40 +1,44 @@
 # Parade
-### SMU CS102 Java Project: Group G2T2
----
+SMU CS102 Java Project: Group G2T2
+
 # Overview
 Parade is a console-based Java card game inspired by the Parade game rulebook. The game challenges players to strategically play cards to control the parade, using specific removal rules and scoring mechanics. This project is designed primarily for developers, showcasing object-oriented principles and clean coding practices with a modular design.
----
+
 ## Prerequsite 
 Java Version: Java 8 (or later)
 Build Tool: Gradle
 Terminal: xterm-256color
----
-# Building and Running
+
+## Building Files
 Gradle to clean previous build files
 - `./gradlew clean or Gradle clean`
-A
+    
 Gradle to build the project
 - `./gradlew build or Gradle build`
 
 Gradle to package the jar file (Optional)
 - `./gradlew jar or Gradle jar`
 
-Gradle to run the project
+## Running the Client and Server
+Gradle to run the application client
 - `./gradlew run or Gradle run`
----
+  
+Gradle to run the application server
+- `./gradlew run -PmainClass=com.g2t2.network.server.Server`
+
 # Design Decisions
 1. Modularization:
 The code is organized into multiple packages (game, app, enum, etc.) to separate concerns and follow the Single Responsibility Principle (SRP). Each class is focused on a single function or role within the game.
 
 2. Configuration:
-All configuration parameters are externalized where possible, allowing for future modifications without changing source code directly.
+All configuration parameters are externalized where possible, allowing for future modifications without changing the source code directly.
 
 3. Maintainability:
 Emphasis has been placed on clean, readable code following Java coding conventions. The structure is intended to support both development and potential future enhancements, such as integrating GUI in the future.
 
 4. Gradle Integration:
 Gradle is used to manage builds and dependencies, streamlining the development and deployment process.
----
+
 # SourceCode Overview
 
 📁 app/
@@ -44,7 +48,7 @@ Gradle is used to manage builds and dependencies, streamlining the development a
 📁 db/
     - Handles all database-related functionality, including initialization and queries.
 
-    📁 dao/
+ 📁 dao/
         Implements the Data Access Object (DAO) pattern for database interactions.
 
         📁 impl/
