@@ -87,11 +87,11 @@ public class GameInit {
     private static void printWaitingRoomCommands(GameState game) {
         System.out.println(Display.colorString("--- Here are some available commands you can use ---"));
         if (game.getNumOfPlayers() < Constants.MAX_PLAYER_NO) {
-            System.out.println(" 📌 To add player(s), enter '" + Display.colorString(Constants.ADD_PLAYER) + "'");
+            System.out.println(" 📌 To add local player(s), enter '" + Display.colorString(Constants.ADD_PLAYER) + "'");
             System.out.println(" 📌 To add CPU(s), enter '" + Display.colorString(Constants.ADD_CPU) + "'");
         }
-        if (game.getNumOfCPU() > 0) {
-            System.out.println(" 📌 To remove CPU(s), enter '" + Display.colorString(Constants.REMOVE_CPU) + "'");
+        if (game.getNumOfPlayers() > 1) {
+            System.out.println(" 📌 To remove local player/CPU(s), enter '" + Display.colorString(Constants.REMOVE_PLAYER) + "'");
         }
         System.out.println(" 📌 To start the game, enter '" + Display.colorString(Constants.START_GAME) + "'");
         System.out.println(" 📌 To exit the lobby, enter '" + Display.colorString(Constants.LEAVE_GAME) + "'");
@@ -136,8 +136,8 @@ public class GameInit {
                 }
                 createCPU(Integer.parseInt(userInput[0]), Integer.parseInt(userInput[1]), game);
                 return false;
-            } else if (game.getNumOfCPU() > 0 && input.equals(Constants.REMOVE_CPU)) {
-                String[] idsToRemove = GameInitPrompt.promptForCPURemoval(game);
+            } else if (game.getNumOfCPU() > 0 && input.equals(Constants.REMOVE_PLAYER)) {
+                String[] idsToRemove = GameInitPrompt.promptForPlayerRemoval(game);
                 if (idsToRemove[0].equals(Constants.CANCEL_ACTION)) {
                     return false;
                 }
@@ -207,4 +207,6 @@ public class GameInit {
             game.removePlayer(game.findMyPlayer(Integer.parseInt(ids[i])));
         }
     }
+
+
 }

@@ -105,6 +105,7 @@ public class Constants {
     public static final String ADD_CPU = "ADD CPU"; 
     public static final String ADD_PLAYER = "ADD PLAYER"; 
     public static final String REMOVE_CPU = "REMOVE CPU";
+    public static final String REMOVE_PLAYER = "REMOVE PLAYER";
     public static final String START_GAME = "START GAME";
     public static final String LEAVE_GAME = "LEAVE GAME";
     public static final String ENTER_KEY = "";
