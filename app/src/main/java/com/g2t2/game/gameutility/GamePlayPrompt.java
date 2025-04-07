@@ -148,7 +148,7 @@ public class GamePlayPrompt {
         while (true) {
             try {
                 // Capital letters is default if entered without anything
-                System.out.println(Display.colorString(" ⚜ Do you want to play another game? (Y/n) ➢ "));
+                System.out.print(Display.colorString(" ⚜ Do you want to play another game? (Y/N) ➢ "));
                 String input = sc.nextLine().trim().toLowerCase();
                 if (input.equals("y") || input.isEmpty()) {
                     return true;

@@ -133,10 +133,15 @@ public class CPUGameAction {
         return bestIdx;
     }
 
-    // temp things for networking
+    /**
+     * Display to the client what the CPU is currently doing during their turn 
+     * in an online game
+     * 
+     * @param player name of the current CPU player
+     */
     public static void displayCPUTurnAction(Player player) {
         Display.delayPrint(" 📌 Player " + Display.colorString(player.getName())
-                + " is choosing their cards.", 20);
+                + " is choosing their cards.", 5);
     }
 }
 

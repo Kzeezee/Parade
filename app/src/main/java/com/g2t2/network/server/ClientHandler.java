@@ -112,11 +112,13 @@ public class ClientHandler implements Runnable {
                         broadcastGameStatus(game);
 
                     } else if (command.equals(Constants.LEAVE_GAME)) { // player want leave the game
-                        if (game.getHasStarted()) { // leave from the game
+                        if (game.getHasStarted() && game.getNumOfPlayers() != 0) { // leave from the game
                             processPlayerLeaveGame(game);
-                        } else { // leave from the lobby
+                        } else if (game.getNumOfPlayers() != 0) { // leave from the lobby
                             processPlayerLeaveLobby(game);
-                            broadcastMessage(new String[] {Constants.REFRESH_PAGE}); // all other players will refresh their page
+                            if (clientHandlers.get(gameId) != null) { // still got players inside
+                                broadcastMessage(new String[] {Constants.REFRESH_PAGE}); // all other players will refresh their page
+                            }
                         }
                         removePlayerFromGame();
                         NetworkUtility.sendMessage(new String[] {Constants.NEW_GAME}, objectOutputStream);
@@ -186,7 +188,7 @@ public class ClientHandler implements Runnable {
     * Called when a player disconnects or leaves the game.
     */
     private void removePlayerFromGame() {
-        if (gameId != null && clientHandlers.get(gameId) != null) {
+        if (clientHandlers.get(gameId) != null) {
             clientHandlers.get(gameId).remove(this);
         }
         myPlayerId = 0;
