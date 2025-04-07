@@ -85,7 +85,7 @@ public class GameRenderer {
      * @param players a list of players whose scores are to be displayed and ranked
      */
     public static void displayScores(List<Player> players) {
-        System.out.println(Constants.DIVIDER);
+        // System.out.println(Constants.DIVIDER);
         System.out.println(Display.colorString("「 ✦ RANKING ✦ 」") + Constants.ANSI_RESET);
 
         // Sort players by score

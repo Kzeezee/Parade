@@ -116,7 +116,9 @@ public class ClientHandler implements Runnable {
                             processPlayerLeaveGame(game);
                         } else { // leave from the lobby
                             processPlayerLeaveLobby(game);
+                            broadcastMessage(new String[] {Constants.REFRESH_PAGE}); // all other players will refresh their page
                         }
+                        removePlayerFromGame();
                         NetworkUtility.sendMessage(new String[] {Constants.NEW_GAME}, objectOutputStream);
 
                     }  else if (command.equals(Constants.NEW_GAME)) { // player wants to play again
@@ -204,7 +206,6 @@ public class ClientHandler implements Runnable {
             availableGames.remove(gameId);
             clientHandlers.remove(gameId);
         }
-        removePlayerFromGame();
     }
     
     /**
@@ -220,7 +221,6 @@ public class ClientHandler implements Runnable {
             availableGames.remove(gameId);
             clientHandlers.remove(gameId);
         }
-        removePlayerFromGame();
     }
 
     /**
