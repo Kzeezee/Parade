@@ -130,6 +130,7 @@ public class GamePlayPrompt {
                     break;
                 }
                 choosenCardsIdx[i] = cardIdx;
+
                 System.out.println(Constants.DIVIDER);
             }
             isReprompting = true;

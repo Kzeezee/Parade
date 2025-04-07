@@ -47,7 +47,7 @@ public class GameInit {
      * 
      * @param game the current game state
      */
-    private static void displayWaitingRoomOptions(GameState game) {
+    public static void displayWaitingRoomOptions(GameState game) {
         boolean startGame = false;
         // keep returning to lobby until game starts
         while (!startGame) {

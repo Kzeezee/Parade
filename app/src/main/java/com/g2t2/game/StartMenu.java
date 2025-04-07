@@ -12,6 +12,7 @@ import com.g2t2.enums.PlayerProfileOptionInput;
 import com.g2t2.game.gameInit.GameInit;
 import com.g2t2.game.gameInit.GameInitPrompt;
 import com.g2t2.game.gameutility.GamePlayPrompt;
+import com.g2t2.game.gameutility.GameRenderer;
 import com.g2t2.network.client.Client;
 import com.g2t2.types.Card;
 import com.g2t2.types.PlayerProfile;
@@ -115,7 +116,7 @@ public class StartMenu {
                 client.start();
             } catch (IOException e) {
                 System.out.println(Display.errorColour(" ❌ Server is closed"));
-                GamePlay.temporaryPauseScreen(" ⚜ Enter any key to continue ➢ ");
+                GameRenderer.temporaryPauseScreen(" ⚜ Enter any key to continue ➢ ");
             }
             consoleStartMenu();
             return;
@@ -164,7 +165,7 @@ public class StartMenu {
 
         System.out.println(Constants.GAME_INSTRUCTION_SCORING);
 
-        GamePlay.temporaryPauseScreen(" ⚜ Enter any key to go back to the Menu ➢ ");
+        GameRenderer.temporaryPauseScreen(" ⚜ Enter any key to go back to the Menu ➢ ");
     }
 
     /**

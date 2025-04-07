@@ -4,7 +4,9 @@ import com.g2t2.types.Player;
 import com.g2t2.types.PlayerProfile;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
+import com.g2t2.util.Utility;
 import com.g2t2.db.dao.impl.PlayerProfileDaoImpl;
+import com.g2t2.game.gameInit.GameInit;
 import com.g2t2.game.gameutility.CPUGameAction;
 import com.g2t2.game.gameutility.GameFlow;
 import com.g2t2.game.gameutility.GameRenderer;
@@ -49,11 +51,16 @@ public class GamePlay {
         while (!game.isPut2CollectionRound()) {
             String cardChosen = null;
             if(!game.getCurrentPlayer().getCPU()){
+                Utility.clearConsoleScreen();
+                GameRenderer.temporaryPauseScreen("It is " + game.getCurrentPlayer().getName() + "'s turn. Press the enter key to continue");
                 GameRenderer.displayRoundInformation(game);
                 GameRenderer.displayHandCards(game.getCurrentPlayer());
                 cardChosen = GamePlayPrompt.promptForCard(game.getCurrentPlayer(), Constants.PROMPT_ADD_TO_PARADE);
             } else {
                 cardChosen = CPUGameAction.CPUSelectCard(game.getCurrentPlayer(), game);
+            }
+            if (cardChosen.equals(Constants.LEAVE_GAME)){
+                GameInit.displayGameOptions();
             }
             GameFlow.processTurn(new String[]{cardChosen}, game);
         }
@@ -61,10 +68,15 @@ public class GamePlay {
         while(!game.isEndOfGame()){
             String[] cardsChosen = null;
             if(!game.getCurrentPlayer().getCPU()){
-                GameRenderer.displayRoundInformation(game);
+                Utility.clearConsoleScreen();
+                GameRenderer.temporaryPauseScreen("It is " + game.getCurrentPlayer().getName() + "'s turn. Press the enter key to continue");
+                
                 cardsChosen = GamePlayPrompt.promptToCollectTwo(game.getCurrentPlayer());
             } else {
                 cardsChosen = CPUGameAction.CPUSelectTwoToCollections(game.getCurrentPlayer(), game);
+            }
+            if (cardsChosen[0].equals(Constants.LEAVE_GAME)){
+                GameInit.displayGameOptions();
             }
             GameFlow.processPut2Collection(cardsChosen, game);
         }
@@ -82,16 +94,7 @@ public class GamePlay {
 
     }
 
-    /**
-     * Creates a temporary pause in the game flow, waiting for user input to continue.
-     *
-     * @param message The message to display to the user during the pause
-     */
-    public static void temporaryPauseScreen(String message) {
-        Scanner sc = new Scanner(System.in);
-        System.out.print(Display.colorString(message));
-        sc.nextLine();
-    }
+
 
     /**
      * Updates the number of wins that the player with the

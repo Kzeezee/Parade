@@ -2,11 +2,13 @@ package com.g2t2.game.gameutility;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Scanner;
 
 import com.g2t2.game.GameState;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
+import com.g2t2.util.Utility;
 
 /**
  * Utility class for rendering game information to the console.
@@ -29,9 +31,13 @@ public class GameRenderer {
      */
     public static void displayRoundInformation(GameState game) { // show everything that everyone can see (no player's
                                                                  // hand)
+        
+        Utility.clearConsoleScreen();
         Display.gameHeader();
         displayCollections(game);
-        displayParade(game);
+        if (!game.isPut2CollectionRound()){
+            displayParade(game);
+        }
         game.printNumOfCardsLeft();
         game.printPlayerTurn();
         if (game.isPut2CollectionRound()) {
@@ -100,5 +106,16 @@ public class GameRenderer {
             rank, player.getPlayerId(), player.getName(), player.getScore()), 20);
             rank++;
         }
+    }
+
+        /**
+     * Creates a temporary pause in the game flow, waiting for user input to continue.
+     *
+     * @param message The message to display to the user during the pause
+     */
+    public static void temporaryPauseScreen(String message) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print(Display.colorString(message));
+        sc.nextLine();
     }
 }
