@@ -189,11 +189,11 @@ public class Client implements Runnable {
      */
     private void renderGame(GameState game) {
         try {
-            Display.gameHeader();
             Player currentPlayer = game.getCurrentPlayer();
             String[] messageToSendBack = {"", "", Constants.COMPLETE_TURN};
 
             if (game.isEndOfGame()) {
+                Display.gameHeader();
                 GameRenderer.displayScores(game.getPlayers());
                 isInGame = false;
                 // signal to the server to reset things on their side

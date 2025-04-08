@@ -108,8 +108,8 @@ public class GameRenderer {
         // Assign ranks based on sorted order
         int rank = 1;
         for (Player player : sortedPlayers) {
-            Display.delayPrint(String.format("(%d) Player %d, %s, Score: [%d]%n", 
-            rank, player.getPlayerId(), player.getName(), player.getScore()), 20);
+            Display.delayPrint(String.format("(%d) Player %d, %s, Score: [%d], Num of Cards in Collection: [%d]%n", 
+            rank, player.getPlayerId(), player.getName(), player.getScore(), player.getCollectionSize()), 20);
             rank++;
         }
     }

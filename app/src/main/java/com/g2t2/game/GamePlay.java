@@ -70,7 +70,8 @@ public class GamePlay {
             if(!game.getCurrentPlayer().getCPU()){
                 Utility.clearConsoleScreen();
                 GameRenderer.temporaryPauseScreen("It is " + game.getCurrentPlayer().getName() + "'s turn. Press the enter key to continue");
-                
+                GameRenderer.displayRoundInformation(game);
+                GameRenderer.displayHandCards(game.getCurrentPlayer());
                 cardsChosen = GamePlayPrompt.promptToCollectTwo(game.getCurrentPlayer());
             } else {
                 cardsChosen = CPUGameAction.CPUSelectTwoToCollections(game.getCurrentPlayer(), game);
@@ -80,7 +81,8 @@ public class GamePlay {
             }
             GameFlow.processPut2Collection(cardsChosen, game);
         }
-
+        
+        Display.gameHeader();
         GameRenderer.displayScores(players);
 
         updatePlayerWinsInDB(players);

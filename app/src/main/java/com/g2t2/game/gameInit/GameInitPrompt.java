@@ -287,6 +287,7 @@ public class GameInitPrompt {
                         System.out.println(Display.errorColour(" ❌ Invalid Player ID."));
                     }
                     checkInputs.add(cpuId);
+                    System.out.println();
                 }
                 break;
             } catch (IllegalArgumentException e) {
@@ -339,6 +340,7 @@ public class GameInitPrompt {
                         System.out.println(Display.errorColour(" ❌ Invalid Player ID."));
                     }
                     checkInputs.add(playerID);
+                    System.out.println();
                 }
                 break;
             } catch (IllegalArgumentException e) {
