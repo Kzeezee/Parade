@@ -65,7 +65,7 @@ public class Player implements Serializable {
     /**
      * Resets the counter to 1
      */
-    public static void resetCounter() { // ARE WE USING THIS?
+    public static void resetCounter() { // ARE WE USING THIS? (because if server uses it simultaneously then there might be alot of bugs)
         counter = 1;
         CPUCounter = 1;
     }

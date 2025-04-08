@@ -81,7 +81,7 @@ public class GamePlay {
             }
             GameFlow.processPut2Collection(cardsChosen, game);
         }
-        
+
         Display.gameHeader();
         GameRenderer.displayScores(players);
 
@@ -89,9 +89,9 @@ public class GamePlay {
 
         if (GamePlayPrompt.promptForNewGame()) {
             Player.resetCounter();
-            StartMenu.showStartMenu();
+            GameInit.displayGameOptions();
         } else {
-            Display.sayGoodBye();
+            StartMenu.showStartMenu();
         }
 
     }
