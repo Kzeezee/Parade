@@ -49,6 +49,10 @@ public class GameFlow {
         
         if (game.isLastRound() && nextPlayer.equals(game.getPlayerWhoStartFinalRound())) { // everyone took 1 turn, go to put cards in collection phase
             game.setPut2CollectionRound(true);
+            // create the frozen collection
+            for (Player player : game.getPlayers()) {
+                player.setFinalCardsInCollection();
+            }
 
         } else if (!game.isLastRound() && ScoreCalculation.meetsGameEndCondition(playerThatJustPlayed, game.getDeck())) { // go to last round
             game.setLastRound(true);

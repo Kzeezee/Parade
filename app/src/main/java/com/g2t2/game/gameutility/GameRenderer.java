@@ -41,15 +41,17 @@ public class GameRenderer {
         game.printNumOfCardsLeft();
         game.printPlayerTurn();
         if (game.isPut2CollectionRound()) {
+            System.out.println(Display.colorString(" 📌 The collections above are the collections after the final round"));
             System.out.println(" ⚜ " + Display.colorString(" 📌 PUT 2 COLLECTION ROUND 📌 "));
         } else if (game.isLastRound()) {
-            System.out.println(" ⚜ " + Display.colorString(" 📌 LAST ROUND 📌 "));
+            System.out.println(" ⚜ " + Display.colorString(" 📌 LAST ROUND 📌 ")); // IS THE STAR AT THE START NECESSARY
         } 
         System.out.println(Constants.DIVIDER);
     }
 
     /**
      * Displays the collections of all players in the game.
+     * Displays frozen state during put 2 to collection round
      *
      * @param game the current game state containing player information
      */
@@ -57,7 +59,11 @@ public class GameRenderer {
         for (Player p : game.getPlayers()) {
             System.out.println(
                     Display.colorString("「 ✦ CARDS IN " + p.getName() + "(" + p.getPlayerId() + ") COLLECTION ✦ "));
-            Display.displayAllStacks(p.getCardsInCollection());
+            if (game.isPut2CollectionRound()) {
+                Display.displayAllStacks(p.getFinalCardsInCollection());
+            } else { // normal round
+                Display.displayAllStacks(p.getCardsInCollection());
+            }
         }
     }
 

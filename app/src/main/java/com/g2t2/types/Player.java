@@ -15,7 +15,8 @@ public class Player implements Serializable {
     private int playerId;
     private String name;
     private List<Card> cardsOnHand = new ArrayList<>();
-    private List<Card> cardsInCollection = new ArrayList<>();;
+    private List<Card> cardsInCollection = new ArrayList<>();
+    private List<Card> finalCardsInCollection;
     private int score;
     private boolean isCPU = false;
     private int difficulty;
@@ -133,6 +134,30 @@ public class Player implements Serializable {
      */
     public void setCardsInCollection(List<Card> cardsInCollection) {
         this.cardsInCollection = cardsInCollection;
+    }
+
+    /**
+     * Returns the player's frozen collection after the final round as a List of Card.
+     * 
+     * This is because we need all players to be looking at the state of the collection after the final round.
+     * This is to simulate the process of all players putting 2 cards down a the same time.
+     * This frozen state prevents players from seeing the cards others have placed during the "put 2 to collection" round
+     * 
+     * @return the player's cards in their collection
+     */
+    public List<Card> getFinalCardsInCollection() {
+        return finalCardsInCollection;
+    }
+
+    /**
+     * Creates a copy of the player's collection after the final round of play.
+     * This collection will be used as the collection to display during "put 2 to collection" rounds
+     */
+    public void setFinalCardsInCollection() {
+        finalCardsInCollection = new ArrayList<>();
+        for (Card card : cardsInCollection) {
+            finalCardsInCollection.add(card);
+        }
     }
 
     /**

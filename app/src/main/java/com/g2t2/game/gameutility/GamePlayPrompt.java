@@ -111,7 +111,7 @@ public class GamePlayPrompt {
         System.out.println(" ⚜ You need to select " + Display.colorString("TWO")
                 + " cards from your hand to add to the collection.");
         System.out.println(Constants.DIVIDER);
-        GameRenderer.displayHandCards(player);
+        //GameRenderer.displayHandCards(player);
 
         boolean isReprompting = false;
         while (choosenCardsIdx[0].equals(choosenCardsIdx[1])) {

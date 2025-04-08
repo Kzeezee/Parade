@@ -141,7 +141,7 @@ public class CPUGameAction {
      */
     public static void displayCPUTurnAction(Player player) {
         Display.delayPrint(" 📌 Player " + Display.colorString(player.getName())
-                + " is choosing their cards.", 5);
+                + " is choosing their cards.", 20);
     }
 }
 
