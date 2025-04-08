@@ -331,28 +331,30 @@ public class StartMenu {
         Scanner sc = new Scanner(System.in);
         System.out.println();
         System.out.println(Constants.PROMPT_CANCEL_ACTION);
-        System.out.print(Display.errorColour(" ⚜ Select profile to delete ➢ "));
-        try {
-            String input = sc.nextLine();
-            if (input.equals(Constants.CANCEL_ACTION)) {
-                promptForProfileActions(playerProfiles);
+        while(true) {
+            System.out.print(Display.errorColour(" ⚜ Enter profile to delete (" + 1 + "-" + playerProfiles.size() + ") ➢ "));
+            try {
+                String input = sc.nextLine();
+                if (input.equals(Constants.CANCEL_ACTION)) {
+                    promptForProfileActions(playerProfiles);
+                }
+                int profileToDelete = Integer.parseInt(input);
+                if (profileToDelete > playerProfiles.size() || profileToDelete <= 0) {
+                    throw new IllegalArgumentException(" ❌ No such player profile");
+                }
+                System.out.printf(Display.errorColour(" ⚜ Are you sure you want to delete %s (%d)? ('y'/'n') ➢ "),
+                                                    playerProfiles.get(profileToDelete - 1).getName(), profileToDelete);
+                String deletionInput = sc.nextLine().toLowerCase();
+    
+                if (deletionInput.equals("y")) {
+                    new PlayerProfileDaoImpl().deletePlayerProfile(playerProfiles.get(profileToDelete - 1));
+                    checkForPlayerProfiles();
+                }
+            } catch (NumberFormatException e) {
+                System.out.println(Display.errorColour(" ❌ Invalid input"));
+            } catch (IllegalArgumentException e) {
+                System.out.println(Display.errorColour(e.getMessage()));
             }
-            int profileToDelete = Integer.parseInt(input);
-            if (profileToDelete > playerProfiles.size() || profileToDelete <= 0) {
-                throw new IllegalArgumentException(" ❌ No such player profile");
-            }
-            System.out.printf(Display.errorColour(" ⚜ Are you sure you want to delete %s (%d)? ('y'/'n') ➢ "),
-                                                playerProfiles.get(profileToDelete - 1).getName(), profileToDelete);
-            String deletionInput = sc.nextLine().toLowerCase();
-
-            if (deletionInput.equals("y")) {
-                new PlayerProfileDaoImpl().deletePlayerProfile(playerProfiles.get(profileToDelete - 1));
-                checkForPlayerProfiles();
-            }
-        } catch (NumberFormatException e) {
-            System.out.println(Display.errorColour(" ❌ Invalid input"));
-        } catch (IllegalArgumentException e) {
-            System.out.println(Display.errorColour(e.getMessage()));
         }
     }
 
