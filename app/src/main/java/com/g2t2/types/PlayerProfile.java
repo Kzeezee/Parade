@@ -42,10 +42,18 @@ public class PlayerProfile {
         this.ID = ID;
     }
 
+    /**
+     * Get the PlayerProfile's UUID, a unique identifier for the player.
+     * @return the uuid of the player profile
+     */
     public String getUuid() {
         return uuid;
     }
 
+    /**
+     * Sets the PlayerProfile's UUID, a unique identifier for the player.
+     * @param uuid the uuid to set to
+     */
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
