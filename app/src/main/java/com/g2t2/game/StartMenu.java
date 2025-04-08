@@ -251,7 +251,7 @@ public class StartMenu {
         while (true) {
             try {
                 System.out.println(Constants.CLOSE_APP_PROMPT);
-                System.out.print(Display.colorString(" ⚜ Select profile (1 to " + numOfProfiles
+                System.out.print(Display.colorString(" ⚜ Enter profile (1 to " + numOfProfiles
                         + ", OR 'c' to create, OR 'd' to delete instead) ➢ "));
                 String input = sc.nextLine();
 
