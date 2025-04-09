@@ -330,7 +330,7 @@ public class StartMenu {
     private static void promptForProfileDeletion(List<PlayerProfile> playerProfiles) {
         Scanner sc = new Scanner(System.in);
         System.out.println();
-        System.out.println(Constants.PROMPT_CANCEL_ACTION);
+        System.out.println(Constants.CANCEL_ACTION_PROMPT);
         while(true) {
             System.out.print(Display.errorColour(" ⚜ Enter profile to delete (" + 1 + "-" + playerProfiles.size() + ") ➢ "));
             try {
@@ -351,7 +351,7 @@ public class StartMenu {
                     checkForPlayerProfiles();
                 }
             } catch (NumberFormatException e) {
-                System.out.println(Display.errorColour(" ❌ Invalid input"));
+                System.out.println(Constants.INVALID_OPTION_ERROR_MSG);
             } catch (IllegalArgumentException e) {
                 System.out.println(Display.errorColour(e.getMessage()));
             }

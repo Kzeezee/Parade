@@ -91,7 +91,7 @@ public class OnlineGameProcessor {
                 return null;
             }
         } else if (currentPlayer.getPlayerId() == myPlayerId) { // your turn
-            String indexOfChosenCard = GamePlayPrompt.promptForCard(currentPlayer, Constants.PROMPT_ADD_TO_PARADE);
+            String indexOfChosenCard = GamePlayPrompt.promptForCard(currentPlayer, Constants.ADD_TO_PARADE_PROMPT);
             if (indexOfChosenCard.equals(Constants.LEAVE_GAME)) {
                 caller.setIsInGame(false);
                 // bot to take over the turn

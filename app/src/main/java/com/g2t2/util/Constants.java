@@ -10,7 +10,7 @@ import com.g2t2.enums.CardColour;
  * @author Oliver
  */
 public class Constants {
-    // Strings
+    // Card Display
     public static final String RED_ANSI = "\033[38;2;244;113;116m";
     public static final String BLUE_ANSI = "\033[38;2;85;192;215m";
     public static final String YELLOW_ANSI = "\033[38;2;255;255;0m";
@@ -18,11 +18,13 @@ public class Constants {
     public static final String GREEN_ANSI = "\033[38;2;85;205;121m";
     // public static final String BLACK_ANSI = "\033[38;2;1;1;1m"; // \033[38;5;251m
     public static final String BLACK_ANSI = "\033[38;5;251m"; // \033[38;5;251m
-    public static final String ANSI_RESET = "\033[0m";
-    public static final String INVALID_OPTION_ERROR_MSG = " ❌ Please enter a number or an appropriate command";
-    public static final String INVALID_COMMAND = Display.errorColour(" ❌ " + "INVALID COMMAND");
+    public static final List<String> EMOJIS = List.of("🌹", "💧", "☀️ ", "🪻 ", "🍀", "🕷️ ");
+    public static final List<CardColour> CARD_COLOURS = List.of(CardColour.RED, CardColour.BLUE, CardColour.YELLOW,
+    CardColour.PURPLE, CardColour.GREEN, CardColour.BLACK);
+    public static final int CARD_HEIGHT = 5;
     
-    // Headers
+    // Game Headers
+    public static final String ANSI_RESET = "\033[0m";
     public static final String DIVIDER = "\033[90m" + "───────────────────────────────────────"
             + " ⚜ ──────────────────────────────────────────" + ANSI_RESET;
 
@@ -52,14 +54,6 @@ public class Constants {
             "                    │    Have a nice day and see you again soon!   │\n" + //
             "                    └──────────────────── ⚜ ───────────────────────┘\n" + ANSI_RESET;
 
-    public static final List<String> EMOJIS = List.of("🌹", "💧", "☀️ ", "🪻 ", "🍀", "🕷️ ");
-
-    public static final String PROMPT_ADD_TO_PARADE = " 📌 Which card do you want to place in the Parade?";
-    public static final String PROMPT_CANCEL_ACTION = " 📌 Enter '" + Display.colorString(Constants.CANCEL_ACTION)
-                                                        + "' to stop this action.";
-
-    // For Cards Display
-
     // Commands
     public static final String CREATE_GAME = "CREATE GAME";
     public static final String JOIN_GAME = "JOIN GAME";
@@ -85,7 +79,11 @@ public class Constants {
     public static final String INVALID_GAME_ID = "INVALID GAME ID";
     public static final String FULL_CAPACITY = "FULL CAPACITY";
 
-    // Available Commands To Users
+    // Error Messages
+    public static final String INVALID_OPTION_ERROR_MSG = " ❌ Please enter a number or an appropriate command";
+    public static final String INVALID_COMMAND = Display.errorColour(" ❌ " + "INVALID COMMAND");
+
+    // Prompts
     public static final String LEAVE_GAME_PROMPT =" 📌 To leave the game, enter '" + Display.colorString(Constants.LEAVE_GAME) + "'";
     public static final String CLOSE_APP_PROMPT = " 📌 To leave the application, enter: '" + Display.colorString(Constants.CLOSE_APP) + "'";
     public static final String GO_BACK_PROMPT = " 📌 To go back, enter: '" + Display.colorString(Constants.GO_BACK) + "'";
@@ -94,20 +92,17 @@ public class Constants {
     public static final String START_GAME_PROMPT = " 📌 To start the game, enter '" + Display.colorString(Constants.START_GAME) + "'";
     public static final String REMOVE_CPU_PROMPT = " 📌 To remove CPU(s), enter '" + Display.colorString(Constants.REMOVE_CPU) + "'";
     public static final String ADD_CPU_PROMPT = " 📌 To add CPU(s), enter '" + Display.colorString(Constants.ADD_CPU) + "'";
-
-    // Constants
-    public static final List<CardColour> CARD_COLOURS = List.of(CardColour.RED, CardColour.BLUE, CardColour.YELLOW,
-            CardColour.PURPLE, CardColour.GREEN, CardColour.BLACK);
-
-    public static final int CARD_HEIGHT = 5;
-    public static final String DB_CONNECTION = "jdbc:sqlite:../parade.db";
-    
+    public static final String ADD_TO_PARADE_PROMPT = " 📌 Which card do you want to place in the Parade?";
+    public static final String CANCEL_ACTION_PROMPT = " 📌 Enter '" + Display.colorString(Constants.CANCEL_ACTION) + "' to stop this action.";
 
     // Game Setting Numbers
     public static final int MIN_PLAYER_NO = 2;
     public static final int MAX_PLAYER_NO = 6;
     public static final int MIN_CPU_DIFFICULTY = 1;
     public static final int MAX_CPU_DIFFICULTY = 3;
+
+    // Database
+    public static final String DB_CONNECTION = "jdbc:sqlite:../parade.db";
 
     // Game Instructions
     public static final String GAME_INSTRUCTION_OBJ = Display.colorString("\n 🎯 Objective\n")

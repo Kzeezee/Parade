@@ -31,7 +31,7 @@ public class GameInitPrompt {
         String name = "";
         while (true) {
             System.out.println(Constants.DIVIDER);
-            System.out.println(Constants.PROMPT_CANCEL_ACTION);
+            System.out.println(Constants.CANCEL_ACTION_PROMPT);
             System.out.print(Display.colorString(" ➢ Enter the name of player: "));
             name = sc.nextLine();
             if (name.equals(Constants.CANCEL_ACTION)) {
@@ -65,7 +65,7 @@ public class GameInitPrompt {
         while (true) {
             try {
                 System.out.println(Constants.DIVIDER);
-                System.out.println(Constants.PROMPT_CANCEL_ACTION);
+                System.out.println(Constants.CANCEL_ACTION_PROMPT);
                 System.out.print(GAME_DIFFICULTY_OPTIONS);
                 input = sc.nextLine();
                 if (input.equals(Constants.CANCEL_ACTION)) {
@@ -79,7 +79,7 @@ public class GameInitPrompt {
                 }
                 break;
             } catch (IllegalArgumentException e) {
-                System.out.println(Display.errorColour(" ❌ Please enter a number or an appropriate command"));
+                System.out.println(Constants.INVALID_OPTION_ERROR_MSG);
                 System.out.println();
             } catch (InputMismatchException e) {
                 System.out.println(e.getMessage());
@@ -91,7 +91,7 @@ public class GameInitPrompt {
         while (true) {
             try {
                 System.out.println(Constants.DIVIDER);
-                System.out.println(Constants.PROMPT_CANCEL_ACTION);
+                System.out.println(Constants.CANCEL_ACTION_PROMPT);
                 System.out.println(" 📌 How many CPU do you want to add?");
                 System.out.print(Display.colorString(" ➢ Enter a number (max = " + maxNumOfCPU + "): "));
                 input = sc.nextLine();
@@ -105,7 +105,7 @@ public class GameInitPrompt {
                 }
                 break;
             } catch (IllegalArgumentException e) {
-                System.out.println(Display.errorColour(" ❌ Please enter a number or an appropriate command"));
+                System.out.println(Constants.INVALID_OPTION_ERROR_MSG);
                 System.out.println();
             } catch (InputMismatchException e) {
                 System.out.println(e.getMessage());
@@ -137,7 +137,7 @@ public class GameInitPrompt {
         while (true) {
             try {
                 System.out.println(Constants.DIVIDER);
-                System.out.println(Constants.PROMPT_CANCEL_ACTION);
+                System.out.println(Constants.CANCEL_ACTION_PROMPT);
                 System.out.println(" 📌 How many CPU(s) do you want to remove?: ");
                 System.out.print(Display.colorString(" ➢ Enter a number: "));
                 input = sc.nextLine();
@@ -155,7 +155,7 @@ public class GameInitPrompt {
                 int count = 0;
                 idsToRemove = new ArrayList<>();
                 while (count < numOfCPUToRemove) {
-                    System.out.println(Constants.PROMPT_CANCEL_ACTION);
+                    System.out.println(Constants.CANCEL_ACTION_PROMPT);
                     System.out.println(" 📌 Which CPU(s) do you want to remove? (Enter the playerId of the CPU)");
                     System.out.print(Display.colorString(" ➢ Enter CPU's playerId (" + (count+1) +"): "));
                     input = sc.nextLine();
@@ -169,7 +169,7 @@ public class GameInitPrompt {
                 }
                 break;
             } catch (IllegalArgumentException e) {
-                System.out.println(Display.errorColour(" ❌ Please enter a number or an appropriate command"));
+                System.out.println(Constants.INVALID_OPTION_ERROR_MSG);
                 System.out.println();
             }
         }
@@ -185,7 +185,7 @@ public class GameInitPrompt {
         while (true) {
             try {
                 System.out.println(Constants.DIVIDER);
-                System.out.println(Constants.PROMPT_CANCEL_ACTION);
+                System.out.println(Constants.CANCEL_ACTION_PROMPT);
                 System.out.println(" 📌 How many local player/CPU(s) do you want to remove?: ");
                 System.out.print(Display.colorString(" ➢ Enter a number: "));
                 input = sc.nextLine();
@@ -203,7 +203,7 @@ public class GameInitPrompt {
                 int count = 0;
                 idsToRemove = new ArrayList<>();
                 while (count < numOfPlayersToRemove) {
-                    System.out.println(Constants.PROMPT_CANCEL_ACTION);
+                    System.out.println(Constants.CANCEL_ACTION_PROMPT);
                     System.out.println(" 📌 Which player do you want to remove? (Enter the playerId of the Player)");
                     System.out.print(Display.colorString(" ➢ Enter Player's playerID (" + (count+1) + "): "));
                     input = sc.nextLine();
@@ -217,7 +217,7 @@ public class GameInitPrompt {
                 }
                 break;
             } catch (IllegalArgumentException e) {
-                System.out.println(Display.errorColour(" ❌ Please enter a number or an appropriate command"));
+                System.out.println(Constants.INVALID_OPTION_ERROR_MSG);
                 System.out.println();
             }
         }

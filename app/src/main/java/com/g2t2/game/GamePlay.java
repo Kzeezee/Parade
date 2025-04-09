@@ -54,7 +54,7 @@ public class GamePlay {
                 GameRenderer.temporaryPauseScreen("It is " + game.getCurrentPlayer().getName() + "'s turn. Press the enter key to continue");
                 GameRenderer.displayRoundInformation(game);
                 GameRenderer.displayHandCards(game.getCurrentPlayer());
-                cardChosen = GamePlayPrompt.promptForCard(game.getCurrentPlayer(), Constants.PROMPT_ADD_TO_PARADE);
+                cardChosen = GamePlayPrompt.promptForCard(game.getCurrentPlayer(), Constants.ADD_TO_PARADE_PROMPT);
             } else {
                 cardChosen = CPUGameAction.CPUSelectCard(game.getCurrentPlayer(), game);
             }
