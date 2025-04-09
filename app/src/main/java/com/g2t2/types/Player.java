@@ -65,12 +65,16 @@ public class Player implements Serializable {
     /**
      * Generates a PlayerID for every new Player
      * The PlayerID will be capped at 10000 and will be resetted to 1 afterwards
+     * The CPUCounter will also be capped at 5000, preventing too long of a CPU name
      * 
      * @return playerID for the new Player created
      */
     private int generatePlayerID() {
         if (counter >= 10000) {
             counter = 1;
+        }
+        if (CPUCounter >= 5000) {
+            CPUCounter = 1;
         }
         return counter++;
     }
