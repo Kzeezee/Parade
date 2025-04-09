@@ -1,1 +1,1 @@
-./gradlew clean && ./gradlew build && ./gradlew run
+gradlew.bat clean && gradlew.bat build && gradlew.bat run

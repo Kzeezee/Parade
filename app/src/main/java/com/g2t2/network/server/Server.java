@@ -1,8 +1,16 @@
 package com.g2t2.network.server;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Properties;
+import java.util.Scanner;
 
 import com.g2t2.util.Utility;
 
@@ -18,8 +26,8 @@ import com.g2t2.util.Utility;
  * @author Ben
  */
 public class Server {
-    private static final int portNumber = 1234; // port number that the server will listen to
     private ServerSocket serverSocket;
+    private static int portNumber;
 
     /**
     * The main method that starts the server application.
@@ -29,6 +37,7 @@ public class Server {
     * @throws IOException if an I/O error occurs when opening the socket.
     */
     public static void main(String[] args) throws IOException {
+        readServerConfig();
         ServerSocket serverSocket = new ServerSocket(portNumber);
         Server server = new Server(serverSocket);
         Utility.clearConsoleScreen();
@@ -81,5 +90,25 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Read server's address and port at project root. Set static server port as well in Server.java file.
+     * @return Properties object containing key-value pairs from config file
+     */
+    public static Properties readServerConfig() {
+        Properties prop = new Properties();
+        System.out.println("Reading server config file from : " + Paths.get("").toAbsolutePath().getParent().resolve("Parade.config"));
+        try (InputStream is = Files.newInputStream(Paths.get("").toAbsolutePath().getParent().resolve("Parade.config"))) {
+            prop.load(is);
+            Server.portNumber = Integer.parseInt(prop.getProperty("server-port"));
+        } catch (FileNotFoundException e) {
+            System.out.println("No configuration file found for server.");
+        } catch (IOException e) {
+            System.out.println("There was a problem reading the server configuration file.");
+        } catch (NumberFormatException e) {
+            System.out.println("Port number is invalid.");
+        }
+        return prop;
     }
 }

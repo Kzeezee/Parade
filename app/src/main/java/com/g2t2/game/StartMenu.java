@@ -2,6 +2,7 @@ package com.g2t2.game;
 
 import java.util.Scanner;
 import java.util.List;
+import java.util.Properties;
 import java.net.Socket;
 import java.io.IOException;
 
@@ -14,6 +15,7 @@ import com.g2t2.game.gameInit.GameInitPrompt;
 import com.g2t2.game.gameutility.GamePlayPrompt;
 import com.g2t2.game.gameutility.GameRenderer;
 import com.g2t2.network.client.Client;
+import com.g2t2.network.server.Server;
 import com.g2t2.types.Card;
 import com.g2t2.types.PlayerProfile;
 import com.g2t2.util.Constants;
@@ -36,8 +38,6 @@ import com.g2t2.util.Utility;
  * @author Oliver
  */
 public class StartMenu {
-    private static final int portNumber = 1234; // ensure that this portNumber matches the one of the server
-    private static final String serverAddress = "localhost"; // to execute on different devices, change to the IP address of the server
     private static final String WELCOMEMESSAGE_STRING = " ⚜ Welcome to G2T2 Parade! Please select an option.";
     private static final String GAMEPLAY_OPTIONS = " 📌 Play local (1)\n" 
                                                  + " 📌 Play online (2)\n"
@@ -111,11 +111,15 @@ public class StartMenu {
         }
         if (optionChosen == 2) {
             try {
-                Socket socket = new Socket(serverAddress, portNumber);
+                Properties prop = Server.readServerConfig();
+                Socket socket = new Socket(prop.getProperty("server-address"), Integer.parseInt(prop.getProperty("server-port")));
                 Client client = new Client(socket, StateManager.getPlayerProfile().getName());
                 client.start();
             } catch (IOException e) {
                 System.out.println(Display.errorColour(" ❌ Server is closed"));
+                GameRenderer.temporaryPauseScreen(" ⚜ Enter any key to continue ➢ ");
+            } catch (NumberFormatException e) {
+                System.out.println(Display.errorColour(" ❌ Server port is invalid"));
                 GameRenderer.temporaryPauseScreen(" ⚜ Enter any key to continue ➢ ");
             }
             consoleStartMenu();

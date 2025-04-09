@@ -1,1 +1,1 @@
-./gradlew clean && ./gradlew build && ./gradlew run -PmainClass=com.g2t2.network.server.Server
+gradlew.bat clean && gradlew.bat build && gradlew.bat run -PmainClass="com.g2t2.network.server.Server"
