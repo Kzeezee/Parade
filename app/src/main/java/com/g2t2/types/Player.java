@@ -29,7 +29,7 @@ public class Player implements Serializable {
      * @param name the name of the player
      */
     public Player(String name) {
-        playerId = counter++;
+        playerId = generatePlayerID();
         this.name = name;
         cardsInCollection = new ArrayList<>();
     }
@@ -41,7 +41,7 @@ public class Player implements Serializable {
      * @param pp the player profile of the player
      */
     public Player(PlayerProfile pp) {
-        playerId = counter++;
+        playerId = generatePlayerID();
         this.name = pp.getName();
         this.playerProfile = pp;
         cardsInCollection = new ArrayList<>();
@@ -55,7 +55,7 @@ public class Player implements Serializable {
      *                   1 = easy, 2 = medium, 3 = hard
      */
     public Player(boolean isCPU, int difficulty) {
-        playerId = counter++;
+        playerId = generatePlayerID();
         name = "CPU" + CPUCounter++;
         this.isCPU = isCPU;
         this.difficulty = difficulty;
@@ -63,9 +63,22 @@ public class Player implements Serializable {
     }
 
     /**
+     * Generates a PlayerID for every new Player
+     * The PlayerID will be capped at 10000 and will be resetted to 1 afterwards
+     * 
+     * @return playerID for the new Player created
+     */
+    private int generatePlayerID() {
+        if (counter >= 10000) {
+            counter = 1;
+        }
+        return counter++;
+    }
+
+    /**
      * Resets the counter to 1
      */
-    public static void resetCounter() { // ARE WE USING THIS? (because if server uses it simultaneously then there might be alot of bugs)
+    public static void resetCounter() { // (because if server uses it simultaneously then there might be alot of bugs)
         counter = 1;
         CPUCounter = 1;
     }
