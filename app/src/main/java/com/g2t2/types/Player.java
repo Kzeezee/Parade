@@ -80,9 +80,10 @@ public class Player implements Serializable {
     }
 
     /**
-     * Resets the counter to 1
+     * Resets the PlayerID generator and CPU Name to 1
+     * This used only for local games.
      */
-    public static void resetCounter() { // (because if server uses it simultaneously then there might be alot of bugs)
+    public static void resetCounter() {
         counter = 1;
         CPUCounter = 1;
     }
@@ -122,7 +123,7 @@ public class Player implements Serializable {
      * 
      * @return the player's name
      */
-    public String getName() { // ARE WE USING THIS?
+    public String getName() {
         return name;
     }
 
