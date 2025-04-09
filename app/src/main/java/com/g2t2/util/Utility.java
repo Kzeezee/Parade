@@ -24,6 +24,10 @@ public class Utility {
         }
     }
 
+    /**
+     * Clears the console screen, prints out a goodbye message to the user, and exits 
+     * the program
+     */
     public static void exitGame() {
         Utility.clearConsoleScreen();
         System.out.println(Constants.GOODBYE);
