@@ -242,6 +242,8 @@ public class GameInitPrompt {
         boolean conditionToCheck = isOnlyRemovingCPU ? game.checkPlayerIsCPU(playerID) : game.findMyPlayer(playerID) != null;
         if (idsToRemove.contains(input)) {
             System.out.println(Display.errorColour(" ❌ Repeated ID. Select another playerID."));
+        } else if (playerID == 1){
+            System.out.println(Display.errorColour(" ❌ Gamemaster cannot be removed."));
         } else if (conditionToCheck) {
             idsToRemove.add(input);
             return true;

@@ -147,6 +147,9 @@ public class GameInit {
                 if (game.getNumOfPlayers() < Constants.MIN_PLAYER_NO) {
                     System.out.println(Display.errorColour(" ❌ Insufficient Number of Players"));
                     continue;
+                } else if (game.getNumOfPlayers() == game.getNumOfCPU()){
+                    System.out.println(Display.errorColour(" ❌ No local player added"));
+                    continue;
                 } else {
                     return true;
                 }
