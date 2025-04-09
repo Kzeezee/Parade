@@ -14,7 +14,6 @@ import com.g2t2.game.gameutility.GamePlayPrompt;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * Class responsible for managing the gameplay flow.
@@ -93,10 +92,7 @@ public class GamePlay {
         } else {
             StartMenu.showStartMenu();
         }
-
     }
-
-
 
     /**
      * Updates the number of wins that the player with the
@@ -114,36 +110,4 @@ public class GamePlay {
             new PlayerProfileDaoImpl().updatePlayerProfile(winnerProfile);
         }
     }
-
-    /**
-     * Executes the last round of play after an end-game condition is met.
-     * 
-     * Each player takes one final turn in order starting from the current player.
-     *
-     * @param players The list of all players in the game.
-     * @param idx     The index of the player who starts the last round.
-     * @param game    The current game state.
-     */
-    // private static void lastRoundOfPlay(List<Player> players, int idx, GameState game) {
-    //     for (int i = 0; i < players.size(); i++) {
-    //         GameProcessor.playTurn(players.get(idx), game);
-    //         idx = (idx + 1) % players.size();
-    //     }
-    // }
-
-    /**
-     * Allows each player to select two cards from their hand to add to their collection.
-     *
-     * This phase occurs after the last round of play and before final scoring.
-     *
-     * @param players The list of all players in the game.
-     * @param idx     The index of the player who starts this phase.
-     * @param game    The current game state.
-     */
-    // private static void chooseTwoCardsToCollection(List<Player> players, int idx, GameState game) {
-    //     for (int i = 0; i < players.size(); i++) {
-    //         GameProcessor.putTwoToCollections(players.get(idx), game);
-    //         idx = (idx + 1) % players.size();
-    //     }
-    // }
 }

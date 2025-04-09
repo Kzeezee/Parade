@@ -1,13 +1,9 @@
 package com.g2t2.game.gameutility;
 
-import java.util.ArrayList;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 
-import com.g2t2.game.GameState;
 import com.g2t2.types.Player;
-
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 

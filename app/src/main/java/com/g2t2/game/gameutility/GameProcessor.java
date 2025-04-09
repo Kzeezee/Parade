@@ -17,35 +17,6 @@ import com.g2t2.types.Player;
  */
 public class GameProcessor {
     /**
-     * Executes a player's turn in the game.
-     *
-     * @param player the player whose turn it is
-     * @param game   the current game state
-     */
-    // public static void playTurn(Player player, GameState game) {
-    //     if (player.getCPU()) {
-    //         CPUGameAction.CPUplayTurn(player, game);
-    //     } else {
-    //         playerplayTurn(player, game);
-    //     }
-    // }
-
-    /**
-     * Handles a human player's turn.
-     *
-     * @param player the human player
-     * @param game   the current game state
-     */
-    // private static void playerplayTurn(Player player, GameState game) {
-    //     GameRenderer.displayRoundInformation(game);
-    //     GameRenderer.displayHandCards(player);
-
-    //     // String prompt = String.format(Constants.ANSI_RESET + " 📌 Which card do you want to place in the Parade?");
-    //     int cardIdx = Integer.parseInt(Prompt.promptForCard(player));
-    //     processPlayerTurn(cardIdx, player, game);
-    // }
-
-       /**
      * Update the game based on what the user have done
      *
      * @param cardIdx The index of the chosen card
@@ -129,33 +100,6 @@ public class GameProcessor {
         }
         return false;
     }
-
-    /**
-     * Allows a player to select two cards from their hand to add to their
-     * collection.
-     *
-     * @param player The player selecting cards.
-     * @param game   The current game state.
-     */
-    // public static void putTwoToCollections(Player player, GameState game) {
-    //     GameRenderer.displayRoundInformation(game);
-
-    //     String[] cardIdxToAddToCollection = null;
-    //     int[] cards = null;
-    //     if (player.getCPU()) {
-    //         Display.delayPrint(" 📌 Player " + Display.colorString(player.getName())
-    //                 + " is choosing their cards.", 30);
-    //         cards = CPUGameAction.CPUSelectTwoToCollections(player, game);
-    //     } else {
-    //         System.out.println(" ⚜ You need to select " + Display.colorString("TWO")
-    //                 + " cards from your hand to add to the collection.");
-
-    //         cardIdxToAddToCollection = Prompt.promptToCollectTwo(player);
-    //     }
-    //     System.out.println(Constants.DIVIDER);
-    //     cards = new int[] {Integer.parseInt(cardIdxToAddToCollection[0]), Integer.parseInt(cardIdxToAddToCollection[1])};
-    //     processCardChosenToCollection(cards, player);
-    // }
 
     /**
      * Processes the 2 cards selected by the player in the put 2 cards to collection phase
