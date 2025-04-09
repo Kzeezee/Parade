@@ -22,7 +22,7 @@ public class GameInitPrompt {
     /**
      * Options for selecting the difficulty level for CPU players.
      */
-    public static final String GAME_DIFFICULTY_OPTIONS = " 📌 Choose the difficulty level for your CPU\n" 
+    private static final String GAME_DIFFICULTY_OPTIONS = " 📌 Choose the difficulty level for your CPU\n" 
                                                        + " 📌 Easy (1)\n" 
                                                        + " 📌 Medium (2)\n" 
                                                        + " 📌 Difficult (3)\n" 
@@ -31,9 +31,9 @@ public class GameInitPrompt {
     /**
      * Error message displayed when an invalid number of players is entered.
      */
-    public static final String PLAYER_NO_ERROR_MESSAGE = Display
-            .errorColour(" ❌ A minimum of 2 players and a maximum of 6 players are allowed."
-                        + "Please enter a number between 2 to 6.");
+    // public static final String PLAYER_NO_ERROR_MESSAGE = Display
+    //         .errorColour(" ❌ A minimum of 2 players and a maximum of 6 players are allowed."
+    //                     + "Please enter a number between 2 to 6.");
 
 
     /**
@@ -212,7 +212,7 @@ public class GameInitPrompt {
                 System.out.print(Display.colorString(" ➢ Enter a number (max = " + maxNumOfCPU + "): "));
                 input = sc.nextLine();
                 if (input.equals(Constants.CANCEL_ACTION)) {
-                    return new String[] { input };
+                    return new String[] {input};
                 }
                 numOfCPU = Integer.parseInt(input);
                 if (numOfCPU < 0 || numOfCPU > maxNumOfCPU) {
@@ -229,7 +229,6 @@ public class GameInitPrompt {
             }
         }
 
-        
         return new String[] { "" + numOfCPU, "" + difficulty };
     }
 
@@ -249,8 +248,8 @@ public class GameInitPrompt {
     public static String[] promptForCPURemoval(GameState game) {
         Scanner sc = new Scanner(System.in);
         String input = null;
-        List<String> idsToRemove = new ArrayList<>();
         int currentNumOfCPU = game.getNumOfCPU();
+        List<String> idsToRemove = null;
         while (true) {
             try {
                 System.out.println(Constants.DIVIDER);
@@ -259,7 +258,7 @@ public class GameInitPrompt {
                 System.out.print(Display.colorString(" ➢ Enter a number: "));
                 input = sc.nextLine();
                 if (input.equals(Constants.CANCEL_ACTION)) {
-                    return new String[] { input };
+                    return new String[] {input};
                 }
                 int numOfCPUToRemove = Integer.parseInt(input);
                 if (numOfCPUToRemove < 1 || numOfCPUToRemove > currentNumOfCPU) {
@@ -267,26 +266,21 @@ public class GameInitPrompt {
                             " ❌ Please input a valid number. There are currently only " + currentNumOfCPU + " CPU(s)"));
                     continue;
                 }
+                System.out.println(Constants.DIVIDER);
 
                 int count = 0;
-                List<Integer> checkInputs = new ArrayList<>();
+                idsToRemove = new ArrayList<>();
                 while (count < numOfCPUToRemove) {
+                    System.out.println(Constants.PROMPT_CANCEL_ACTION);
                     System.out.println(" 📌 Which CPU(s) do you want to remove? (Enter the playerId of the CPU)");
-                    System.out.print(Display.colorString(" ➢ Enter CPU's playerId: "));
+                    System.out.print(Display.colorString(" ➢ Enter CPU's playerId (" + (count+1) +"): "));
                     input = sc.nextLine();
                     if (input.equals(Constants.CANCEL_ACTION)) {
-                        return new String[] { input };
+                        return new String[] {input};
                     }
-                    int cpuId = Integer.parseInt(input);
-                    if (game.checkPlayerIsCPU(cpuId) && !checkInputs.contains(cpuId)) {
-                        idsToRemove.add(input);
+                    if (isPlayerIdValidForRemoval(input, idsToRemove, game, true)) {
                         count++;
-                    } else if (game.checkPlayerIsCPU(cpuId) && checkInputs.contains(cpuId)){
-                        System.out.println(Display.errorColour(" ❌ Repeated ID. Select another Player ID."));
-                    } else {
-                        System.out.println(Display.errorColour(" ❌ Invalid Player ID."));
                     }
-                    checkInputs.add(cpuId);
                     System.out.println();
                 }
                 break;
@@ -302,8 +296,8 @@ public class GameInitPrompt {
     public static String[] promptForPlayerRemoval(GameState game) {
         Scanner sc = new Scanner(System.in);
         String input = null;
-        List<String> idsToRemove = new ArrayList<>();
         int currentNumOfPlayers = game.getNumOfPlayers();
+        List<String> idsToRemove = null;
         while (true) {
             try {
                 System.out.println(Constants.DIVIDER);
@@ -312,7 +306,7 @@ public class GameInitPrompt {
                 System.out.print(Display.colorString(" ➢ Enter a number: "));
                 input = sc.nextLine();
                 if (input.equals(Constants.CANCEL_ACTION)) {
-                    return new String[] { input };
+                    return new String[] {input};
                 }
                 int numOfPlayersToRemove = Integer.parseInt(input);
                 if (numOfPlayersToRemove < 1 || numOfPlayersToRemove > currentNumOfPlayers) {
@@ -320,26 +314,21 @@ public class GameInitPrompt {
                             " ❌ Please input a valid number. There are currently only " + currentNumOfPlayers + " player(s)"));
                     continue;
                 }
+                System.out.println(Constants.DIVIDER);
 
                 int count = 0;
-                List<Integer> checkInputs = new ArrayList<>();
+                idsToRemove = new ArrayList<>();
                 while (count < numOfPlayersToRemove) {
-                    System.out.println(" 📌 Which player do you want to remove? ");
-                    System.out.print(Display.colorString(" ➢ Enter the playerId of ONE player: "));
+                    System.out.println(Constants.PROMPT_CANCEL_ACTION);
+                    System.out.println(" 📌 Which player do you want to remove? (Enter the playerId of the Player)");
+                    System.out.print(Display.colorString(" ➢ Enter Player's playerID (" + (count+1) + "): "));
                     input = sc.nextLine();
                     if (input.equals(Constants.CANCEL_ACTION)) {
-                        return new String[] { input };
+                        return new String[] {input};
                     }
-                    int playerID = Integer.parseInt(input);
-                    if (game.findMyPlayer(playerID) != null && !checkInputs.contains(playerID)) {
-                        idsToRemove.add(input);
+                    if (isPlayerIdValidForRemoval(input, idsToRemove, game, false)) {
                         count++;
-                    } else if (game.findMyPlayer(playerID) != null && checkInputs.contains(playerID)){
-                        System.out.println(Display.errorColour(" ❌ Repeated ID. Select another Player ID."));
-                    } else {
-                        System.out.println(Display.errorColour(" ❌ Invalid Player ID."));
                     }
-                    checkInputs.add(playerID);
                     System.out.println();
                 }
                 break;
@@ -350,5 +339,31 @@ public class GameInitPrompt {
         }
         idsToRemove.add(Constants.REMOVE_CPU);
         return idsToRemove.toArray(new String[0]);
+    }
+
+    /**
+     * Checks if the playerID inputted by the user is valid for removal
+     * 1. It checks if that playerID exist in the game state
+     * 2. It checks if it is a repeated ID that was already inputted
+     * 
+     * @param input user's input
+     * @param idsToRemove a list of playerIDs representing user's current choice of players to remove
+     * @param game the current game state
+     * @param isOnlyRemovingCPU flag indicating whether the removal is only for CPU or for all players (to get the correct list to valid playerID)
+     * @return true = valid playerID for removal and will be added to the list of IDs to remove, false means otherwise.
+     * @throws IllegalArgumentException this happens when the user does not input a number / the LEAVE GAME command
+     */
+    private static boolean isPlayerIdValidForRemoval(String input, List<String> idsToRemove, GameState game, boolean isOnlyRemovingCPU) throws IllegalArgumentException {
+        int playerID = Integer.parseInt(input);
+        boolean conditionToCheck = isOnlyRemovingCPU ? game.checkPlayerIsCPU(playerID) : game.findMyPlayer(playerID) != null;
+        if (idsToRemove.contains(input)) {
+            System.out.println(Display.errorColour(" ❌ Repeated ID. Select another playerID."));
+        } else if (conditionToCheck) {
+            idsToRemove.add(input);
+            return true;
+        } else {
+            System.out.println(Display.errorColour(" ❌ Invalid playerID."));
+        }
+        return false;
     }
 }
