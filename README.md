@@ -79,12 +79,12 @@ Handles all database-related functionality, including initialization and queries
     - `CPUGameAction.java` - Encapsulates CPU behavior for different difficulty levels (Easy, Medium, Hard).
     - `GameFlow.java` - Controls turn-based game progression.
     - `GamePlayPrompt.java` - Manages user prompts during gameplay.
-     - `GameProcessor.java` - Coordinates game actions as dictated by `GameFlow`.
+    - `GameProcessor.java` - Coordinates game actions as dictated by `GameFlow`.
     - `GameRenderer.java` - Renders visual elements such as the game board and ASCII art.
-      
-- `GamePlay.java` - Orchestrates the game rounds based on predefined win/loss conditions.
+
+- `LocalGamePlay.java` - Orchestrates the local gameplay.
 - `GameState.java` - Represents the full game state (players, game ID, game master, etc.).
-- `MenuRender.java` - Renders UI for player profiles.
+- `MenuRenderer.java` - Renders UI for player profiles.
 - `StartMenu.java` - Presents the initial game menu (e.g., Local/Online mode).
 - `StateManager.java` - Maintains the current player profile.
 
