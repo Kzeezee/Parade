@@ -1,5 +1,8 @@
 package com.g2t2.game;
 
+import java.util.Comparator;
+import java.util.List;
+
 import com.g2t2.types.Player;
 import com.g2t2.types.PlayerProfile;
 import com.g2t2.util.Constants;
@@ -10,9 +13,6 @@ import com.g2t2.game.gameutility.CPUGameAction;
 import com.g2t2.game.gameutility.GameFlow;
 import com.g2t2.game.gameutility.GameRenderer;
 import com.g2t2.game.gameutility.GamePlayPrompt;
-
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * Class responsible for managing the gameplay flow.

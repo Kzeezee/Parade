@@ -1,9 +1,9 @@
 package com.g2t2.types;
 
-import com.g2t2.enums.CardColour;
-
 import java.io.Serializable;
 import java.util.*;
+
+import com.g2t2.enums.CardColour;
 
 /**
  * CardDeck class, modelling the deck of Parade cards.

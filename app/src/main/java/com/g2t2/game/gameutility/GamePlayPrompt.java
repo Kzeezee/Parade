@@ -108,12 +108,7 @@ public class GamePlayPrompt {
                 + " cards from your hand to add to the collection.");
         System.out.println(Constants.DIVIDER);
 
-        // boolean isReprompting = false;
         while (choosenCardsIdx[0].equals(choosenCardsIdx[1])) {
-            // if (isReprompting) {
-            //     System.out.println(Display.errorColour(" ❌ Please choose 2 different cards!"));
-            //     System.out.println();
-            // }
             for (int i = 0; i < 2; i++) {
                 String prompt = " 📌 Which card do you want to place in the Collection?\n"
                         + " 📌 You need to choose TWO different cards \n"
@@ -131,9 +126,7 @@ public class GamePlayPrompt {
                 } else {
                     System.out.println();
                 }   
-                // System.out.println(Constants.DIVIDER);
             }
-            // isReprompting = true;
         }
 
         return choosenCardsIdx;

@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Collections;
 import java.util.List;
 import java.util.Arrays;
-
 import java.util.stream.Collectors;
 
 import com.g2t2.enums.CardColour;
@@ -98,7 +97,6 @@ public class Display {
     private static String getCardStackLine1(int size) {
         StringBuilder line = new StringBuilder("");
         for (int i = 0; i < size; i++) {
-            // line.append("___"); // ─────
             line.append("┌──");
         }
         line.append("──────┐ ");
@@ -135,7 +133,6 @@ public class Display {
         for (int i = 0; i < size; i++) {
             line.append("│  ");
         }
-        // line.append(" │");
         line.append(" ").append(Constants.EMOJIS.get(currentCardColour.ordinal())).append("   │");
         return line.toString();
     }
@@ -152,8 +149,6 @@ public class Display {
         for (int i = 0; i < size; i++) {
             line.append("│  ");
         }
-        // line.append("
-        // ").append(Constants.EMOJIS.get(currentCardColour.ordinal())).append(" │");
         line.append("    ");
         if (lastCardValue == 10) {
             line.append(lastCardValue + "│");
@@ -172,16 +167,9 @@ public class Display {
     private static String getCardStackLine5(int size) {
         StringBuilder line = new StringBuilder();
         for (int i = 0; i < size; i++) {
-            // line.append("|__");
             line.append("└──");
         }
-        // line.append("____");
         line.append("──────┘");
-        // if (lastCardValue == 10) {
-        // line.append(lastCardValue + "|");
-        // } else {
-        // line.append("_" + lastCardValue + "|");
-        // }
         return line.toString();
     }
 

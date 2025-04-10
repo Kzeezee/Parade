@@ -60,8 +60,8 @@ public class Server {
         try {
             System.out.println("Server has started");
             while (!serverSocket.isClosed()) { // run until the server is closed
-                // waiting for a client to connect -> halting method, wait until someone connects
-                // when someone connects, a Socket object will be returned which can be used to communicate with the server
+                /* waiting for a client to connect -> halting method, wait until someone connects
+                when someone connects, a Socket object will be returned which can be used to communicate with the server */
                 Socket socket = serverSocket.accept(); // Socket represents a connection from the server to the client
                 
                 ClientHandler clientHandler = new ClientHandler(socket);

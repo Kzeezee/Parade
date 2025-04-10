@@ -16,8 +16,7 @@ public class Constants {
     public static final String YELLOW_ANSI = "\033[38;2;255;255;0m";
     public static final String PURPLE_ANSI = "\033[38;2;147;112;219m";
     public static final String GREEN_ANSI = "\033[38;2;85;205;121m";
-    // public static final String BLACK_ANSI = "\033[38;2;1;1;1m"; // \033[38;5;251m
-    public static final String BLACK_ANSI = "\033[38;5;251m"; // \033[38;5;251m
+    public static final String BLACK_ANSI = "\033[38;5;251m";
     public static final List<String> EMOJIS = List.of("🌹", "💧", "☀️ ", "🪻 ", "🍀", "🕷️ ");
     public static final List<CardColour> CARD_COLOURS = List.of(CardColour.RED, CardColour.BLUE, CardColour.YELLOW,
     CardColour.PURPLE, CardColour.GREEN, CardColour.BLACK);

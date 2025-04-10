@@ -47,7 +47,6 @@ public class CPUGameAction {
         while (cardIdxList[0] == cardIdxList[1]) {
             for (int i = 0; i < cardIdxList.length; i++) {
                 cardIdxList[i] = chooseCPUCardIdx(player, game, cardIdxList[0]);
-                // System.out.println("Index of " + i + " card: " + cardIdxList[i]);
 
             }
         }

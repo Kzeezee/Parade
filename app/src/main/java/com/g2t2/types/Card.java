@@ -1,10 +1,10 @@
 package com.g2t2.types;
 
-import com.g2t2.enums.CardColour;
-import com.g2t2.util.Constants;
-
 import java.io.Serializable;
 import java.util.Objects;
+
+import com.g2t2.enums.CardColour;
+import com.g2t2.util.Constants;
 
 /**
  * Card class, modelling a singular Parade card.

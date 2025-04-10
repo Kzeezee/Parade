@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Collections;
 
 import com.g2t2.enums.CardColour;
-
 import com.g2t2.util.Constants;
 
 /**

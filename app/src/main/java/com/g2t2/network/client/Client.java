@@ -8,7 +8,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.g2t2.game.*;
-import com.g2t2.game.gameinit.GameInit;
 import com.g2t2.game.gameutility.*;
 import com.g2t2.network.networkutility.*;
 import com.g2t2.types.Player;
