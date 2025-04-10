@@ -53,7 +53,6 @@ public class GamePlayPrompt {
 
                 System.out.println("\t   ➢ Chosen Card Number: " + (chosenCardIndex));
                 if (!confirmsChoice()) {
-                    System.out.println(Constants.DIVIDER);
                     continue;
                 }
                 chosenCardString = chosenCardIndex - 1 + "";
@@ -89,6 +88,7 @@ public class GamePlayPrompt {
             return true;
         }
 
+        System.out.println(Constants.DIVIDER);
         return false;
     }
 
@@ -108,12 +108,12 @@ public class GamePlayPrompt {
                 + " cards from your hand to add to the collection.");
         System.out.println(Constants.DIVIDER);
 
-        boolean isReprompting = false;
+        // boolean isReprompting = false;
         while (choosenCardsIdx[0].equals(choosenCardsIdx[1])) {
-            if (isReprompting) {
-                System.out.println(Display.errorColour(" ❌ Please choose 2 different cards!"));
-                System.out.println();
-            }
+            // if (isReprompting) {
+            //     System.out.println(Display.errorColour(" ❌ Please choose 2 different cards!"));
+            //     System.out.println();
+            // }
             for (int i = 0; i < 2; i++) {
                 String prompt = " 📌 Which card do you want to place in the Collection?\n"
                         + " 📌 You need to choose TWO different cards \n"
@@ -125,10 +125,15 @@ public class GamePlayPrompt {
                     break;
                 }
                 choosenCardsIdx[i] = cardIdx;
-
-                System.out.println(Constants.DIVIDER);
+                if (choosenCardsIdx[0].equals(choosenCardsIdx[1])) {
+                    System.out.println(Display.errorColour(" ❌ Please choose 2 different cards!"));
+                    System.out.println(Constants.DIVIDER);
+                } else {
+                    System.out.println();
+                }   
+                // System.out.println(Constants.DIVIDER);
             }
-            isReprompting = true;
+            // isReprompting = true;
         }
 
         return choosenCardsIdx;
@@ -146,7 +151,7 @@ public class GamePlayPrompt {
                 // Capital letters is default if entered without anything
                 System.out.print(Display.colorString(" ⚜ Do you want to play another game? (Y/N) ➢ "));
                 String input = sc.nextLine().trim().toLowerCase();
-                if (input.equals("y") || input.isEmpty()) {
+                if (input.equals("y")) {
                     return true;
                 } else if (input.equals("n")) {
                     return false;
