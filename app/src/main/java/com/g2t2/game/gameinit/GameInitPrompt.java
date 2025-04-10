@@ -85,6 +85,7 @@ public class GameInitPrompt {
             }
         }
 
+        System.out.println();
         int numOfCPU = 0;
         while (true) {
             try {
@@ -144,14 +145,14 @@ public class GameInitPrompt {
                 if (numOfCPUToRemove < 1 || numOfCPUToRemove > currentNumOfCPU) {
                     System.out.println(Display.errorColour(
                             " ❌ Please input a valid number. There are currently only " + currentNumOfCPU + " CPU(s)"));
+                    System.out.println();
                     continue;
                 }
-                System.out.println(Constants.DIVIDER);
 
+                System.out.println();
                 int count = 0;
                 idsToRemove = new ArrayList<>();
                 while (count < numOfCPUToRemove) {
-                    System.out.println(Constants.CANCEL_ACTION_PROMPT);
                     System.out.println(" 📌 Which CPU(s) do you want to remove? (Enter the playerId of the CPU)");
                     System.out.print(Display.colorString(" ➢ Enter CPU's playerId (" + (count+1) +"): "));
                     input = sc.nextLine();
@@ -196,6 +197,7 @@ public class GameInitPrompt {
                     continue;
                 }
 
+                System.out.println();
                 int count = 0;
                 idsToRemove = new ArrayList<>();
                 while (count < numOfPlayersToRemove) {
@@ -237,7 +239,7 @@ public class GameInitPrompt {
         boolean conditionToCheck = isOnlyRemovingCPU ? game.checkPlayerIsCPU(playerID) : game.findMyPlayer(playerID) != null;
         if (idsToRemove.contains(input)) {
             System.out.println(Display.errorColour(" ❌ Repeated ID. Select another playerID."));
-        } else if (playerID == 1){
+        } else if (game.getGameMaster().getPlayerId() == playerID){
             System.out.println(Display.errorColour(" ❌ Gamemaster cannot be removed."));
         } else if (conditionToCheck) {
             idsToRemove.add(input);

@@ -181,6 +181,7 @@ public class OnlineLobby {
                 } else if (input.equals(Constants.START_GAME)) {
                     if (game.getNumOfPlayers() < Constants.MIN_PLAYER_NO) {
                         System.out.println(Display.errorColour(" ❌ Insufficient Number of Players"));
+                        System.out.println();
                         continue;
                     } else  {
                         return new String[] {Constants.START_GAME};
@@ -188,6 +189,7 @@ public class OnlineLobby {
                 }
             }
             System.out.println(Constants.INVALID_COMMAND);
+            System.out.println();
         }
     }
 
