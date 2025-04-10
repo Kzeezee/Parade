@@ -80,18 +80,14 @@ public class GameInitPrompt {
                 break;
             } catch (IllegalArgumentException e) {
                 System.out.println(Constants.INVALID_OPTION_ERROR_MSG);
-                System.out.println();
             } catch (InputMismatchException e) {
                 System.out.println(e.getMessage());
-                System.out.println();
             }
         }
 
         int numOfCPU = 0;
         while (true) {
             try {
-                System.out.println(Constants.DIVIDER);
-                System.out.println(Constants.CANCEL_ACTION_PROMPT);
                 System.out.println(" 📌 How many CPU do you want to add?");
                 System.out.print(Display.colorString(" ➢ Enter a number (max = " + maxNumOfCPU + "): "));
                 input = sc.nextLine();
@@ -196,14 +192,13 @@ public class GameInitPrompt {
                 if (numOfPlayersToRemove < 1 || numOfPlayersToRemove > currentNumOfPlayers) {
                     System.out.println(Display.errorColour(
                             " ❌ Please input a valid number. There are currently only " + currentNumOfPlayers + " player(s)"));
+                    System.out.println();
                     continue;
                 }
-                System.out.println(Constants.DIVIDER);
 
                 int count = 0;
                 idsToRemove = new ArrayList<>();
                 while (count < numOfPlayersToRemove) {
-                    System.out.println(Constants.CANCEL_ACTION_PROMPT);
                     System.out.println(" 📌 Which player do you want to remove? (Enter the playerId of the Player)");
                     System.out.print(Display.colorString(" ➢ Enter Player's playerID (" + (count+1) + "): "));
                     input = sc.nextLine();

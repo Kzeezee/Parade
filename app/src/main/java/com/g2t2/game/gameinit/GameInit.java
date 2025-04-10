@@ -132,17 +132,16 @@ public class GameInit {
                 return false;
             } else if (input.equals(Constants.START_GAME)) {
                 if (game.getNumOfPlayers() < Constants.MIN_PLAYER_NO) {
-                    System.out.println(Display.errorColour(" ❌ Insufficient Number of Players\n"));
-                    continue;
-                } else if (game.getNumOfPlayers() == game.getNumOfCPU()){
-                    System.out.println(Display.errorColour(" ❌ No local player added\n"));
+                    System.out.println(Display.errorColour(" ❌ Insufficient Number of Players"));
+                    System.out.println();
                     continue;
                 } else {
                     return true;
                 }
             } 
 
-            System.out.println(Display.errorColour(" ❌ Invalid Command\n"));
+            System.out.println(Display.errorColour(" ❌ Invalid Command"));
+            System.out.println();
             continue;
         }
     }

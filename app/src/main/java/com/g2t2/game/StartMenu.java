@@ -14,7 +14,7 @@ import com.g2t2.game.gameinit.GameInit;
 import com.g2t2.game.gameinit.GameInitPrompt;
 import com.g2t2.game.gameutility.GamePlayPrompt;
 import com.g2t2.game.gameutility.GameRenderer;
-import com.g2t2.network.client.Client;
+import com.g2t2.network.client.Client;  
 import com.g2t2.network.server.Server;
 import com.g2t2.types.Card;
 import com.g2t2.types.PlayerProfile;
