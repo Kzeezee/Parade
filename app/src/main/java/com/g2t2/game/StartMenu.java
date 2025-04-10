@@ -43,8 +43,7 @@ public class StartMenu {
                                                  + " 📌 Play online (2)\n"
                                                  + " 📌 Change profile (3)\n"
                                                  + " 📌 Learn how to play (4) \n"
-                                                 + " 📌 Exit application (5)\n"
-                                                 + Display.colorString(" ⚜ Enter option ➢ ");
+                                                 + " 📌 Exit application (5)\n";
 
     /**
      * Displays the start menu of the application based on the current mode (GUI or console).
@@ -76,6 +75,7 @@ public class StartMenu {
         System.out.println(WELCOMEMESSAGE_STRING);
         System.out.print(GAMEPLAY_OPTIONS);
         while (true) {
+            System.out.print(Display.colorString(" ⚜ Enter option ➢ "));
             String s = sc.nextLine();
             try {
                 int option = Integer.parseInt(s);
