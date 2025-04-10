@@ -336,7 +336,7 @@ public class StartMenu {
         System.out.println();
         System.out.println(Constants.CANCEL_ACTION_PROMPT);
         while(true) {
-            System.out.print(Display.errorColour(" ⚜ Enter profile to delete (" + 1 + "-" + playerProfiles.size() + ") ➢ "));
+            System.out.print(Display.colorString(" ⚜ Enter profile to delete (" + 1 + "-" + playerProfiles.size() + ") ➢ "));
             try {
                 String input = sc.nextLine();
                 if (input.equals(Constants.CANCEL_ACTION)) {
@@ -356,8 +356,10 @@ public class StartMenu {
                 }
             } catch (NumberFormatException e) {
                 System.out.println(Constants.INVALID_OPTION_ERROR_MSG);
+                System.out.println();
             } catch (IllegalArgumentException e) {
                 System.out.println(Display.errorColour(e.getMessage()));
+                System.out.println();
             }
         }
     }
