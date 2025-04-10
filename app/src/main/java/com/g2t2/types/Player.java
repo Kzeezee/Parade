@@ -216,10 +216,20 @@ public class Player implements Serializable {
         difficulty = 1;
     }
 
+    /**
+     * Returns the player profile of the player
+     * 
+     * @return the player profile of the player
+     */
     public PlayerProfile getPlayerProfile() {
         return playerProfile;
     }
 
+    /**
+     * Sets the player profile of the player to the specified PlayerProfile
+     * 
+     * @param playerProfile
+     */
     public void setPlayerProfile(PlayerProfile playerProfile) {
         this.playerProfile = playerProfile;
     }

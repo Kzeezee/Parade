@@ -114,7 +114,7 @@ public class GameRenderer {
         }
     }
 
-        /**
+    /**
      * Creates a temporary pause in the game flow, waiting for user input to continue.
      *
      * @param message The message to display to the user during the pause

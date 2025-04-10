@@ -174,6 +174,18 @@ public class GameInitPrompt {
         return idsToRemove.toArray(new String[0]);
     }
 
+    /**
+     * Prompts the user to select players to remove from the game.
+     * 
+     * This method handles the process of removing players by:
+     * 1. Asking how many players they want to remove
+     * 2. Prompting for the player IDs to remove one by one
+     * 3. Validating each player ID before adding it to the removal list
+     * 
+     * @param game the current game state containing the players to be removed
+     * @return a String array containing the IDs of players to remove, or an array with
+     *         a single element containing the cancel action if the user cancels
+     */
     public static String[] promptForPlayerRemoval(GameState game) {
         Scanner sc = new Scanner(System.in);
         String input = null;
