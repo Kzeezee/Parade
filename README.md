@@ -22,9 +22,13 @@ Gradle to package the jar file (Optional)
 ## Running the Client and Server
 Gradle to run the application client
 - `./gradlew run or Gradle run`
+
+For the server, ensure the port (default 1234) and address (default localhost) is configured properly with the Parade.config file at project root.
+
+Address should follow the machine running the server's host ipv4 address. Other clients can connect to it provided they are on the same network with the proper network configuration. Opening online games to players outside the network is out-of-scope can be done but is out-of-scope.
   
 Gradle to run the application server
-- `./gradlew run -PmainClass=com.g2t2.network.server.Server`
+- `./gradlew run -PmainClass="com.g2t2.network.server.Server"`
 
 # Design Decisions
 1. Modularization:
