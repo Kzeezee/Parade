@@ -5,7 +5,7 @@ import java.util.Scanner;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 import com.g2t2.util.Utility;
-import com.g2t2.game.GamePlay;
+import com.g2t2.game.LocalGamePlay;
 import com.g2t2.game.GameState;
 import com.g2t2.game.StartMenu;
 import com.g2t2.game.StateManager;
@@ -54,7 +54,7 @@ public class GameInit {
             printWaitingRoomDetails(game);
             startGame = activatingUserControlCommands(game);
         }
-        GamePlay.startGame(game);
+        LocalGamePlay.startGame(game);
     }
 
     /**

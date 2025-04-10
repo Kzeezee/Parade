@@ -27,7 +27,7 @@ import java.util.List;
  * @author Shwe
  * @author Easan
  */
-public class GamePlay {
+public class LocalGamePlay {
     /**
      * Starts the game and manages the main gameplay loop.
      * 
