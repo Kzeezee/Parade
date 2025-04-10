@@ -58,7 +58,7 @@ public class GameRenderer {
     public static void displayCollections(GameState game) {
         for (Player p : game.getPlayers()) {
             System.out.println(
-                    Display.colorString("「 ✦ CARDS IN " + p.getName() + "(" + p.getPlayerId() + ") COLLECTION ✦ "));
+                    Display.colorString("「 ✦ CARDS IN " + p.getName() + "(" + p.getPlayerId() + ") COLLECTION ✦ 」"));
             if (game.isPut2CollectionRound()) {
                 Display.displayAllStacks(p.getFinalCardsInCollection());
             } else { // normal round
