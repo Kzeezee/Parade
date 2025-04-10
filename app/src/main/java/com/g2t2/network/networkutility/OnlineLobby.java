@@ -1,10 +1,10 @@
-package com.g2t2.network.networkUtility;
+package com.g2t2.network.networkutility;
 
 import java.io.IOException;
 import java.util.Scanner;
 
 import com.g2t2.game.GameState;
-import com.g2t2.game.gameInit.GameInitPrompt;
+import com.g2t2.game.gameinit.GameInitPrompt;
 import com.g2t2.util.Constants;
 import com.g2t2.util.Display;
 import com.g2t2.util.Utility;

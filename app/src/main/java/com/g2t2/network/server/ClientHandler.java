@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.g2t2.game.GameState;
-import com.g2t2.game.gameInit.GameInit;
+import com.g2t2.game.gameinit.GameInit;
 import com.g2t2.game.gameutility.GameFlow;
-import com.g2t2.network.networkUtility.Message;
-import com.g2t2.network.networkUtility.NetworkUtility;
+import com.g2t2.network.networkutility.Message;
+import com.g2t2.network.networkutility.NetworkUtility;
 import com.g2t2.types.Player;
 import com.g2t2.util.Constants;
 

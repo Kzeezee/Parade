@@ -1,4 +1,4 @@
-package com.g2t2.network.networkUtility;
+package com.g2t2.network.networkutility;
 
 import java.io.Serializable;
 

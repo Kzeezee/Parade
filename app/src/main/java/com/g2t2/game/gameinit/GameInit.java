@@ -1,4 +1,4 @@
-package com.g2t2.game.gameInit;
+package com.g2t2.game.gameinit;
 
 import java.util.Scanner;
 
