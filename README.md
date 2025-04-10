@@ -132,3 +132,9 @@ G2T2
 - GOH XUAN YU OLIVER
 
 Project Inspired By: Parade Rulebook and associated video resources
+
+## OpenSource Libraries Used
+### Gradle
+- Grade is used to build automation tool for easier development experience and for build-in dependency management
+### SQLite
+- SQLite is used for local database storage of player profiles and win records.
