@@ -53,7 +53,7 @@ public class GamePlayPrompt {
 
                 System.out.println("\t   ➢ Chosen Card Number: " + (chosenCardIndex));
                 if (!confirmsChoice()) {
-                    System.out.println();
+                    System.out.println(Constants.DIVIDER);
                     continue;
                 }
                 chosenCardString = chosenCardIndex - 1 + "";
