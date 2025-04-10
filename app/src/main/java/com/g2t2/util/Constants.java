@@ -80,7 +80,7 @@ public class Constants {
     public static final String FULL_CAPACITY = "FULL CAPACITY";
 
     // Error Messages
-    public static final String INVALID_OPTION_ERROR_MSG = " ❌ Please enter a number or an appropriate command";
+    public static final String INVALID_OPTION_ERROR_MSG = Display.errorColour(" ❌ Please enter a number or an appropriate command");
     public static final String INVALID_COMMAND = Display.errorColour(" ❌ " + "INVALID COMMAND");
 
     // Prompts
