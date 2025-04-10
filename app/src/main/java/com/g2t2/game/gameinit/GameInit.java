@@ -102,7 +102,11 @@ public class GameInit {
         while (true) {
             System.out.print(Display.colorString(" ➢ Enter command: "));
             String input = sc.nextLine();
-            if (input.equals(Constants.LEAVE_GAME)) {
+            boolean hasLowerCases = input.matches(".*[a-z].*");
+            if (hasLowerCases) {
+                System.out.println(Display.errorColour(" ❌ Enter command in all CAPITAL letters\n"));
+                continue;
+            } else if (input.equals(Constants.LEAVE_GAME)) {
                 Player.resetCounter();
                 StartMenu.showStartMenu();
             } else if (input.equals(Constants.ADD_PLAYER) && game.getNumOfPlayers() < Constants.MAX_PLAYER_NO) {
@@ -128,17 +132,17 @@ public class GameInit {
                 return false;
             } else if (input.equals(Constants.START_GAME)) {
                 if (game.getNumOfPlayers() < Constants.MIN_PLAYER_NO) {
-                    System.out.println(Display.errorColour(" ❌ Insufficient Number of Players"));
+                    System.out.println(Display.errorColour(" ❌ Insufficient Number of Players\n"));
                     continue;
                 } else if (game.getNumOfPlayers() == game.getNumOfCPU()){
-                    System.out.println(Display.errorColour(" ❌ No local player added"));
+                    System.out.println(Display.errorColour(" ❌ No local player added\n"));
                     continue;
                 } else {
                     return true;
                 }
-            }
+            } 
 
-            System.out.println(Display.errorColour(" ❌ Invalid Command"));
+            System.out.println(Display.errorColour(" ❌ Invalid Command\n"));
             continue;
         }
     }
