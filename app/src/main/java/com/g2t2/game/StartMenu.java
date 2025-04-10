@@ -257,12 +257,12 @@ public class StartMenu {
                 System.out.println(Constants.CLOSE_APP_PROMPT);
                 System.out.print(Display.colorString(" ⚜ Enter profile (1 to " + numOfProfiles
                         + ", OR 'c' to create, OR 'd' to delete instead) ➢ "));
-                String input = sc.nextLine();
+                String input = sc.nextLine().trim();
 
                 // handling input errors
                 if (input.equals(Constants.CLOSE_APP)) {
                     Utility.exitGame();
-                } else if (input.length() < 1) {
+                } else if (input.isEmpty() || input.isBlank()) {
                     System.out.println(Display.errorColour(" ❌ Please enter something"));
                     System.out.println();
                     continue;
@@ -336,7 +336,7 @@ public class StartMenu {
         System.out.println();
         System.out.println(Constants.CANCEL_ACTION_PROMPT);
         while(true) {
-            System.out.print(Display.errorColour(" ⚜ Enter profile to delete (" + 1 + "-" + playerProfiles.size() + ") ➢ "));
+            System.out.print(Display.colorString(" ⚜ Enter profile to delete (" + 1 + "-" + playerProfiles.size() + ") ➢ "));
             try {
                 String input = sc.nextLine();
                 if (input.equals(Constants.CANCEL_ACTION)) {
@@ -356,8 +356,10 @@ public class StartMenu {
                 }
             } catch (NumberFormatException e) {
                 System.out.println(Constants.INVALID_OPTION_ERROR_MSG);
+                System.out.println();
             } catch (IllegalArgumentException e) {
                 System.out.println(Display.errorColour(e.getMessage()));
+                System.out.println();
             }
         }
     }
