@@ -104,12 +104,12 @@ public class Client implements Runnable {
                     String command = incomingMessage.getMessage()[incomingMessage.getMessage().length-1];
 
                     if (command.equals(Constants.INVALID_GAME_ID)) { // wrong gameId
-                        System.out.println(Display.errorColour(" ❌ " + Constants.INVALID_GAME_ID));
+                        System.out.println(Display.errorColour(" ❌ " + Constants.INVALID_GAME_ID + ", refreshing page"));
                         NetworkUtility.threadSleep(1000); // to show users the error message before the page clears
                         mainThreadTasks.add(() -> joinGameLobby(username));
 
                     } else if (command.equals(Constants.FULL_CAPACITY)) { // full capacity
-                        System.out.println(Display.errorColour(" ❌ " + Constants.FULL_CAPACITY));
+                        System.out.println(Display.errorColour(" ❌ " + Constants.FULL_CAPACITY + ", refreshing page"));
                         NetworkUtility.threadSleep(1000); // to show users the error message before the page clears
                         mainThreadTasks.add(() -> joinGameLobby(username));
 
