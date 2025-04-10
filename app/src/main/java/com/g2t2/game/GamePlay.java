@@ -81,7 +81,7 @@ public class GamePlay {
             GameFlow.processPut2Collection(cardsChosen, game);
         }
 
-        Display.gameHeader();
+        GameRenderer.gameHeader();
         GameRenderer.displayScores(players);
 
         updatePlayerWinsInDB(players);

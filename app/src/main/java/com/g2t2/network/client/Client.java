@@ -8,6 +8,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.g2t2.game.*;
+import com.g2t2.game.gameInit.GameInit;
 import com.g2t2.game.gameutility.*;
 import com.g2t2.network.networkUtility.*;
 import com.g2t2.types.Player;
@@ -139,7 +140,7 @@ public class Client implements Runnable {
      */
     private void joinGameLobby(String username) {
         try {
-            Display.joiningGameLobbyHeader();
+            OnlineLobby.joiningGameLobbyHeader();
             // get what the user wants to do (join/create)
             String[] userInput = OnlineLobby.joinGamePrompt(username); 
             NetworkUtility.sendMessage(userInput, objectOutputStream);
@@ -193,7 +194,7 @@ public class Client implements Runnable {
             String[] messageToSendBack = {"", "", Constants.COMPLETE_TURN};
 
             if (game.isEndOfGame()) {
-                Display.gameHeader();
+                GameRenderer.gameHeader();
                 GameRenderer.displayScores(game.getPlayers());
                 isInGame = false;
                 // signal to the server to reset things on their side

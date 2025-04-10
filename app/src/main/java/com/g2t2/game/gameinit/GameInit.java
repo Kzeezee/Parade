@@ -58,23 +58,6 @@ public class GameInit {
     }
 
     /**
-     * Displays configurable game options in the console.
-     * 
-     * This method allows users to specify the total number of players,
-     * assign CPU players, and set the difficulty level for CPU-controlled players.
-     * It validates user input to ensure proper configuration.
-     * 
-     * @param game the current game state
-     */
-    public static void printWaitingRoomDetails(GameState game) {
-        Utility.clearConsoleScreen();
-        System.out.println(Constants.LOCAL_WAITING_LOBBY_BANNER);
-        printWaitingRoomCommands(game);
-        System.out.println(Constants.DIVIDER);
-        game.printPlayerList();
-    }
-
-    /**
      * Displays available commands that the user can enter in the waiting room.
      * 
      * This method shows different commands based on the current game state:
@@ -114,7 +97,7 @@ public class GameInit {
      * @param game the current game state
      * @return boolean value indicating whether to start the game (true) or return to waiting room (false)
      */
-    public static boolean activatingUserControlCommands(GameState game) /* throws InterruptedException */ {
+    private static boolean activatingUserControlCommands(GameState game) {
         Scanner sc = new Scanner(System.in);
         while (true) {
             System.out.print(Display.colorString(" ➢ Enter command: "));
@@ -158,6 +141,23 @@ public class GameInit {
             System.out.println(Display.errorColour(" ❌ Invalid Command"));
             continue;
         }
+    }
+
+    /**
+     * Displays configurable game options in the console.
+     * 
+     * This method allows users to specify the total number of players,
+     * assign CPU players, and set the difficulty level for CPU-controlled players.
+     * It validates user input to ensure proper configuration.
+     * 
+     * @param game the current game state
+     */
+    public static void printWaitingRoomDetails(GameState game) {
+        Utility.clearConsoleScreen();
+        System.out.println(Constants.LOCAL_WAITING_LOBBY_BANNER);
+        printWaitingRoomCommands(game);
+        System.out.println(Constants.DIVIDER);
+        game.printPlayerList();
     }
 
     /**

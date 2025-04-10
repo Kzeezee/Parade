@@ -33,7 +33,7 @@ public class GameRenderer {
                                                                  // hand)
         
         Utility.clearConsoleScreen();
-        Display.gameHeader();
+        GameRenderer.gameHeader();
         displayCollections(game);
         if (!game.isPut2CollectionRound()){
             displayParade(game);
@@ -123,5 +123,15 @@ public class GameRenderer {
         Scanner sc = new Scanner(System.in);
         System.out.print(Display.colorString(message));
         sc.nextLine();
+    }
+
+    /**
+     * Prints the game header.
+     */
+    public static void gameHeader() {
+        Utility.clearConsoleScreen();
+        System.out.println(Constants.BANNER);
+        System.out.println(Constants.LEAVE_GAME_PROMPT);
+        System.out.println(Constants.DIVIDER);
     }
 }

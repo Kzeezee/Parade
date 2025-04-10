@@ -190,4 +190,17 @@ public class OnlineLobby {
             System.out.println(Constants.INVALID_COMMAND);
         }
     }
+
+    /**
+     * Prints the joining game lobby header
+     */
+    public static void joiningGameLobbyHeader() {
+        Utility.clearConsoleScreen();
+        System.out.println(Constants.ONLINE_LOBBY_BANNER);
+        System.out.println(Constants.DIVIDER);
+        System.out.println(Constants.CLOSE_APP_PROMPT);
+        System.out.println(Constants.GO_BACK_PROMPT);
+        System.out.println(Constants.CREATE_GAME_PROMPT);
+        System.out.println(Constants.JOIN_GAME_PROMPT);
+    }
 }

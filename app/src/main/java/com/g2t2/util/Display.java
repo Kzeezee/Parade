@@ -304,23 +304,4 @@ public class Display {
         System.out.println();
     }
 
-    /**
-     * Prints the game header.
-     */
-    public static void gameHeader() {
-        Utility.clearConsoleScreen();
-        System.out.println(Constants.BANNER);
-        System.out.println(Constants.LEAVE_GAME_PROMPT);
-        System.out.println(Constants.DIVIDER);
-    }
-
-    public static void joiningGameLobbyHeader() {
-        Utility.clearConsoleScreen();
-        System.out.println(Constants.ONLINE_LOBBY_BANNER);
-        System.out.println(Constants.DIVIDER);
-        System.out.println(Constants.CLOSE_APP_PROMPT);
-        System.out.println(Constants.GO_BACK_PROMPT);
-        System.out.println(Constants.CREATE_GAME_PROMPT);
-        System.out.println(Constants.JOIN_GAME_PROMPT);
-    }
 }
