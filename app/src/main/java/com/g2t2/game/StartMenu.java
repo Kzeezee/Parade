@@ -71,22 +71,22 @@ public class StartMenu {
     private static void promptForGamePlayOptions() {
         Scanner sc = new Scanner(System.in);
         Utility.clearConsoleScreen();
+        System.out.println(Constants.BANNER);
+        System.out.println(Constants.DIVIDER);
+        System.out.println(WELCOMEMESSAGE_STRING);
+        System.out.print(GAMEPLAY_OPTIONS);
         while (true) {
-            System.out.println(Constants.BANNER);
-            System.out.println(Constants.DIVIDER);
-            System.out.println(WELCOMEMESSAGE_STRING);
-            System.out.print(GAMEPLAY_OPTIONS);
             String s = sc.nextLine();
             try {
                 int option = Integer.parseInt(s);
                 processGamePlayOptions(option);
                 break;
             } catch (NumberFormatException e) {
-                Utility.clearConsoleScreen();
                 System.out.println(Display.errorColour(Constants.INVALID_OPTION_ERROR_MSG));
+                System.out.println();
             } catch (IllegalArgumentException e) {
-                Utility.clearConsoleScreen();
                 System.out.println(e.getMessage());
+                System.out.println();
             }
         }
     }
@@ -107,9 +107,8 @@ public class StartMenu {
     private static void processGamePlayOptions(int optionChosen) {
         if (optionChosen == 1) {
             GameInit.displayGameOptions(); // Start options of game
-            return;
-        }
-        if (optionChosen == 2) {
+
+        } else if (optionChosen == 2) {
             try {
                 Properties prop = Server.readServerConfig();
                 Socket socket = new Socket(prop.getProperty("server-address"), Integer.parseInt(prop.getProperty("server-port")));
@@ -123,24 +122,22 @@ public class StartMenu {
                 GameRenderer.temporaryPauseScreen(" ⚜ Enter any key to continue ➢ ");
             }
             consoleStartMenu();
-            return;
-        }
 
-        if (optionChosen == 3) {
+        } else if (optionChosen == 3) {
             checkForPlayerProfiles(); // check player profile to allow changing of profile
-            return;
-        }
-        if (optionChosen == 4) {
+
+        } else if (optionChosen == 4) {
             displayGameManual();
             promptForGamePlayOptions();
-            return;
-        }
-        if (optionChosen == 5) {
+
+        } else if (optionChosen == 5) {
             Utility.exitGame();
-            return;
-        }
-        throw new IllegalArgumentException(Display.errorColour(" ❌ Please choose a number 1 to 5"));
+
+        } else {
+            throw new IllegalArgumentException(Display.errorColour(" ❌ Please choose a number 1 to 5"));
+        }   
     }
+        
 
     /**
      * Displays the game manual, providing detailed instructions on how to play the game.
