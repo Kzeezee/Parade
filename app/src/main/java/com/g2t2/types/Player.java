@@ -3,12 +3,13 @@ package com.g2t2.types;
 import java.io.Serializable;
 import java.util.*;
 
+import com.g2t2.util.Constants;
+
 /**
  * Player class, modelling a player in Parade.
  * 
  * @author Ben
  */
-
 public class Player implements Serializable {
     private static int counter = 1;  // autoincrement everything a Player player object is created (non-cpu)
     private static int CPUCounter = 1; // autoincrement everything a Player CPU object is created (cpu)
@@ -64,16 +65,16 @@ public class Player implements Serializable {
 
     /**
      * Generates a PlayerID for every new Player
-     * The PlayerID will be capped at 10000 and will be resetted to 1 afterwards
+     * The PlayerID will be capped at 10000 and will be reset to 1 afterwards
      * The CPUCounter will also be capped at 5000, preventing too long of a CPU name
      * 
      * @return playerID for the new Player created
      */
     private int generatePlayerID() {
-        if (counter >= 10000) {
+        if (counter >= Constants.MAX_PLAYER_ID_COUNTER) {
             counter = 1;
         }
-        if (CPUCounter >= 5000) {
+        if (CPUCounter >= Constants.MAX_CPU_NAME_COUNTER) {
             CPUCounter = 1;
         }
         return counter++;
@@ -95,7 +96,7 @@ public class Player implements Serializable {
      */
     public void drawStartingCards(CardDeck deck) {
         // draw 5 cards from the deck
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < Constants.STARTING_HAND_SIZE; i++) {
             cardsOnHand.add(deck.drawCard());
         }
     }
