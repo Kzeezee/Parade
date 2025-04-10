@@ -29,8 +29,8 @@ public class GameInitPrompt {
     public static String promptForPlayerName() {
         Scanner sc = new Scanner(System.in);
         String name = "";
+        System.out.println(Constants.DIVIDER);
         while (true) {
-            System.out.println(Constants.DIVIDER);
             System.out.println(Constants.CANCEL_ACTION_PROMPT);
             System.out.print(Display.colorString(" ➢ Enter the name of player: "));
             name = sc.nextLine();
