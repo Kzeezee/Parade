@@ -198,10 +198,10 @@ public class GameState implements Serializable { // to allow it to be sent over
     /**
      * Sets the parade board in the game.
      *
-     * @param parardeBoard the parade board in the game
+     * @param paradeBoard the parade board in the game
      */
-    public void setParade(List<Card> parardeBoard) {
-        this.paradeBoard = parardeBoard;
+    public void setParade(List<Card> paradeBoard) {
+        this.paradeBoard = paradeBoard;
     }
 
     /**

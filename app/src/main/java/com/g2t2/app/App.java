@@ -11,7 +11,6 @@ import com.g2t2.util.Utility;
  * 
  * If GUI functionality is implemented in the future, the commented-out JavaFX
  * code can be used as a starting point.
- * 
  */
 public class App {
     /**

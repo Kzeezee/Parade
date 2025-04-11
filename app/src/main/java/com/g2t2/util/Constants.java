@@ -94,11 +94,14 @@ public class Constants {
     public static final String ADD_TO_PARADE_PROMPT = " 📌 Which card do you want to place in the Parade?";
     public static final String CANCEL_ACTION_PROMPT = " 📌 Enter '" + Display.colorString(Constants.CANCEL_ACTION) + "' to stop this action.";
 
-    // Game Setting Numbers
+    // Game Limits
     public static final int MIN_PLAYER_NO = 2;
     public static final int MAX_PLAYER_NO = 6;
     public static final int MIN_CPU_DIFFICULTY = 1;
     public static final int MAX_CPU_DIFFICULTY = 3;
+    public static final int MAX_PLAYER_ID_COUNTER = 10000;
+    public static final int MAX_CPU_NAME_COUNTER = 5000;
+    public static final int STARTING_HAND_SIZE = 5;
 
     // Database
     public static final String DB_CONNECTION = "jdbc:sqlite:../parade.db";
