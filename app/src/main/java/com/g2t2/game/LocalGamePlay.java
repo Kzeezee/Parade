@@ -48,14 +48,11 @@ public class LocalGamePlay {
 
         while (!game.isPut2CollectionRound()) {
             String cardChosen = null;
-            if(!game.getCurrentPlayer().getCPU()){
-                Utility.clearConsoleScreen();
-                GameRenderer.temporaryPauseScreen("It is " + game.getCurrentPlayer().getName() + "'s turn. Press the enter key to continue");
-                GameRenderer.displayRoundInformation(game);
-                GameRenderer.displayHandCards(game.getCurrentPlayer());
-                cardChosen = GamePlayPrompt.promptForCard(game.getCurrentPlayer(), Constants.ADD_TO_PARADE_PROMPT);
+            if (game.getCurrentPlayer().getCPU()){
+                cardChosen = CPUGameAction.CPUSelectCard(game.getCurrentPlayer(), game); 
             } else {
-                cardChosen = CPUGameAction.CPUSelectCard(game.getCurrentPlayer(), game);
+                standardDisplayForCurrentPlayer(game);
+                cardChosen = GamePlayPrompt.promptForCard(game.getCurrentPlayer(), Constants.ADD_TO_PARADE_PROMPT);
             }
             if (cardChosen.equals(Constants.LEAVE_GAME)){
                 GameInit.displayGameOptions();
@@ -65,14 +62,11 @@ public class LocalGamePlay {
 
         while(!game.isEndOfGame()){
             String[] cardsChosen = null;
-            if(!game.getCurrentPlayer().getCPU()){
-                Utility.clearConsoleScreen();
-                GameRenderer.temporaryPauseScreen("It is " + game.getCurrentPlayer().getName() + "'s turn. Press the enter key to continue");
-                GameRenderer.displayRoundInformation(game);
-                GameRenderer.displayHandCards(game.getCurrentPlayer());
-                cardsChosen = GamePlayPrompt.promptToCollectTwo(game.getCurrentPlayer());
-            } else {
+            if (game.getCurrentPlayer().getCPU()){
                 cardsChosen = CPUGameAction.CPUSelectTwoToCollections(game.getCurrentPlayer(), game);
+            } else {
+                standardDisplayForCurrentPlayer(game);
+                cardsChosen = GamePlayPrompt.promptToCollectTwo(game.getCurrentPlayer());   
             }
             if (cardsChosen[0].equals(Constants.LEAVE_GAME)){
                 GameInit.displayGameOptions();
@@ -108,5 +102,17 @@ public class LocalGamePlay {
             winnerProfile.setWins(winnerProfile.getWins() + 1);
             new PlayerProfileDaoImpl().updatePlayerProfile(winnerProfile);
         }
+    }
+
+    /**
+     * Display the current state of the game to the current player
+     * 
+     * @param game the current game state
+     */
+    private static void standardDisplayForCurrentPlayer(GameState game) {
+        Utility.clearConsoleScreen();
+        GameRenderer.temporaryPauseScreen("It is " + game.getCurrentPlayer().getName() + "'s turn. Press the enter key to continue");
+        GameRenderer.displayRoundInformation(game);
+        GameRenderer.displayHandCards(game.getCurrentPlayer());
     }
 }
