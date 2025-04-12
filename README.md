@@ -109,7 +109,6 @@ Implements support for online multiplayer functionality.
 Defines core domain models and helper classes.
 - `Card.java` - Represents a card with a color and a value.
 - `CardDeck.java` – Manages card deck creation, shuffling, and drawing.
-- `ParadeBoard.java` – Represents the central parade line where cards are played.
 - `Player.java` – Represents a player (human or CPU), including their hand, score pile, and actions.
 - `PlayerComparator.java` – Compares players for sorting based on specific criteria (e.g., score).
 - `PlayerProfile.java` – Stores data about a player, such as name, win rate, and profile stats.
