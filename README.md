@@ -30,6 +30,9 @@ Address should follow the machine running the server's host ipv4 address. Other 
 Gradle to run the application server
 - `./gradlew run -PmainClass="com.g2t2.network.server.Server"`
 
+## Using compileNrun scripts
+Alternatively, the `compileNrun.bat` or `compileNrun.sh` can be executed to clean build and run the client application in an existing terminal. The server application can be executed the same way as well by running `startServer.bat` or `startServer.sh`. Both scripts can be found at the project's root directory.
+
 # Design Decisions
 1. Modularization:
 The code is organized into multiple packages (game, app, enum, etc.) to separate concerns and follow the Single Responsibility Principle (SRP). Each class is focused on a single function or role within the game.
