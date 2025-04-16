@@ -235,8 +235,17 @@ public class GameState implements Serializable { // to allow it to be sent over
      * Passes the turn to the next player in the game.
      */
     public void passTurnToNextPlayer() {
-        int indexOfNextPlayer = (players.indexOf(currentPlayer) + 1) % numOfPlayers;
+        int indexOfNextPlayer = findNextPlayer();
         currentPlayer = players.get(indexOfNextPlayer);
+    }
+
+    /**
+     * Return the index of the next player
+     * 
+     * @return index of the next player
+     */
+    public int findNextPlayer() {
+        return (players.indexOf(currentPlayer) + 1) % numOfPlayers;
     }
 
     /**

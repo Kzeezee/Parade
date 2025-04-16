@@ -218,8 +218,12 @@ public class ClientHandler implements Runnable {
      * @param game the game that the player is leaving.
      */
     private void processPlayerLeaveGame(GameState game) {
-        game.findMyPlayer(myPlayerId).setCPU(true);
+        Player playerLeaving = game.findMyPlayer(myPlayerId);
+        playerLeaving.setCPU(true);
         if (!game.setNewGameMaster()) { // if unable to set a new gameMaster, that means there are no more real players left in the game
+            if (game.getPlayerWhoStartFinalRound().equals(playerLeaving)) {
+                game.setPlayerWhoStartFinalRound(game.findMyPlayer(game.findNextPlayer()));
+            }
             availableGames.remove(gameId);
             clientHandlers.remove(gameId);
         }
