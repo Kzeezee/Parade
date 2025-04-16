@@ -116,8 +116,8 @@ public class GamePlayPrompt {
                 String cardIdx = promptForCard(player, prompt);
 
                 if (cardIdx.equals(Constants.LEAVE_GAME) && confirmsChoice()) {
-                    choosenCardsIdx = new String[] { Constants.LEAVE_GAME };
-                    break;
+                    choosenCardsIdx = new String[] { Constants.LEAVE_GAME, ""};
+                    return choosenCardsIdx;
                 }
                 choosenCardsIdx[i] = cardIdx;
                 if (choosenCardsIdx[0].equals(choosenCardsIdx[1])) {
