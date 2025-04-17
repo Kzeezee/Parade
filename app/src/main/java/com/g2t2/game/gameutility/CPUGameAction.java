@@ -29,7 +29,7 @@ public class CPUGameAction {
     public static String CPUSelectCard(Player player, GameState game) {
         System.out.println(Constants.DIVIDER);
         Display.delayPrint(" 📌 Player " + Display.colorString(player.getName())
-                + " is choosing their cards.", 20);
+                + " is choosing their cards.", 5);
         int cardIdx = chooseCPUCardIdx(player, game, -1);
         return String.valueOf(cardIdx);
     }

@@ -221,11 +221,12 @@ public class ClientHandler implements Runnable {
         Player playerLeaving = game.findMyPlayer(myPlayerId);
         playerLeaving.setCPU(true);
         if (!game.setNewGameMaster()) { // if unable to set a new gameMaster, that means there are no more real players left in the game
+            availableGames.remove(gameId);
+            clientHandlers.remove(gameId);
+        } else if (game.getPlayerWhoStartFinalRound() != null) {
             if (game.getPlayerWhoStartFinalRound().equals(playerLeaving)) {
                 game.setPlayerWhoStartFinalRound(game.findMyPlayer(game.findNextPlayer()));
             }
-            availableGames.remove(gameId);
-            clientHandlers.remove(gameId);
         }
     }
 
